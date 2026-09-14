@@ -1,5 +1,8 @@
 .DS_Store
 *.log
+node_modules/
+dist/
+
 
 # Impostazioni locali di Claude Code (permessi della singola macchina)
 .claude/settings.local.json
