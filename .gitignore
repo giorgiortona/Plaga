@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+
+# Impostazioni locali di Claude Code (permessi della singola macchina)
+.claude/settings.local.json
+
+# Foto originali ad alta risoluzione (43 MB, 2500px).
+# La repo è pubblica: qui finirebbero i file pieni del fotografo.
+# Nel sito servono solo le webp già ottimizzate in site/assets/img/.
+# Togli questa riga se vuoi versionare anche gli originali.
+foto_plaga/
+
+# La cartella logo/ NON va ignorata: contiene l'originale del marchio,
+# che è una sorgente vera, non un file rigenerabile.
