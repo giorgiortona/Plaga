@@ -129,12 +129,30 @@ Pelle/sabbia calda dominante, verde scuro come **unico** accento.
 | `--sage` | `#6E8A76` | accento chiaro sui fondi scuri |
 
 ## Telefono
-Lo stesso sito si adatta, con qualche accortezza in più:
-- rientri di sicurezza per notch e barra home (`env(safe-area-inset-*)`);
-- ogni cosa da toccare è alta almeno 44px;
-- le tab del menu scorrono di lato, con una sfumatura a destra che lo segnala;
-- nelle righe dei contatti l'etichetta va sopra e il valore sotto;
-- gli effetti al passaggio del mouse sono spenti (su touch restano attaccati).
+
+Non è il sito desktop ristretto: la composizione cambia.
+
+**Le gallerie** non sono una colonna di foto uguali. Seguono un ritmo di
+cinque: una a tutta pagina fuori dai margini, due affiancate con la seconda
+sfalsata verso il basso, una rientrata a destra, una rientrata a sinistra.
+
+**Le schede della home** si alternano: una alta a tutta pagina, una quadrata
+rientrata. Sulla stretta il titolo si accorcia per restare su una riga.
+
+**L'hero** usa una foto ritagliata apposta (`sala-volte-mob.webp`): un
+paesaggio 3:2 dentro uno schermo verticale perderebbe i lati e mostrerebbe una
+fascia centrale senza senso. La riga sotto il marchio resta obbligatoriamente
+su una riga sola, altrimenti il blocco si sfalda.
+
+**Le voci del burger** riempiono la colonna come da desktop. Il corpo non è
+fisso: `adattaVociMenu()` misura la voce più lunga — «Il Giardino» in italiano,
+«The Garden» in inglese — e riduce quel tanto che basta perché stia su una
+riga. Sui telefoni bassi le voci si accorciano ancora, così lista e contatti
+ci stanno insieme; in ultima istanza il pannello scorre.
+
+Altre accortezze: rientri di sicurezza per notch e barra home, bersagli da
+almeno 44px, tab del menu che scorrono di lato con una sfumatura a segnalarlo,
+effetti al passaggio del mouse disattivati.
 
 ## Animazioni
 Volutamente poche: scroll morbido, una sola animazione d'ingresso (il blocco

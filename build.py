@@ -453,10 +453,17 @@ def impronta(rel):
     return hashlib.md5(f.read_bytes()).hexdigest()[:8]
 
 
-def picture(root, name, alt, lazy=True):
+def picture(root, name, alt, lazy=True, mobile=None):
+    """<picture> con le due misure webp.
+
+    `mobile` serve per le foto che su telefono vanno ritagliate diversamente,
+    non solo rimpicciolite: un paesaggio 3:2 dentro uno schermo verticale
+    perderebbe i lati e mostrerebbe una fascia centrale senza senso.
+    """
     load = ' loading="lazy"' if lazy else ' fetchpriority="high"'
+    piccola = mobile or f"{name}-sm"
     return (f'<picture class="pic">'
-            f'<source media="(max-width:700px)" srcset="{root}assets/img/{name}-sm.webp">'
+            f'<source media="(max-width:700px)" srcset="{root}assets/img/{piccola}.webp">'
             f'<img src="{root}assets/img/{name}-lg.webp" alt="{alt}"{load}>'
             f'</picture>')
 
@@ -596,7 +603,7 @@ def build_home(lang):
         for slug, i, img in cards)
 
     return f"""<section class="hero">
-  <div class="hero__media">{picture(r, "sala-volte", t["alt"]["sala-volte"], lazy=False)}</div>
+  <div class="hero__media">{picture(r, "sala-volte", t["alt"]["sala-volte"], lazy=False, mobile="sala-volte-mob")}</div>
   <div class="hero__scrim"></div>
   <div class="hero__content">
     <h1 class="hero__word">PLAGA</h1>

@@ -63,6 +63,40 @@ function reveals() {
   });
 }
 
+/* ───────── LE VOCI DEL MENU, GRANDI QUANTO LO SPAZIO CONSENTE ─────────
+   Su telefono le voci devono pesare come da desktop, cioè riempire la
+   colonna. Ma "Il Giardino" e "The Garden" hanno larghezze diverse, e un
+   corpo fisso o va a capo o esce dal riquadro. Qui si misura la voce più
+   lunga e si riduce quel tanto che basta: mai oltre il valore del CSS.
+---------------------------------------------------------------------- */
+
+function adattaVociMenu() {
+  const voci = document.querySelectorAll('.menuNav__item a');
+  if (!voci.length) return;
+
+  const etichette = [...voci].map((a) => a.querySelector('.menuNav__label'));
+  etichette.forEach((et) => et && et.style.removeProperty('font-size'));
+  if (window.innerWidth > 860) return;     // da desktop ci stanno già
+
+  let fattore = 1;
+  voci.forEach((a) => {
+    const et = a.querySelector('.menuNav__label');
+    const num = a.querySelector('.menuNav__num');
+    if (!et) return;
+    const gap = parseFloat(getComputedStyle(a).columnGap) || 0;
+    const spazio = a.clientWidth - (num ? num.offsetWidth : 0) - gap;
+    const larga = larghezzaTesto(et).width;
+    if (larga > 0 && spazio > 0) fattore = Math.min(fattore, spazio / larga);
+  });
+  if (fattore >= 1) return;
+
+  etichette.forEach((et) => {
+    if (!et) return;
+    const corpo = parseFloat(getComputedStyle(et).fontSize);
+    et.style.fontSize = (corpo * fattore).toFixed(2) + 'px';
+  });
+}
+
 /* ───────── IL MARCHIO GRANDE, LARGO QUANTO LA RIGA SOTTO ─────────
    La riga cambia testo tra italiano e inglese, si blocca oltre i 1410px e usa
    una spaziatura diversa sui telefoni: nessun valore fisso combacia in tutti i
@@ -384,8 +418,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // subito, non alla fine dell'intro: il titolo deve avere la misura giusta
   // anche su chi salta l'intro (riduci animazioni) o ricarica a metà
   allineaMarchioHero();
+  adattaVociMenu();
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(allineaMarchioHero);   // le metriche vere arrivano col font
+    document.fonts.ready.then(() => {                // le metriche vere arrivano col font
+      allineaMarchioHero();
+      adattaVociMenu();
+    });
   }
 
   runLoader(start);
@@ -394,6 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let rt;
 window.addEventListener('resize', () => {
   allineaMarchioHero();
+  adattaVociMenu();
   clearTimeout(rt);
   rt = setTimeout(() => ScrollTrigger.refresh(), 200);
 });
