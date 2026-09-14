@@ -12,6 +12,7 @@ Modifica questo file e rilancia `python3 build.py`.
 import hashlib
 import re
 from pathlib import Path
+from urllib.parse import quote
 
 OUT = Path(__file__).parent / "site"
 
@@ -20,6 +21,34 @@ TEL = "351 572 1939"
 IG = "https://www.instagram.com/plaga.lounge/"
 MAPS = "https://www.google.com/maps/place/Plaga+Lounge/@40.1478749,18.0728846,17z"
 MENU_URL = "https://www.digitavolo.com/plaga/menu"
+
+# Il numero apre WhatsApp con il messaggio gia' pronto, non il dialer.
+WA_NUM = "393515721939"
+WA_TESTO = {"it": "Ciao, vorrei prenotare un tavolo da PLAGA. ",
+            "en": "Hello, I would like to book a table at PLAGA. "}
+
+
+def wa_href(lang):
+    return f"https://wa.me/{WA_NUM}?text={quote(WA_TESTO[lang])}"
+
+
+# Pagine legali: stanno fuori da PAGES, cosi' non entrano nel burger menu.
+LEGAL_PAGES = ["privacy", "cookie"]
+
+# Domini di terze parti contattati al caricamento di ogni pagina. Verificati
+# sul sito vero, non dedotti: se cambiano gli script, va aggiornata la cookie
+# policy che li elenca.
+TERZE_PARTI = ["fonts.googleapis.com", "fonts.gstatic.com",
+               "cdnjs.cloudflare.com", "cdn.jsdelivr.net"]
+
+# ATTENZIONE — da completare prima della pubblicazione.
+TITOLARE = {
+    "nome": "[DA COMPLETARE: ragione sociale]",
+    "piva": "[DA COMPLETARE: P. IVA / C.F.]",
+    "sede": "[DA COMPLETARE: sede legale]",
+    "email": "[DA COMPLETARE: indirizzo e-mail]",
+}
+CREATOR_URL = "https://www.instagram.com/dimana.digitalcreations/"
 
 PAGES = ["index", "sale", "giardino", "forno", "menu", "contatti"]
 
@@ -171,6 +200,22 @@ T = {
         "book": "Prenota", "where": "Dove", "follow": "Seguici",
         "addr_foot": "Piazza Umberto I<br>73044 Galatone (LE)",
         "addr_short": "Piazza Umberto I, Galatone (LE)",
+        "btn_back": "TORNA AL SITO",
+        "btn_top": "TORNA SU",
+        "call": "Chiama",
+        "call_aria": "Scrivi su WhatsApp al 351 572 1939",
+        "legal_updated_label": "Ultimo aggiornamento:",
+        "legal_nav": "Informative legali",
+        "leave": {
+            "kicker": "Collegamento esterno",
+            "titolo": "Stai per lasciare il sito di PLAGA",
+            "testo": "Il menu digitale \u00e8 ospitato da <strong>digitavolo.com</strong>, "
+                     "un servizio esterno non gestito da PLAGA, che applica proprie "
+                     "condizioni d\u2019uso e informativa sulla privacy.",
+            "url_label": "Destinazione",
+            "annulla": "Annulla",
+            "continua": "Apri digitavolo.com",
+        },
         "titles": {
             "index": "PLAGA — Ristorante · Pizzeria · Lounge Bar · Galatone",
             "sale": "Le Sale — PLAGA",
@@ -178,6 +223,8 @@ T = {
             "forno": "Il Forno — PLAGA",
             "menu": "Il Menu — PLAGA",
             "contatti": "Contatti — PLAGA",
+            "privacy": "Privacy policy — PLAGA",
+            "cookie": "Cookie policy — PLAGA",
         },
         "descs": {
             "index": "Ristorante, pizzeria e lounge bar sotto le volte in pietra leccese, con giardino a cielo aperto. Galatone, Salento.",
@@ -186,6 +233,8 @@ T = {
             "forno": "Il forno a legna di Plaga: impasti a lunga lievitazione, cereali e carbone vegetale.",
             "menu": "Antipasti, primi, secondi e pizze di Plaga a Galatone.",
             "contatti": "Prenota un tavolo da Plaga: Piazza Umberto I, Galatone (LE). Tel 351 572 1939.",
+            "privacy": "Informativa privacy del sito Plaga, Galatone (LE).",
+            "cookie": "Cookie policy e inventario tecnico del sito Plaga, Galatone (LE).",
         },
         "leads": {
             "index": "Volte in pietra leccese, un giardino a cielo aperto e un forno a legna.",
@@ -208,7 +257,8 @@ T = {
         "btn_menu": "Vedi il menu",
         "btn_drinks": "Vini, birre e cocktail",
         "note": "Prezzi in euro, coperto €2.",
-        "contact": [("Telefono", TEL, "tel:" + TEL_HREF),
+        "contact": [("WhatsApp", TEL, wa_href("it")),
+                    ("Telefono", TEL, "tel:" + TEL_HREF),
                     ("Indirizzo", "Piazza Umberto I, Galatone", MAPS),
                     ("Instagram", "@plaga.lounge", IG),
                     ("Menu digitale", "digitavolo.com", MENU_URL)],
@@ -243,6 +293,22 @@ T = {
         "book": "Book", "where": "Where", "follow": "Follow",
         "addr_foot": "Piazza Umberto I<br>73044 Galatone (LE), Italy",
         "addr_short": "Piazza Umberto I, Galatone (LE)",
+        "btn_back": "BACK TO SITE",
+        "btn_top": "BACK TO TOP",
+        "call": "Call",
+        "call_aria": "Message us on WhatsApp at +39 351 572 1939",
+        "legal_updated_label": "Last updated:",
+        "legal_nav": "Legal notices",
+        "leave": {
+            "kicker": "External link",
+            "titolo": "You are leaving the PLAGA website",
+            "testo": "The digital menu is hosted on <strong>digitavolo.com</strong>, "
+                     "an external service not operated by PLAGA, with its own terms "
+                     "of use and privacy notice.",
+            "url_label": "Destination",
+            "annulla": "Cancel",
+            "continua": "Open digitavolo.com",
+        },
         "titles": {
             "index": "PLAGA — Restaurant · Pizzeria · Lounge Bar · Galatone",
             "sale": "The Rooms — PLAGA",
@@ -250,6 +316,8 @@ T = {
             "forno": "The Oven — PLAGA",
             "menu": "The Menu — PLAGA",
             "contatti": "Contact — PLAGA",
+            "privacy": "Privacy policy — PLAGA",
+            "cookie": "Cookie policy — PLAGA",
         },
         "descs": {
             "index": "Restaurant, pizzeria and lounge bar under Lecce stone vaults, with an open-air garden. Galatone, Salento, Puglia.",
@@ -258,6 +326,8 @@ T = {
             "forno": "The wood-fired oven at Plaga: long-fermented dough, wholegrain and charcoal bases.",
             "menu": "Starters, pasta, mains and pizza at Plaga in Galatone, Puglia.",
             "contatti": "Book a table at Plaga: Piazza Umberto I, Galatone (LE), Italy. Tel +39 351 572 1939.",
+            "privacy": "Privacy notice for the Plaga website, Galatone (LE), Italy.",
+            "cookie": "Cookie policy and technical inventory of the Plaga website.",
         },
         "leads": {
             "index": "Lecce stone vaults, an open-air garden and a wood-fired oven.",
@@ -280,7 +350,8 @@ T = {
         "btn_menu": "See the menu",
         "btn_drinks": "Wines, beers and cocktails",
         "note": "Prices in euro, €2 cover charge.",
-        "contact": [("Phone", TEL, "tel:" + TEL_HREF),
+        "contact": [("WhatsApp", TEL, wa_href("en")),
+                    ("Phone", TEL, "tel:" + TEL_HREF),
                     ("Address", "Piazza Umberto I, Galatone", MAPS),
                     ("Instagram", "@plaga.lounge", IG),
                     ("Digital menu", "digitavolo.com", MENU_URL)],
@@ -497,7 +568,8 @@ def overlay(lang, name):
     </ul>
     <div class="menuFoot">
       <div class="menuFoot__col"><span class="menuFoot__k">{t["book"]}</span>
-        <a href="tel:{TEL_HREF}" class="menuFoot__v">{TEL}</a></div>
+        <a href="{wa_href(lang)}" target="_blank" rel="noopener" class="menuFoot__v" aria-label="{t["call_aria"]}">{TEL}</a>
+        <a href="tel:{TEL_HREF}" class="menuFoot__call">{t["call"]}</a></div>
       <div class="menuFoot__col"><span class="menuFoot__k">{t["where"]}</span>
         <a href="{MAPS}" target="_blank" rel="noopener" class="menuFoot__v">{t["addr_short"]}</a></div>
       <div class="menuFoot__col"><span class="menuFoot__k">{t["follow"]}</span>
@@ -522,20 +594,38 @@ def header(lang, name, light=False):
 {overlay(lang, name)}"""
 
 
-def footer(lang):
+def footer(lang, sign=True):
+    """Il footer, identico su tutte le pagine.
+
+    L'insegna fa da fondo sotto un velo scuro. Lì il marchio
+    PLAGA e la tagline sono gia' dentro la foto, quindi non si ripetono in
+    sovrimpressione: restano il payoff e la firma. La foto e' decorativa —
+    alt vuoto e aria-hidden — perche' il marchio e' gia' testo altrove.
+    """
     t = T[lang]
-    return f"""<footer class="foot">
+    bg = (f'<div class="foot__bg" aria-hidden="true">'
+          f'{picture(_root(lang), "insegna", "")}</div>') if sign else ""
+    return f"""<footer class="foot{' foot--sign' if sign else ''}">
+  {bg}
   <div class="foot__grid">
     <div class="foot__col"><span class="foot__k">{t["book"]}</span>
-      <a href="tel:{TEL_HREF}" class="foot__v">{TEL}</a></div>
+      <a href="{wa_href(lang)}" target="_blank" rel="noopener" class="foot__v" aria-label="{t["call_aria"]}">{TEL}</a>
+      <a href="tel:{TEL_HREF}" class="foot__call">{t["call"]}</a></div>
     <div class="foot__col"><span class="foot__k">{t["where"]}</span>
       <a href="{MAPS}" target="_blank" rel="noopener" class="foot__v">{t["addr_foot"]}</a></div>
     <div class="foot__col"><span class="foot__k">{t["follow"]}</span>
       <a href="{IG}" target="_blank" rel="noopener" class="foot__v">@plaga.lounge</a></div>
   </div>
+  <div class="foot__totop">
+    <button class="btn-top" onclick="window.scrollTo(0, 0)">{t["btn_top"]}</button>
+  </div>
   <div class="foot__bottom">
-    <span class="foot__mark">{wordmark("footMark")}<em>{TAGLINE}</em></span>
-    <p>{t["tagline"]}</p>
+    <span class="foot__mark">{"" if sign else wordmark("footMark")}<em>{TAGLINE}</em></span>
+    <div class="foot__right">
+      {"" if sign else f'<p class="foot__tagline">{tagline_links(lang)}</p>'}
+      <p class="foot__credit">created by <a href="{CREATOR_URL}" target="_blank" rel="noopener">Dimana.DigitalCreations</a></p>
+      <nav class="foot__legal" aria-label="{t["legal_nav"]}"><a href="privacy.html">Privacy</a><a href="cookie.html">Cookie</a></nav>
+    </div>
   </div>
 </footer>"""
 
@@ -573,6 +663,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 {body}
 </main>
 {footer(lang)}
+{leave_dialog(lang)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
@@ -586,6 +677,246 @@ def page(lang, name, body, light_nav=False, loader=False):
 
 
 # ═══════════════════════════════ PAGINE ═══════════════════════════════
+
+# ═══════════════════════════ TESTI LEGALI ═══════════════════════════
+# Adattati dalle informative di Bagno Maria: stessa impostazione, stessa
+# struttura, stesso taglio. Le differenze non sono di stile ma di fatto —
+# PLAGA non ha motore di prenotazione né selezione di date, ha il menu
+# digitale esterno di digitavolo, e soprattutto carica caratteri e librerie
+# da terze parti a ogni apertura di pagina. Bagno Maria serviva tutto in
+# locale e poteva dichiararlo; qui no, e la cookie policy lo elenca.
+
+LEGAL_UPDATED = {"it": "14 settembre 2026", "en": "14 September 2026"}
+
+LEGAL = {
+    "it": {
+        "privacy": {
+            "titolo": "Privacy policy",
+            "kicker": "Informativa ai sensi dell’art. 13 GDPR",
+            "intro": "Questa informativa descrive i trattamenti collegati alla consultazione del sito, alle richieste di contatto e alla prenotazione di un tavolo.",
+            "indice": [("titolare", "Titolare"), ("dati-finalita", "Dati e finalità"),
+                       ("servizi-esterni", "Servizi esterni"), ("destinatari", "Destinatari"),
+                       ("conservazione", "Conservazione"), ("diritti", "Diritti")],
+            "sezioni": [
+                ("titolare", "Titolare del trattamento", """
+<p>Il titolare del trattamento è <strong>{nome}</strong>, P. IVA e C.F. <strong>{piva}</strong>, con sede legale in {sede}. PLAGA ha sede operativa in Piazza Umberto I, 73044 Galatone (LE).</p>
+<div class="legal__note">Per richieste relative alla protezione dei dati: <a href="mailto:{email}"><strong>{email}</strong></a> oppure <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
+                ("dati-finalita", "Dati trattati, finalità e basi giuridiche", """
+<h3>Dati di navigazione</h3>
+<p>I sistemi che rendono disponibile il sito possono registrare dati tecnici quali indirizzo IP, data e ora, pagina richiesta, esito della risposta, browser e sistema operativo. Sono utilizzati per erogare e proteggere il sito, diagnosticare anomalie e prevenire abusi.</p>
+<div class="legal__note"><strong>Base giuridica:</strong> legittimo interesse del titolare alla sicurezza e al corretto funzionamento del servizio, art. 6, par. 1, lett. f) GDPR.</div>
+<h3>Dati inviati volontariamente</h3>
+<p>Quando l’utente scrive su WhatsApp, telefona o invia un’e-mail, i dati comunicati sono trattati per rispondere, fornire informazioni e gestire la prenotazione di un tavolo, nel rapporto precontrattuale o contrattuale che ne deriva. Il sito non contiene moduli di contatto: non raccoglie dati in proprio e non ne invia automaticamente.</p>
+<div class="legal__note"><strong>Base giuridica:</strong> misure precontrattuali o contratto, art. 6, par. 1, lett. b) GDPR; adempimento di obblighi legali, lett. c); legittimo interesse alla gestione e tutela del rapporto, lett. f), quando applicabile.</div>"""),
+                ("servizi-esterni", "Contatti e servizi esterni", """
+<h3>Servizi attivati dall’utente</h3>
+<p>Google Maps, Instagram e WhatsApp non sono incorporati nella pagina. Il collegamento al relativo fornitore avviene soltanto dopo il click dell’utente, che visita un servizio distinto soggetto alla propria informativa. I messaggi WhatsApp ed e-mail vengono effettivamente inviati solo mediante un’ulteriore azione nell’applicazione scelta dall’utente.</p>
+<p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Prima di aprirlo il sito mostra un avviso che indica la destinazione e richiede una conferma esplicita. Dal momento dell’apertura il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
+<h3>Risorse caricate automaticamente</h3>
+<p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google) e le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
+<div class="legal__note"><strong>Base giuridica:</strong> legittimo interesse del titolare alla resa tipografica e al corretto funzionamento del sito, art. 6, par. 1, lett. f) GDPR.</div>"""),
+                ("destinatari", "Destinatari e trasferimenti", """
+<p>Possono accedere ai dati, nei limiti delle rispettive funzioni, personale autorizzato, consulenti e fornitori tecnici o di hosting che operano per conto del titolare. I dati possono inoltre essere comunicati quando richiesto dalla legge o da un’autorità competente.</p>
+<p>Il sito non invia dati a servizi analytics, pubblicitari o social. I trasferimenti collegati al provider di hosting, ai fornitori delle risorse tecniche indicate sopra o ai servizi esterni scelti dall’utente devono avvenire nel rispetto degli artt. 44 e seguenti del GDPR, sulla base di una decisione di adeguatezza o di garanzie appropriate quando necessarie.</p>"""),
+                ("conservazione", "Conservazione", """
+<p>I dati tecnici sono conservati per il tempo strettamente necessario all’erogazione, alla sicurezza e alla diagnosi del servizio, salvo esigenze di accertamento di abusi o obblighi di legge.</p>
+<p>I dati delle richieste sono conservati per il tempo necessario a rispondere e gestire il rapporto; quelli relativi a prenotazioni, contratti e documenti amministrativi seguono i termini previsti dalla legge.</p>"""),
+                ("diritti", "Diritti dell’interessato", """
+<p>Nei casi previsti, l’interessato può chiedere accesso, rettifica, cancellazione, limitazione, portabilità e opposizione al trattamento ai sensi degli artt. 15–22 GDPR. Le richieste possono essere inviate ai contatti del titolare indicati sopra.</p>
+<div class="legal__note">È inoltre possibile proporre reclamo al <a href="https://www.garanteprivacy.it/" target="_blank" rel="noopener"><strong>Garante per la protezione dei dati personali</strong></a> o all’autorità di controllo competente nello Stato SEE in cui si vive o lavora, o nel quale si ritiene sia avvenuta la violazione.</div>"""),
+                (None, "Cookie e aggiornamenti", """
+<p>Per il dettaglio delle tecnologie utilizzate consulta la <a href="cookie.html"><strong>cookie policy</strong></a>. L’informativa potrà essere aggiornata quando cambiano servizi, finalità o obblighi normativi; la data in alto identifica la versione corrente.</p>"""),
+            ],
+        },
+        "cookie": {
+            "titolo": "Cookie policy",
+            "kicker": "Tecnologie presenti nel sito",
+            "intro": "Alla data dell’ultima verifica il sito non installa cookie, non utilizza strumenti analytics, pubblicitari o di profilazione e non salva nulla nel browser. Richiede però caratteri e librerie a fornitori terzi a ogni apertura di pagina.",
+            "indice": [("scelta-banner", "Scelta del banner"), ("inventario", "Inventario"),
+                       ("servizi", "Servizi esterni"), ("aggiornamenti", "Aggiornamenti"),
+                       ("riferimenti", "Riferimenti")],
+            "sezioni": [
+                ("scelta-banner", "Perché non compare un banner", """
+<div class="legal__note"><strong>Configurazione attuale: nessun consenso richiesto.</strong></div>
+<p>Non sono presenti cookie né strumenti facoltativi di misurazione o profilazione. Per questo un banner “Accetta/Rifiuta” non offrirebbe una scelta reale. Quando sono utilizzati soltanto strumenti tecnici, il Garante prevede che l’informazione possa essere resa nella home page o nell’informativa generale.</p>
+<p>Le richieste ai fornitori di caratteri e librerie descritte sotto non sono cookie e non leggono né scrivono informazioni sul dispositivo. Comportano però la comunicazione dell’indirizzo IP a terzi, ed è per questo che sono elencate apertamente invece di essere taciute.</p>"""),
+                ("inventario", "Inventario tecnico", """
+<ul class="legal__inv">
+  <li><strong>Cookie di prima parte</strong>Nessuno impostato dall’applicazione.</li>
+  <li><strong>Cookie di terza parte</strong>Nessuno.</li>
+  <li><strong>LocalStorage e SessionStorage</strong>Non utilizzati. La lingua non è una preferenza salvata: italiano e inglese sono pagine distinte, con indirizzi propri.</li>
+  <li><strong>IndexedDB</strong>Non utilizzato.</li>
+  <li><strong>Analytics, pixel e tag manager</strong>Non presenti.</li>
+  <li><strong>Iframe</strong>Nessuno caricato all’apertura della pagina.</li>
+  <li><strong>Immagini e video</strong>Serviti dallo stesso dominio del sito.</li>
+  <li><strong>Caratteri tipografici</strong>Archivo, richiesto a <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google) all’apertura di ogni pagina.</li>
+  <li><strong>Librerie di animazione</strong>GSAP da <code>cdnjs.cloudflare.com</code> (Cloudflare) e Lenis da <code>cdn.jsdelivr.net</code>, richieste all’apertura di ogni pagina.</li>
+</ul>
+<div class="legal__note">I normali log del server non sono cookie e non leggono informazioni dal dispositivo; possono comunque contenere dati di navigazione e sono descritti nella <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
+                ("servizi", "Collegamenti a servizi esterni", """
+<p>I pulsanti verso Google Maps, Instagram e WhatsApp sono normali collegamenti. Prima del click non viene effettuata alcuna richiesta ai relativi domini: non ci sono mappe, pixel, iframe o script dei fornitori. Aprendo il collegamento si visita un servizio distinto, che può utilizzare cookie secondo la propria informativa.</p>
+<p>Il menu digitale su <strong>digitavolo.com</strong> è un servizio esterno. Il sito non vi effettua alcuna richiesta finché l’utente non apre il collegamento e non conferma l’avviso di uscita. Da quel momento il fornitore può utilizzare tecnologie proprie secondo la sua informativa. Chi preferisce non aprirlo può consultare il menu nella pagina <a href="menu.html"><strong>Il Menu</strong></a> di questo sito.</p>"""),
+                ("aggiornamenti", "Aggiornamenti della policy", """
+<p>Se in futuro il sito adotterà nuovi servizi che utilizzano cookie o altre tecnologie facoltative, questa informativa verrà aggiornata prima della loro attivazione. Quando richiesto, tali servizi saranno disponibili solo dopo una scelta esplicita dell’utente.</p>"""),
+                ("riferimenti", "Riferimenti ufficiali", """
+<ul class="legal__refs">
+  <li><a href="https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/9677876" target="_blank" rel="noopener">Garante — Linee guida cookie e altri strumenti di tracciamento, 10 giugno 2021</a></li>
+  <li><a href="https://www.garanteprivacy.it/faq/cookie" target="_blank" rel="noopener">Garante — FAQ Cookie</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj?locale=it" target="_blank" rel="noopener">EUR-Lex — Regolamento (UE) 2016/679</a></li>
+</ul>"""),
+            ],
+        },
+    },
+    "en": {
+        "privacy": {
+            "titolo": "Privacy policy",
+            "kicker": "Information notice under art. 13 GDPR",
+            "intro": "This notice describes the processing connected with browsing the site, contact requests and table bookings.",
+            "indice": [("titolare", "Controller"), ("dati-finalita", "Data and purposes"),
+                       ("servizi-esterni", "External services"), ("destinatari", "Recipients"),
+                       ("conservazione", "Retention"), ("diritti", "Rights")],
+            "sezioni": [
+                ("titolare", "Data controller", """
+<p>The data controller is <strong>{nome}</strong>, VAT and tax code <strong>{piva}</strong>, registered office at {sede}. PLAGA operates from Piazza Umberto I, 73044 Galatone (LE), Italy.</p>
+<div class="legal__note">For data protection requests: <a href="mailto:{email}"><strong>{email}</strong></a> or <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
+                ("dati-finalita", "Data processed, purposes and legal bases", """
+<h3>Browsing data</h3>
+<p>The systems that make the site available may record technical data such as IP address, date and time, page requested, response status, browser and operating system. This data is used to deliver and protect the site, diagnose faults and prevent abuse.</p>
+<div class="legal__note"><strong>Legal basis:</strong> the controller’s legitimate interest in the security and correct operation of the service, art. 6(1)(f) GDPR.</div>
+<h3>Data submitted voluntarily</h3>
+<p>When a user writes on WhatsApp, calls or sends an e-mail, the data communicated is processed to reply, provide information and handle a table booking, within the resulting pre-contractual or contractual relationship. The site contains no contact forms: it collects no data of its own and sends none automatically.</p>
+<div class="legal__note"><strong>Legal basis:</strong> pre-contractual measures or contract, art. 6(1)(b) GDPR; compliance with legal obligations, (c); legitimate interest in managing and protecting the relationship, (f), where applicable.</div>"""),
+                ("servizi-esterni", "Contacts and external services", """
+<h3>Services activated by the user</h3>
+<p>Google Maps, Instagram and WhatsApp are not embedded in the page. The connection to the relevant provider occurs only after the user clicks, thereby visiting a separate service subject to its own notice. WhatsApp and e-mail messages are actually sent only through a further action in the application chosen by the user.</p>
+<p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. Before opening it the site displays a notice stating the destination and requires explicit confirmation. From the moment it opens, the provider may receive technical connection data and operates under its own notice.</p>
+<h3>Resources loaded automatically</h3>
+<p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google) and animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
+<div class="legal__note"><strong>Legal basis:</strong> the controller’s legitimate interest in the typographic rendering and correct operation of the site, art. 6(1)(f) GDPR.</div>"""),
+                ("destinatari", "Recipients and transfers", """
+<p>Authorised staff, consultants and technical or hosting providers acting on the controller’s behalf may access the data within the limits of their respective functions. Data may also be disclosed where required by law or by a competent authority.</p>
+<p>The site sends no data to analytics, advertising or social services. Transfers connected with the hosting provider, with the providers of the technical resources listed above or with external services chosen by the user must comply with arts. 44 ff. GDPR, on the basis of an adequacy decision or appropriate safeguards where necessary.</p>"""),
+                ("conservazione", "Retention", """
+<p>Technical data is kept for as long as strictly necessary to deliver, secure and diagnose the service, save for the need to establish abuse or for legal obligations.</p>
+<p>Request data is kept for as long as necessary to reply and manage the relationship; data relating to bookings, contracts and administrative documents follows the periods laid down by law.</p>"""),
+                ("diritti", "Rights of the data subject", """
+<p>Where applicable, the data subject may request access, rectification, erasure, restriction, portability and object to processing under arts. 15–22 GDPR. Requests may be sent to the controller’s contacts given above.</p>
+<div class="legal__note">It is also possible to lodge a complaint with the <a href="https://www.garanteprivacy.it/" target="_blank" rel="noopener"><strong>Italian Data Protection Authority</strong></a> or with the supervisory authority of the EEA State where you live or work, or where you believe the infringement occurred.</div>"""),
+                (None, "Cookies and updates", """
+<p>For details of the technologies used see the <a href="cookie.html"><strong>cookie policy</strong></a>. This notice may be updated when services, purposes or legal obligations change; the date at the top identifies the current version.</p>"""),
+            ],
+        },
+        "cookie": {
+            "titolo": "Cookie policy",
+            "kicker": "Technologies present on the site",
+            "intro": "As at the last check the site sets no cookies, uses no analytics, advertising or profiling tools and stores nothing in the browser. It does, however, request typefaces and libraries from third-party providers each time a page opens.",
+            "indice": [("scelta-banner", "Why no banner"), ("inventario", "Inventory"),
+                       ("servizi", "External services"), ("aggiornamenti", "Updates"),
+                       ("riferimenti", "References")],
+            "sezioni": [
+                ("scelta-banner", "Why no banner appears", """
+<div class="legal__note"><strong>Current configuration: no consent required.</strong></div>
+<p>There are no cookies and no optional measurement or profiling tools. An “Accept/Reject” banner would therefore offer no real choice. Where only technical tools are used, the Italian Data Protection Authority allows the information to be given on the home page or in the general notice.</p>
+<p>The requests to typeface and library providers described below are not cookies and neither read nor write information on the device. They do, however, disclose the IP address to third parties, which is why they are listed openly rather than passed over.</p>"""),
+                ("inventario", "Technical inventory", """
+<ul class="legal__inv">
+  <li><strong>First-party cookies</strong>None set by the application.</li>
+  <li><strong>Third-party cookies</strong>None.</li>
+  <li><strong>LocalStorage and SessionStorage</strong>Not used. Language is not a stored preference: Italian and English are separate pages with their own addresses.</li>
+  <li><strong>IndexedDB</strong>Not used.</li>
+  <li><strong>Analytics, pixels and tag managers</strong>Not present.</li>
+  <li><strong>Iframes</strong>None loaded when the page opens.</li>
+  <li><strong>Images and video</strong>Served from the site’s own domain.</li>
+  <li><strong>Typefaces</strong>Archivo, requested from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google) whenever a page opens.</li>
+  <li><strong>Animation libraries</strong>GSAP from <code>cdnjs.cloudflare.com</code> (Cloudflare) and Lenis from <code>cdn.jsdelivr.net</code>, requested whenever a page opens.</li>
+</ul>
+<div class="legal__note">Ordinary server logs are not cookies and read no information from the device; they may nonetheless contain browsing data and are described in the <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
+                ("servizi", "Links to external services", """
+<p>The buttons to Google Maps, Instagram and WhatsApp are ordinary links. No request is made to those domains before the click: there are no maps, pixels, iframes or provider scripts. Opening the link takes you to a separate service, which may use cookies under its own notice.</p>
+<p>The digital menu on <strong>digitavolo.com</strong> is an external service. The site makes no request to it until the user opens the link and confirms the exit notice. From that point the provider may use its own technologies under its own notice. Anyone who prefers not to open it can read the menu on the <a href="menu.html"><strong>The Menu</strong></a> page of this site.</p>"""),
+                ("aggiornamenti", "Policy updates", """
+<p>If the site adopts new services in future that use cookies or other optional technologies, this notice will be updated before they are activated. Where required, such services will be available only after an explicit choice by the user.</p>"""),
+                ("riferimenti", "Official references", """
+<ul class="legal__refs">
+  <li><a href="https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/9677876" target="_blank" rel="noopener">Garante — Guidelines on cookies and other tracking tools, 10 June 2021</a></li>
+  <li><a href="https://www.garanteprivacy.it/faq/cookie" target="_blank" rel="noopener">Garante — Cookie FAQ</a></li>
+  <li><a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener">EUR-Lex — Regulation (EU) 2016/679</a></li>
+</ul>"""),
+            ],
+        },
+    },
+}
+
+
+def build_legal(lang, quale):
+    """Compone una pagina legale dai testi in LEGAL."""
+    d = LEGAL[lang][quale]
+    campi = dict(TITOLARE, wa=wa_href(lang), tel=TEL)
+    indice = "".join(f'<a href="#{a}">{etichetta}</a>'
+                     for a, etichetta in d["indice"])
+    sezioni = []
+    for i, (ancora, titolo, corpo) in enumerate(d["sezioni"], start=1):
+        attr = f' id="{ancora}"' if ancora else ""
+        sezioni.append(
+            f'<section class="legal__section"{attr}>'
+            f'<span class="legal__num">{i:02d}</span>'
+            f'<div class="legal__copy"><h2>{titolo}</h2>'
+            f'{corpo.format(**campi)}</div></section>')
+    return f"""<section class="pageHead">
+  <p class="legal__kicker">{d["kicker"]}</p>
+  <h1 class="pageTitle">{d["titolo"]}</h1>
+  <p class="lead">{d["intro"]}</p>
+  <p class="legal__updated">{T[lang]["legal_updated_label"]} {LEGAL_UPDATED[lang]}</p>
+</section>
+
+<nav class="legal__index" aria-label="{d["titolo"]}">{indice}</nav>
+
+<div class="legal">{"".join(sezioni)}</div>
+
+<section class="cta">
+  <a class="btn" href="index.html"><span>{T[lang]["btn_back"]}</span></a>
+</section>"""
+
+
+def tagline_links(lang):
+    """La tagline con le tre voci cliccabili.
+
+    Ristorante e Pizzeria portano alla pagina Menu del sito; Lounge Bar va
+    dritto al menu digitale su digitavolo. Le voci si ricavano dalla tagline
+    gia' tradotta, cosi' il testo resta scritto una volta sola in T.
+
+    `menu.html` senza prefisso vale in entrambe le lingue: ogni lingua ha la
+    propria menu.html nella stessa cartella delle pagine che la linkano.
+    """
+    parts = [p.strip() for p in T[lang]["tagline"].split("<i>·</i>")]
+    assert len(parts) == 3, f"tagline inattesa in {lang}: {T[lang]['tagline']}"
+    ristorante, pizzeria, lounge = parts
+    return (f'<a href="menu.html">{ristorante}</a> <i>·</i> '
+            f'<a href="menu.html">{pizzeria}</a> <i>·</i> '
+            f'<a href="{MENU_URL}" target="_blank" rel="noopener">{lounge}</a>')
+
+
+def leave_dialog(lang):
+    """Avviso prima di aprire digitavolo.
+
+    Non dice all\u2019utente che il collegamento e\u2019 sicuro — non e\u2019 una cosa che
+    il sito possa garantire per conto di terzi. Dice cosa e\u2019 digitavolo,
+    che non e\u2019 gestito da PLAGA, e mostra l\u2019indirizzo per intero.
+    """
+    d = T[lang]["leave"]
+    return f"""<dialog class="leave" id="leaveDialog" aria-labelledby="leaveTitle">
+  <div class="leave__box">
+    <p class="leave__kicker">{d["kicker"]}</p>
+    <h2 class="leave__title" id="leaveTitle">{d["titolo"]}</h2>
+    <p class="leave__text">{d["testo"]}</p>
+    <p class="leave__dest"><span>{d["url_label"]}</span><code id="leaveUrl"></code></p>
+    <div class="leave__actions">
+      <button type="button" class="leave__btn leave__btn--ghost" id="leaveCancel">{d["annulla"]}</button>
+      <button type="button" class="leave__btn" id="leaveGo">{d["continua"]}</button>
+    </div>
+  </div>
+</dialog>"""
+
 
 def _root(lang):
     return "" if T[lang]["dir"] == "" else "../"
@@ -607,7 +938,7 @@ def build_home(lang):
   <div class="hero__scrim"></div>
   <div class="hero__content">
     <h1 class="hero__word">PLAGA</h1>
-    <p class="hero__sub">{t["tagline"]}</p>
+    <p class="hero__sub">{tagline_links(lang)}</p>
   </div>
 </section>
 
@@ -615,7 +946,7 @@ def build_home(lang):
   <p class="lead">{t["leads"]["index"]}</p>
 </section>
 
-<section class="cards">{html_cards}</section>"""
+<section class="cards" id="esplora">{html_cards}</section>"""
 
 
 def _fig(lang, cls, img, cap):
@@ -639,6 +970,10 @@ def build_sale(lang):
   {_fig(lang, "g--half", "ingresso", c["ingresso"])}
   {_fig(lang, "g--tall", "sala-volte-v", c["stelle"])}
   {_fig(lang, "g--wide", "tamburelli", c["tamburelli"])}
+</section>
+
+<section class="cta">
+  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
@@ -658,6 +993,10 @@ def build_giardino(lang):
   {_fig(lang, "g--half", "giardino-cactus", c["luci"])}
   {_fig(lang, "g--half", "giardino-lampada-v", c["due"])}
   {_fig(lang, "g--tall", "giardino-tavolata-v", c["coperti"])}
+</section>
+
+<section class="cta">
+  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
@@ -688,6 +1027,7 @@ def build_forno(lang):
 <section class="cta">
   <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
@@ -724,6 +1064,7 @@ def build_menu(lang):
   <div class="cta">
     <a class="btn" href="{MENU_URL}" target="_blank" rel="noopener"><span>{t["btn_drinks"]}</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
     <p class="note">{t["note"]}</p>
   </div>
 </section>"""
@@ -743,7 +1084,9 @@ def build_contatti(lang):
 
 <section class="contact">{rows}</section>
 
-<section class="bleed">{picture(_root(lang), "insegna", t["alt"]["insegna"])}</section>"""
+<section class="cta">
+  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+</section>"""
 
 
 BUILDERS = {"index": build_home, "sale": build_sale, "giardino": build_giardino,
@@ -755,4 +1098,7 @@ if __name__ == "__main__":
         for name in PAGES:
             page(lang, name, BUILDERS[name](lang),
                  light_nav=(name == "index"), loader=(name == "index"))
-        print(f"{lang}: {len(PAGES)} pagine in {T[lang]['dir'] or 'site'}/")
+        for quale in LEGAL_PAGES:
+            page(lang, quale, build_legal(lang, quale))
+        print(f"{lang}: {len(PAGES) + len(LEGAL_PAGES)} pagine in "
+              f"{T[lang]['dir'] or 'site'}/")
