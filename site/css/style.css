@@ -77,7 +77,8 @@ i{font-style:normal}
   line-height:.86;
 }
 
-.hero__word{font-size:clamp(4rem,17vw,17rem)}
+/* valore di partenza vicino al giusto: lo rifinisce allineaMarchioHero() */
+.hero__word{font-size:clamp(3.4rem,10.7vw,9.5rem)}
 .pageTitle{font-size:clamp(3rem,11vw,10rem)}
 
 .lead{
@@ -616,6 +617,9 @@ a,button{-webkit-tap-highlight-color:transparent}
 }
 
 @media (max-width:640px){
+  /* la riga sotto il marchio: meno spaziatura, altrimenti sborda */
+  .hero__sub{font-size:1rem;letter-spacing:.06em;line-height:1.9}
+
   /* bersagli grandi abbastanza da centrare col pollice */
   .foot__v,.menuFoot__v,.contact__row,.nav__brand{min-height:44px}
   .foot__v,.menuFoot__v{display:inline-flex;align-items:center}

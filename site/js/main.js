@@ -63,6 +63,46 @@ function reveals() {
   });
 }
 
+/* ───────── IL MARCHIO GRANDE, LARGO QUANTO LA RIGA SOTTO ─────────
+   La riga cambia testo tra italiano e inglese, si blocca oltre i 1410px e usa
+   una spaziatura diversa sui telefoni: nessun valore fisso combacia in tutti i
+   casi. Quindi si misura il testo davvero disegnato.
+
+   Serve un Range: i due elementi sono blocchi, e getBoundingClientRect()
+   restituirebbe la larghezza della colonna, non quella delle lettere.
+------------------------------------------------------------------------ */
+
+function larghezzaTesto(el) {
+  const r = document.createRange();
+  r.selectNodeContents(el);
+  return r.getBoundingClientRect();
+}
+
+function allineaMarchioHero() {
+  const parola = document.querySelector('.hero__word');
+  const riga = document.querySelector('.hero__sub');
+  if (!parola || !riga) return;
+
+  const rigaRect = larghezzaTesto(riga);
+  const interlinea = parseFloat(getComputedStyle(riga).lineHeight) || 0;
+
+  const corpo = parseFloat(getComputedStyle(parola).fontSize);
+  const larga = larghezzaTesto(parola).width;
+  if (!corpo || !larga) return;
+
+  // Sui telefoni la riga va a capo: la sua larghezza non è più un riferimento.
+  // Lì il marchio si allinea alla colonna, così il bordo destro resta a filo.
+  let obiettivo = rigaRect.width;
+  if (interlinea && rigaRect.height > interlinea * 1.5) {
+    const col = parola.parentElement;
+    const cs = getComputedStyle(col);
+    obiettivo = col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  }
+
+  // il rapporto larghezza/corpo è costante, quindi il calcolo si autocorregge
+  parola.style.fontSize = (obiettivo / (larga / corpo)).toFixed(2) + 'px';
+}
+
 /* ─────────────────────── DISEGNO DEL MARCHIO ───────────────────────
    Un tracciato solo contiene tutte le lettere (e i loro occhielli) come
    sottotracciati. Il tratteggio SVG però riparte a ogni sottotracciato:
@@ -340,11 +380,20 @@ function start() {
 document.addEventListener('DOMContentLoaded', () => {
   initLenis();
   burgerMenu();
+
+  // subito, non alla fine dell'intro: il titolo deve avere la misura giusta
+  // anche su chi salta l'intro (riduci animazioni) o ricarica a metà
+  allineaMarchioHero();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(allineaMarchioHero);   // le metriche vere arrivano col font
+  }
+
   runLoader(start);
 });
 
 let rt;
 window.addEventListener('resize', () => {
+  allineaMarchioHero();
   clearTimeout(rt);
   rt = setTimeout(() => ScrollTrigger.refresh(), 200);
 });
