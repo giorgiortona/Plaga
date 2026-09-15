@@ -594,13 +594,14 @@ def header(lang, name, light=False):
 {overlay(lang, name)}"""
 
 
-def footer(lang, sign=True):
+def footer(lang, sign=False):
     """Il footer, identico su tutte le pagine.
 
-    L'insegna fa da fondo sotto un velo scuro. Lì il marchio
-    PLAGA e la tagline sono gia' dentro la foto, quindi non si ripetono in
-    sovrimpressione: restano il payoff e la firma. La foto e' decorativa —
-    alt vuoto e aria-hidden — perche' il marchio e' gia' testo altrove.
+    Con `sign` l'insegna fa da fondo sotto un velo scuro, e il marchio non si
+    ripete in sovrimpressione perche' e' gia' dentro la foto. Ma il velo non
+    basta a spegnerla: la PLAGA della foto resta leggibile dietro ai contatti
+    e il piede perde il suo marchio vettoriale. Quindi di norma sta spento:
+    fondo pieno, wordmark a sinistra, payoff a destra.
     """
     t = T[lang]
     bg = (f'<div class="foot__bg" aria-hidden="true">'
