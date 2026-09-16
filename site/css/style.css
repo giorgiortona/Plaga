@@ -38,6 +38,28 @@
 
 html{-webkit-text-size-adjust:100%}
 
+/* ─────────────────────── LA TRAMA DI FONDO ───────────────────────
+   Il marchio ripetuto, verde, quasi invisibile. Lo strato è più largo
+   della finestra e ruotato: così le righe corrono in diagonale e i bordi
+   tagliati restano fuori campo. La piastrella invece non è ruotata —
+   ruotata non si incastrerebbe più con se stessa.
+
+   Sta fissa: scorrendo il contenuto passa sopra la trama, che resta
+   ferma come una filigrana nella carta. E sta solo nella pagina iniziale:
+   sotto ai titoloni delle altre diventava rumore.
+------------------------------------------------------------------- */
+body.is-home::before{
+  content:'';
+  position:fixed;inset:-30%;
+  z-index:-1;
+  background:url("../assets/img/trama-plaga.svg") repeat;
+  background-size:clamp(300px,26vw,440px) auto;
+  transform:rotate(-16deg);
+  /* la sola manopola da girare se la vuoi più o meno presente */
+  opacity:.045;
+  pointer-events:none;
+}
+
 body{
   background:var(--skin-050);
   color:var(--ink);
@@ -67,6 +89,7 @@ i{font-style:normal}
 .hero__word,
 .pageTitle,
 .card__title,
+.apertura,
 .menuNav__label,
 .foot__mark,
 .loader__mark{
@@ -228,6 +251,7 @@ figcaption i{color:var(--green-500)}
 .menuOverlay__inner{
   position:relative;height:100%;
   overflow-y:auto;                      /* rete di sicurezza sugli schermi bassi */
+  overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
   display:flex;flex-direction:column;justify-content:center;
   padding:clamp(4rem,8vh,6rem) var(--pad) clamp(2rem,5vh,3rem);
@@ -250,10 +274,11 @@ figcaption i{color:var(--green-500)}
 }
 .menuNav__label{
   display:block;
-  /* il termine in vh entra in gioco solo sulle finestre basse: su uno
-     schermo alto resta il corpo pieno, altrimenti la lista sfora e la
-     prima voce risale sotto l'intestazione */
-  font-size:clamp(2.3rem,min(7.4vw,10vh),6.1rem);
+  /* Il termine in vh entra in gioco solo quando serve: su uno schermo alto
+     resta il corpo pieno. Ed è diviso per il numero di voci — che il
+     generatore scrive in --voci — perché con otto sezioni la stessa misura
+     che stava comoda con sei farebbe sforare la lista. */
+  font-size:clamp(2.1rem,min(7.4vw,calc(57vh / var(--voci,6))),6.1rem);
   line-height:.98;
   color:var(--ink);
   transition:transform .5s var(--ease),color .4s var(--ease);
@@ -314,9 +339,23 @@ figcaption i{color:var(--green-500)}
 
 /* ───────────────────────────── SEZIONI ───────────────────────────── */
 
+/* La riga d'apertura della home. È l'unico punto del sito in un carattere
+   diverso: il grottesco dice tutto il resto, qui serviva una voce più
+   antica — le volte sono in pietra del Seicento. Poco spazio sotto: questa
+   riga e il manifesto che si scrive vanno letti come una cosa sola. */
 .intro{
-  padding:clamp(4rem,10vh,7rem) var(--pad);
+  padding:clamp(3.5rem,8vh,5.5rem) var(--pad) clamp(.6rem,1.6vh,1.1rem);
   max-width:var(--maxw);margin-inline:auto;
+}
+.apertura{
+  /* corpo e misura suoi: il trattamento da display arriva dal gruppo sopra,
+     lo stesso delle voci del burger menu */
+  /* 26ch la manda su tre righe invece di cinque: con le maiuscole strette
+     una misura corta la spezzetta e il centrato diventa frastagliato */
+  font-size:clamp(1.75rem,4vw,3.4rem);
+  line-height:.94;
+  max-width:26ch;margin-inline:auto;
+  text-align:center;
 }
 .intro .lead{max-width:30ch;font-size:clamp(1.5rem,3.4vw,3rem)}
 
@@ -369,6 +408,11 @@ figcaption i{color:var(--green-500)}
 }
 
 /* immagine a tutta larghezza */
+/* velaFoto() fa rientrare l'immagine da una scala più grande del suo
+   riquadro. Senza ritaglio quell'eccedenza allarga la pagina — e su una
+   foto a tutta larghezza diventa una barra di scorrimento orizzontale che
+   resta finché l'animazione non è finita. */
+.bleed .pic,.quad .pic{overflow:hidden}
 .bleed{padding:0 0 clamp(2rem,5vh,3.5rem)}
 .bleed img{width:100%;aspect-ratio:16/8;object-fit:cover}
 @media (max-width:760px){.bleed img{aspect-ratio:4/3}}
@@ -445,6 +489,567 @@ figcaption i{color:var(--green-500)}
   .slot:first-child{grid-column:1/-1}
   .slot:first-child .slot__box{aspect-ratio:16/10}
   .slot:not(:first-child) .slot__box{aspect-ratio:3/4}
+}
+
+/* ═══════════════ SEZIONI DI TESTO E PIATTI ═══════════════
+   Tutto su un asse solo e in blocchi uguali: le sezioni nuove non
+   introducono un impaginato diverso, ripetono lo stesso centro.
+--------------------------------------------------------------- */
+
+/* una dichiarazione, sola in mezzo alla pagina */
+.dire{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(3.5rem,9vh,6rem) var(--pad);
+  text-align:center;
+}
+.dire__testo{
+  max-width:26ch;margin-inline:auto;
+  font-size:clamp(1.55rem,3.4vw,2.9rem);
+  line-height:1.2;letter-spacing:-.022em;
+  font-variation-settings:'wdth' 98;
+}
+.dire__sotto{
+  max-width:44ch;margin:clamp(1.2rem,3vh,1.8rem) auto 0;
+  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
+}
+.dire--coda{padding-top:clamp(2rem,5vh,3.5rem)}
+
+/* La frase che si scrive scorrendo.
+   Le lettere ci sono già tutte e occupano il loro posto: quello che cambia
+   è solo se si vedono. Così la frase non si riflette a ogni carattere che
+   arriva, e resta ferma mentre si riempie.
+
+   La trasparenza sta sulle singole lettere, non sul paragrafo: quegli
+   involucri li crea main.js, quindi se il JavaScript non parte il testo
+   si vede tutto invece di sparire. */
+.scritta{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(2.4rem,6vh,4rem) var(--pad);
+  text-align:center;
+}
+.scritta__testo{
+  max-width:46ch;margin-inline:auto;
+  font-size:clamp(1.4rem,2.3vw,2rem);
+  line-height:1.32;letter-spacing:-.014em;
+  color:var(--ink);
+}
+.scritta__l{opacity:0;transition:opacity .16s linear}
+.scritta__l.is-on{opacity:1}
+
+@media (max-width:640px){
+  .scritta__testo{max-width:31ch;line-height:1.38}
+}
+
+/* i tre pilastri: parole sole, in verde, a colonne uguali */
+.trio{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:0 var(--pad) clamp(3.5rem,9vh,6rem);
+}
+.trio__lista{
+  list-style:none;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(1rem,3vw,2.5rem);
+  text-align:center;
+}
+.trio__voce{
+  font-size:clamp(1.05rem,2.2vw,1.9rem);
+  line-height:1.15;letter-spacing:-.01em;font-weight:700;
+  font-variation-settings:'wdth' 104;
+  padding-top:clamp(1rem,2.5vh,1.5rem);
+  border-top:1px solid rgba(39,79,58,.28);
+  color:var(--green-500);
+}
+
+/* le foto dei piatti: stessa misura, stesso taglio, nome sotto */
+.quadri{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:0 var(--pad) clamp(3.5rem,9vh,6rem);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(1rem,2.5vw,2rem);
+}
+.quad .pic{height:auto}
+.quad img{width:100%;height:auto;display:block;aspect-ratio:4/5;object-fit:cover}
+.quad__nome{
+  margin-top:.9rem;text-align:center;
+  font-size:.78rem;font-weight:700;font-variation-settings:'wdth' 110;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--green-500);
+}
+
+/* il numero della lievitazione */
+.cifra{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(3.5rem,9vh,6rem) var(--pad) 0;
+  text-align:center;
+}
+.cifra__n{
+  display:block;
+  font-size:clamp(5rem,17vw,14rem);line-height:.82;
+  font-weight:800;letter-spacing:-.05em;
+  font-variation-settings:'wdth' 88;
+  color:var(--green-500);
+}
+.cifra__k{
+  display:block;margin-top:clamp(.8rem,2vh,1.2rem);
+  font-size:clamp(.78rem,1vw,.95rem);font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);
+}
+
+/* la chiusa della home */
+.chiusa{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(1rem,3vh,2rem) var(--pad) clamp(5rem,12vh,8rem);
+  text-align:center;
+}
+.chiusa__grande{
+  max-width:20ch;margin-inline:auto;
+  font-size:clamp(1.85rem,4.6vw,4rem);line-height:1.08;letter-spacing:-.03em;
+  font-variation-settings:'wdth' 96;
+}
+.chiusa__piccola{
+  max-width:46ch;margin:clamp(1.4rem,3.5vh,2.2rem) auto 0;
+  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
+}
+
+/* le esperienze su misura, in fondo ai contatti */
+.eventi{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(3rem,8vh,5rem) var(--pad);
+  text-align:center;
+  border-top:1px solid rgba(39,79,58,.2);
+}
+.eventi__k{
+  display:block;font-size:.78rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--green-500);
+}
+.eventi__titolo{
+  max-width:22ch;margin:clamp(.9rem,2.5vh,1.4rem) auto 0;
+  font-size:clamp(1.65rem,3.6vw,3rem);line-height:1.1;letter-spacing:-.025em;
+}
+.eventi__testo{
+  max-width:40ch;margin:clamp(.9rem,2.5vh,1.4rem) auto 0;
+  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.6;color:var(--ink-soft);
+}
+
+/* l'occhiello sopra il titolo di pagina */
+.occhiello{
+  font-size:.82rem;font-weight:700;font-variation-settings:'wdth' 110;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--green-500);
+  margin-bottom:clamp(.7rem,1.8vh,1.1rem);
+}
+
+/* La scheda della Dispensa porta il marchio delle etichette al posto del
+   titolo: è l'unica sezione con un segno suo, e ripetere anche il nome
+   sarebbe dirlo due volte. Il velo qui è più uniforme — lo stemma sta al
+   centro, non in basso come i titoli delle altre. */
+.card--stemma::after{
+  background:linear-gradient(to top,rgba(18,13,7,.5),rgba(18,13,7,.22));
+}
+.card__bollo{
+  position:absolute;inset:0;z-index:2;
+  display:grid;place-items:center;
+  pointer-events:none;
+}
+.card__stemma{
+  width:min(48%,230px);height:auto;display:block;
+  filter:drop-shadow(0 12px 28px rgba(10,8,4,.45));
+}
+
+/* la parola che sale: involucro creato da main.js */
+.parola{
+  display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding-bottom:.14em;margin-bottom:-.14em;
+}
+.parola>i{display:inline-block;font-style:inherit}
+
+@media (max-width:760px){
+  .trio__lista{grid-template-columns:1fr;gap:0}
+  .trio__voce{
+    padding-block:clamp(.9rem,2.5vh,1.3rem);
+    text-align:left;
+  }
+  .trio__voce:last-child{border-bottom:1px solid rgba(39,79,58,.28)}
+
+  /* stesso ritmo delle gallerie: una larga, due affiancate */
+  .quadri{grid-template-columns:repeat(6,1fr);gap:clamp(1rem,3.5vw,1.6rem) clamp(.7rem,2.5vw,1rem)}
+  .quad:nth-child(1){grid-column:1/-1}
+  .quad:nth-child(1) img{aspect-ratio:5/4}
+  .quad:nth-child(2){grid-column:1/span 3}
+  .quad:nth-child(3){grid-column:4/span 3;margin-top:clamp(1.4rem,5vw,2.4rem)}
+  .quad:nth-child(2) img,.quad:nth-child(3) img{aspect-ratio:3/4}
+  .quad__nome{text-align:left}
+  .quad:nth-child(1) .quad__nome{text-align:center}
+
+  .dire__testo{max-width:20ch}
+  .chiusa__grande{max-width:14ch}
+}
+
+/* ═══════════════ LA VETRINA DELLA DISPENSA ═══════════════
+   Una foto sola che resta ferma mentre le schede le scorrono accanto.
+   Le sette immagini sono impilate nella stessa lastra e si scambiano in
+   dissolvenza: il browser non deve caricare niente a metà scorrimento.
+
+   Il colore lo detta il prodotto in campo — --tinta, che main.js cambia
+   scheda per scheda. Tutto quello che lo usa ha una transizione lunga,
+   così il rosso del pomodoro scivola nel verde dell'oliva invece di
+   scattarci dentro.
+------------------------------------------------------------------- */
+
+.disp{
+  position:relative;
+  max-width:var(--maxw);margin-inline:auto;
+  padding:0 var(--pad);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(2rem,5vw,5rem);
+  align-items:start;
+}
+/* il velo di colore sotto tutta la sezione: appena accennato */
+.disp__velo{
+  position:absolute;inset:0;
+  z-index:0;pointer-events:none;
+  background:var(--tinta);
+  opacity:.05;
+  transition:background 1s var(--ease);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+  mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+}
+.disp__foto,.disp__testi{position:relative;z-index:1}
+
+.disp__foto{
+  position:sticky;top:clamp(4rem,12vh,7rem);
+  padding-block:clamp(2rem,6vh,4rem);
+}
+.disp__lastra{
+  position:relative;
+  height:clamp(360px,calc(100svh - 13rem),700px);
+  overflow:hidden;
+  background:var(--skin-100);
+}
+.disp__img{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;
+  opacity:0;
+  transition:opacity .75s var(--ease);
+}
+.disp__img.is-on{opacity:1}
+/* il cartoncino colorato che sbuca da dietro la foto */
+.disp__mat{
+  position:absolute;
+  left:clamp(.9rem,2.2vw,1.8rem);right:calc(clamp(.9rem,2.2vw,1.8rem) * -1);
+  top:calc(clamp(2rem,6vh,4rem) + clamp(.9rem,2.2vw,1.8rem));
+  bottom:calc(clamp(2rem,6vh,4rem) - clamp(.9rem,2.2vw,1.8rem));
+  background:var(--tinta);
+  transition:background 1s var(--ease);
+}
+
+.disp__testi{display:grid}
+.prod{
+  min-height:min(78vh,620px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(1.5rem,4vh,2.5rem);
+}
+.prod__foto{display:none}
+.prod__n{
+  font-size:.82rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.2em;
+  color:var(--tinta);
+  transition:color 1s var(--ease);
+}
+.prod__nome{
+  margin-top:clamp(.7rem,2vh,1.1rem);
+  font-size:clamp(1.9rem,3.8vw,3.2rem);
+  line-height:1.02;letter-spacing:-.03em;
+  font-variation-settings:'wdth' 96;
+}
+.prod__desc{
+  margin-top:clamp(.9rem,2.5vh,1.4rem);max-width:34ch;
+  font-size:clamp(1.05rem,1.45vw,1.3rem);line-height:1.55;color:var(--ink-soft);
+}
+.prod__meta{
+  margin-top:clamp(1.1rem,3vh,1.7rem);padding-top:clamp(.7rem,2vh,1.1rem);
+  border-top:1px solid var(--tinta);
+  font-size:.82rem;font-weight:600;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);
+  transition:border-color 1s var(--ease);
+}
+.prod__meta i{color:var(--tinta);margin:0 .4em;transition:color 1s var(--ease)}
+
+/* Sul telefono la foto ferma non ha senso: non c'è spazio per due colonne,
+   e una lastra alta mezzo schermo mangerebbe la scheda. Ogni prodotto
+   torna un blocco suo, foto sopra e testo sotto. */
+@media (max-width:860px){
+  .disp{grid-template-columns:1fr;gap:0}
+  .disp__foto{display:none}
+  .prod{min-height:0;padding-block:clamp(2rem,6vh,3rem)}
+  .prod__foto{
+    display:block;width:100%;height:auto;
+    aspect-ratio:4/5;object-fit:cover;
+    margin-bottom:clamp(1.2rem,4vh,2rem);
+    background:var(--skin-100);
+  }
+  .prod__desc{max-width:none}
+}
+
+/* ═══════════════════ LA BOTTEGA ═══════════════════
+   Un negozio solo davanti: si riempie l'ordine e il tasto apre WhatsApp.
+   Niente cassa, quindi niente finte caselle di pagamento.
+--------------------------------------------------------------------- */
+
+.scaffale{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(1rem,3vh,2rem) var(--pad) clamp(3rem,8vh,5rem);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(1.6rem,4vw,3rem) clamp(1rem,2.5vw,2rem);
+}
+.art{display:flex;flex-direction:column}
+.art__media{
+  aspect-ratio:4/5;overflow:hidden;
+  background:var(--skin-100);
+  margin-bottom:clamp(.9rem,2.5vh,1.3rem);
+}
+.art__media img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .8s var(--ease);
+}
+.art:hover .art__media img{transform:scale(1.04)}
+.art__nome{
+  font-size:clamp(1.1rem,1.6vw,1.45rem);
+  line-height:1.15;letter-spacing:-.015em;font-weight:700;
+}
+.art__misura{
+  margin-top:.35rem;
+  font-size:.76rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+}
+.art__prezzo{
+  margin-top:.55rem;
+  font-size:clamp(1.15rem,1.7vw,1.5rem);font-weight:700;
+  font-variation-settings:'wdth' 104;
+  color:var(--tinta,var(--green-500));
+}
+.art__azione{margin-top:auto;padding-top:clamp(.9rem,2.5vh,1.3rem)}
+
+.art__tasto{
+  width:100%;min-height:46px;
+  font-size:.8rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--green-500);background:transparent;
+  border:1px solid var(--green-500);
+  cursor:pointer;
+  transition:background .35s var(--ease),color .35s var(--ease);
+}
+.art__tasto:hover{background:var(--green-500);color:var(--skin-050)}
+
+/* il selettore di quantità prende il posto del tasto */
+/* l'attributo hidden lo spegne la regola del browser, che però perde
+   contro un display dichiarato qui: senza questa riga il selettore di
+   quantità resterebbe in campo anche a zero pezzi */
+[hidden]{display:none !important}
+
+.passo{
+  display:flex;align-items:stretch;
+  border:1px solid var(--green-500);min-height:46px;
+}
+.passo__b{
+  flex:none;width:46px;
+  font-size:1.2rem;line-height:1;
+  color:var(--green-500);background:transparent;border:0;cursor:pointer;
+  transition:background .3s var(--ease),color .3s var(--ease);
+}
+.passo__b:hover{background:var(--green-500);color:var(--skin-050)}
+.passo__n{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  color:var(--ink);
+}
+
+/* le quattro note: come si ordina, ritiro, spedizione, pagamento */
+.info{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(2rem,5vh,3rem) var(--pad) clamp(3rem,8vh,5rem);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(1.4rem,3vw,2.5rem);
+  border-top:1px solid rgba(39,79,58,.2);
+}
+.info__voce h3{
+  font-size:.78rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--green-500);
+}
+.info__voce p{
+  margin-top:.7rem;
+  font-size:.98rem;line-height:1.6;color:var(--ink-soft);
+}
+
+/* ─────────── L'ORDINE ───────────
+   Una scheda che compare a destra appena scegli qualcosa: il riepilogo si
+   legge subito, senza doverlo aprire. Chiusa si ritira in una pastiglia
+   sullo stesso bordo, che la riapre.
+
+   Da telefono non c'è larghezza per una colonna a lato: lì la stessa scheda
+   arriva dal basso, dove ci arriva il pollice.
+--------------------------------------------------------------------- */
+
+.ordine{
+  position:fixed;z-index:450;
+  right:clamp(1rem,2.2vw,2rem);
+  /* appoggiata in basso a destra, non centrata: centrata coprirebbe il
+     titolo della pagina a chi torna con l'ordine già pieno */
+  bottom:clamp(1.2rem,3vh,2rem);
+  width:clamp(300px,25vw,360px);
+}
+
+.ordine__scheda{
+  display:flex;flex-direction:column;
+  max-height:min(76vh,620px);
+  background:var(--skin-050);
+  border:1px solid var(--green-500);
+  box-shadow:0 20px 56px rgba(31,24,16,.18);
+  transition:opacity .4s var(--ease),transform .5s var(--ease);
+}
+.ordine.is-chiusa .ordine__scheda{
+  opacity:0;transform:translateX(14px);pointer-events:none;
+}
+
+.ordine__testa{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+  padding:clamp(1rem,2.5vh,1.3rem) clamp(1rem,2vw,1.3rem) clamp(.7rem,1.8vh,1rem);
+  border-bottom:1px solid rgba(39,79,58,.2);
+}
+.ordine__testa h2{font-size:clamp(1.15rem,1.6vw,1.4rem);letter-spacing:-.02em;line-height:1.1}
+.ordine__conto{
+  margin-top:.3rem;
+  font-size:.72rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--green-500);
+}
+.ordine__x{
+  flex:none;font-size:1.5rem;line-height:1;
+  color:var(--green-500);background:none;border:0;cursor:pointer;
+  padding:0 .2rem;margin-top:-.2rem;
+}
+
+.ordine__righe{
+  list-style:none;flex:1;min-height:0;overflow-y:auto;
+  /* arrivata in fondo la lista si ferma: senza questo la rotellina
+     proseguirebbe sulla pagina dietro */
+  overscroll-behavior:contain;
+  padding:0 clamp(1rem,2vw,1.3rem);
+}
+.riga{
+  display:grid;grid-template-columns:1fr auto;
+  grid-template-areas:'nome prezzo' 'passo prezzo';
+  align-items:center;gap:.5rem .8rem;
+  padding-block:clamp(.7rem,1.8vh,.95rem);
+  border-bottom:1px solid rgba(39,79,58,.15);
+}
+.riga:last-child{border-bottom:0}
+.riga__nome{grid-area:nome;font-weight:600;line-height:1.25;font-size:.96rem}
+.riga__prezzo{
+  grid-area:prezzo;align-self:center;
+  font-weight:700;font-variation-settings:'wdth' 104;white-space:nowrap;
+}
+.riga .passo{grid-area:passo;justify-self:start;min-height:34px}
+.riga .passo__b{width:34px;font-size:1rem}
+.riga .passo__n{padding-inline:.7rem;font-size:.86rem}
+
+.ordine__vuoto{
+  padding:1.4rem clamp(1rem,2vw,1.3rem);
+  color:var(--ink-soft);font-size:.95rem;
+}
+.ordine__fondo{
+  padding:clamp(.9rem,2.2vh,1.2rem) clamp(1rem,2vw,1.3rem) clamp(1.1rem,2.6vh,1.4rem);
+  border-top:2px solid var(--green-500);
+}
+.ordine__somma{
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  font-size:.76rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.ordine__somma b{font-size:clamp(1.3rem,1.9vw,1.6rem);letter-spacing:0}
+.ordine__nota{
+  margin-top:.7rem;
+  font-size:.82rem;line-height:1.5;color:var(--ink-soft);
+}
+.ordine__fondo .btn{
+  margin-top:.9rem;width:100%;justify-content:center;
+  font-size:.82rem;padding:.9em 1.1em;
+}
+
+/* la pastiglia: c'è solo quando la scheda è ritirata */
+.ordine__pastiglia{
+  /* allo stesso angolo della scheda, così riaprendola non salta altrove */
+  position:absolute;right:0;bottom:0;
+  display:none;align-items:center;gap:.9rem;
+  padding:.85rem 1.2rem;
+  background:var(--green-500);color:var(--skin-050);
+  border:0;cursor:pointer;white-space:nowrap;
+  font-size:.74rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.14em;text-transform:uppercase;
+  box-shadow:0 12px 32px rgba(31,24,16,.2);
+  transition:background .35s var(--ease);
+}
+.ordine__pastiglia:hover{background:var(--green-900)}
+.ordine.is-chiusa .ordine__pastiglia{display:inline-flex}
+.ordine__pastiglia .ordine__conto{margin:0;color:var(--sage-200)}
+.ordine__pastiglia .ordine__tot{font-size:.95rem;letter-spacing:.03em}
+
+@media (max-width:860px){
+  .ordine{
+    right:0;left:0;top:auto;bottom:0;transform:none;width:auto;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .ordine__scheda{
+    max-height:min(64vh,460px);
+    border-left:0;border-right:0;border-bottom:0;border-top-width:2px;
+  }
+  .ordine.is-chiusa .ordine__scheda{transform:translateY(14px)}
+  .ordine__pastiglia{
+    position:static;transform:none;
+    width:100%;justify-content:space-between;
+    padding:1rem var(--pad);
+  }
+}
+
+/* Il tasto pieno: uno solo per pagina, quello che conta. Doppia classe
+   perché .btn è dichiarato più avanti nel foglio e a parità di peso
+   vincerebbe lui, lasciando il verde su verde. La tendina che sale
+   all'hover qui non serve: il fondo è già pieno. */
+.btn.btn--pieno{
+  background:var(--green-500);color:var(--skin-050);
+  border-color:var(--green-500);
+  transition:background .4s var(--ease),border-color .4s var(--ease);
+}
+.btn.btn--pieno::before{display:none}
+.btn.btn--pieno:hover{
+  background:var(--green-900);border-color:var(--green-900);
+  color:var(--skin-050);
+}
+
+/* da telefono la scheda sta in basso e copre il piede: gli lascio aria */
+@media (max-width:860px){
+  body:has(.ordine:not([hidden])) .foot{padding-bottom:clamp(5rem,9vh,7rem)}
+}
+
+@media (max-width:860px){
+  .scaffale{grid-template-columns:repeat(2,1fr)}
+  .info{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .info{grid-template-columns:1fr}
+  .riga{grid-template-columns:1fr auto;grid-template-areas:'nome prezzo' 'passo passo'}
+  .riga__nome{grid-area:nome}
+  .riga__prezzo{grid-area:prezzo}
+  .riga .passo{grid-area:passo;justify-self:start}
 }
 
 /* ───────────────────────────── MENU ───────────────────────────── */
@@ -957,7 +1562,7 @@ a,button{-webkit-tap-highlight-color:transparent}
   /* Le voci devono pesare quanto da desktop: lì riempiono la colonna, qui
      finivano piccole in mezzo al vuoto. Numeri e spazi si stringono per
      lasciare la larghezza alle parole. */
-  .menuNav__label{font-size:clamp(2.2rem,10.9vw,3.9rem);line-height:1.04;white-space:nowrap}
+  .menuNav__label{font-size:clamp(1.7rem,min(10.9vw,calc(48vh / var(--voci,6))),3.9rem);line-height:1.04;white-space:nowrap}
   .menuNav__num{width:1.4em;font-size:.72rem;letter-spacing:.1em}
   .menuNav__item a{gap:.5rem}
   .menuNav{gap:0}

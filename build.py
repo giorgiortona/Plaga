@@ -50,7 +50,12 @@ TITOLARE = {
 }
 CREATOR_URL = "https://www.instagram.com/dimana.digitalcreations/"
 
-PAGES = ["index", "sale", "giardino", "forno", "menu", "contatti"]
+# Il verde della trama di fondo. Non è --green-500: a trasparenza così
+# bassa un verde spento vira al grigio, quindi qui serve più croma.
+TRAMA_VERDE = "#1E6B3C"
+
+PAGES = ["index", "sale", "giardino", "cucina", "forno", "dispensa",
+         "menu", "contatti"]
 
 TAGLINE = "#DOWHATYOULOVE"
 
@@ -119,6 +124,41 @@ def logo_parts():
 
 estrai_logo()
 LOGO = logo_parts()
+
+
+def trama():
+    """La trama di fondo: il marchio ripetuto, verde, quasi invisibile.
+
+    È un'unica piastrella che si ripete: due righe sfalsate di mezza parola,
+    così non si legge la griglia. La riga di sotto è disegnata due volte, a
+    sinistra e a destra, perché le due metà combacino quando la piastrella
+    si affianca a se stessa. La rotazione la mette il CSS, sull'intero strato:
+    se ruotassi la piastrella, ai bordi non si incastrerebbe più.
+    """
+    if not LOGO:
+        return
+    x0, y0, vw, vh = (float(n) for n in LOGO["vb"].split())
+    larga = 260.0                       # la parola dentro la piastrella
+    alta = larga * vh / vw
+    passo = larga + 66                  # con lo spazio a destra
+    riga = alta + 62                    # con lo spazio sotto
+    g = f' {LOGO["tr"]}' if LOGO["tr"] else ""
+
+    def marchio(cx, cy):
+        return (f'<g transform="translate({cx:.2f},{cy:.2f}) '
+                f'scale({larga / vw:.5f}) translate({-x0:.2f},{-y0:.2f})'
+                f'{(" " + LOGO["tr"]) if LOGO["tr"] else ""}">'
+                f'<path d="{LOGO["d"]}"/></g>')
+
+    dentro = (marchio((passo - larga) / 2, (riga - alta) / 2)
+              + marchio((passo - larga) / 2 - passo / 2, riga + (riga - alta) / 2)
+              + marchio((passo - larga) / 2 + passo / 2, riga + (riga - alta) / 2))
+
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" '
+           f'width="{passo:.0f}" height="{riga * 2:.0f}" '
+           f'viewBox="0 0 {passo:.0f} {riga * 2:.0f}">'
+           f'<g fill="{TRAMA_VERDE}">{dentro}</g></svg>')
+    (OUT / "assets" / "img" / "trama-plaga.svg").write_text(svg)
 
 
 def wordmark(cls):
@@ -191,7 +231,8 @@ T = {
     "it": {
         "dir": "",                      # italiano nella radice
         "other": "en", "self_label": "IT",
-        "nav": ["Home", "Le Sale", "Il Giardino", "Il Forno", "Il Menu", "Contatti"],
+        "nav": ["Home", "Le Sale", "Il Giardino", "La Cucina", "Il Forno",
+                "La Dispensa", "Il Menu", "Contatti"],
         "burger_open": "Apri il menu",
         "burger_close": "Chiudi il menu",
         "lang_label": "Lingua",
@@ -220,7 +261,10 @@ T = {
             "index": "PLAGA — Ristorante · Pizzeria · Lounge Bar · Galatone",
             "sale": "Le Sale — PLAGA",
             "giardino": "Il Giardino — PLAGA",
+            "cucina": "La Cucina — PLAGA",
             "forno": "Il Forno — PLAGA",
+            "dispensa": "La Dispensa del Plaga — PLAGA",
+            "bottega": "La Bottega — PLAGA",
             "menu": "Il Menu — PLAGA",
             "contatti": "Contatti — PLAGA",
             "privacy": "Privacy policy — PLAGA",
@@ -230,7 +274,10 @@ T = {
             "index": "Ristorante, pizzeria e lounge bar sotto le volte in pietra leccese, con giardino a cielo aperto. Galatone, Salento.",
             "sale": "Le sale di Plaga: volte a stella in pietra leccese, marmo e velluto verde.",
             "giardino": "Il giardino di Plaga: una corte bianca a cielo aperto con cactus, palme e luci sospese.",
+            "cucina": "La cucina di Plaga: pescato locale, verdure di stagione e prodotti del territorio.",
             "forno": "Il forno a legna di Plaga: impasti a lunga lievitazione, cereali e carbone vegetale.",
+            "dispensa": "La Dispensa del Plaga: conserve e vasetti da portare a casa, disponibili tutto l'anno.",
+            "bottega": "Ordina le conserve della Dispensa del Plaga: passate, sott'oli, confetture e olio di Puglia.",
             "menu": "Antipasti, primi, secondi e pizze di Plaga a Galatone.",
             "contatti": "Prenota un tavolo da Plaga: Piazza Umberto I, Galatone (LE). Tel 351 572 1939.",
             "privacy": "Informativa privacy del sito Plaga, Galatone (LE).",
@@ -240,11 +287,14 @@ T = {
             "index": "Volte in pietra leccese, un giardino a cielo aperto e un forno a legna.",
             "sale": "Marmo, legno e velluto verde sotto volte a stella.",
             "giardino": "Una corte bianca a cielo aperto. Cactus, palme e luci sospese.",
+            "cucina": "Tradizione e contemporaneità nello stesso menu.",
             "forno": "Impasti a lunga lievitazione. Cereali, carbone vegetale.",
+            "dispensa": "Nasce dall'idea di custodire il meglio di ogni raccolto e trasformarlo in un patrimonio di sapori autentici, disponibile tutto l'anno.",
             "menu": "Cucina di mare e di terra, pizza a lunga lievitazione.",
             "contatti": "Chiamaci, ti troviamo posto.",
         },
-        "h1": {"sale": "Le Sale", "giardino": "Il Giardino", "forno": "Il Forno",
+        "h1": {"sale": "Le Sale", "giardino": "Il Giardino", "cucina": "La Cucina",
+               "forno": "Il Forno", "dispensa": "La Dispensa",
                "menu": "Il Menu", "contatti": "Prenota"},
         "caps": {
             "volte": "La sala delle volte", "bancone": "Il bancone", "candele": "Le candele",
@@ -252,8 +302,74 @@ T = {
             "tavolata": "La tavolata", "palme": "Le palme", "luci": "Le luci sospese",
             "due": "Il tavolo per due", "coperti": "I coperti",
         },
-        "slots": ["Le pizze <i>—</i> in arrivo", "I piatti <i>—</i> in arrivo",
-                  "La cucina <i>—</i> in arrivo"],
+        "slots": ["Le pizze <i>—</i> in arrivo", "L'impasto <i>—</i> in arrivo",
+                  "Il forno al lavoro <i>—</i> in arrivo"],
+
+        # ─────── testi del locale (settembre 2026) ───────
+        "manifesto": "Plaga nasce dal desiderio di creare un'esperienza fatta di sapori "
+                     "essenziali, materia prima eccellente e ospitalità sincera: un luogo "
+                     "elegante ma autentico, costruito attorno ai ritmi della stagione e "
+                     "al valore delle cose fatte con cura.",
+        "chiusa_grande": "Il lusso non è l'eccesso, ma la qualità del tempo trascorso a tavola.",
+        "chiusa_piccola": "Da Plaga ogni visita è un ricordo. Vogliamo che gli ospiti tornino "
+                          "non solo per ciò che hanno mangiato, ma per come si sono sentiti.",
+        "eventi": {
+            "k": "Su misura",
+            "titolo": "La cornice dei momenti che contano",
+            "testo": "Creiamo esperienze su misura, con menu dedicati.",
+        },
+        "cucina": {
+            "testo": "Qui tradizione e contemporaneità convivono nello stesso menu.",
+            "trio": ["Pescato locale", "Verdure di stagione", "Prodotti del territorio"],
+            "corpo": "La nostra cucina li trasforma in piatti eleganti ma riconoscibili.",
+            "chiusa": "Ogni dettaglio, dall'ambiente al servizio, è pensato per far "
+                      "sentire ogni ospite nel posto giusto.",
+            "nomi": ["Gambero rosso", "Pasta e tonno", "Cheesecake"],
+        },
+        "pizzeria": {
+            "n": "72", "k": "ore di pazienza",
+            "testo": "Pochi ingredienti scelti senza compromessi.",
+            "trio": ["Leggerezza", "Fragranza", "Digeribilità"],
+        },
+        "dispensa": {
+            "occhiello": "Il gusto che continua anche a casa",
+            "grande": "Ogni vasetto racconta una stagione, una ricetta e il lavoro "
+                      "delle mani che l'hanno preparato.",
+            "cta": "Chiedi cosa c'è in dispensa",
+            "comune": "Lavorazione pugliese artigianale bio",
+            "alt_scaffale": "Lo scaffale della Dispensa del Plaga, con i vasetti in fila",
+            "vetrina": "I vasetti",
+        },
+        "bottega": {
+            "occhiello": "La Dispensa del Plaga",
+            "titolo": "La Bottega",
+            "lead": "Scegli i vasetti e manda l'ordine su WhatsApp: "
+                    "ti rispondiamo noi con disponibilità e consegna.",
+            "aggiungi": "Aggiungi", "aggiunto": "Aggiunto",
+            "meno": "Uno in meno", "piu": "Uno in più",
+            "togli": "Togli dall'ordine",
+            "carrello": "Il tuo ordine",
+            "vuoto": "Non hai ancora scelto niente.",
+            "uno": "un articolo", "molti": "{n} articoli",
+            "totale": "Totale",
+            "ordina": "Manda l'ordine su WhatsApp",
+            "apri": "Vedi l'ordine", "chiudi": "Chiudi",
+            "nota": "Il totale non comprende la spedizione: te la confermiamo "
+                    "in chat insieme alla disponibilità.",
+            "msg_intro": "Ciao PLAGA, vorrei ordinare dalla Dispensa:",
+            "msg_totale": "Totale indicativo",
+            "info": [
+                ("Come si ordina",
+                 "Riempi l'ordine e premi il tasto: si apre WhatsApp con tutto "
+                 "già scritto. Nessun pagamento online."),
+                ("Ritiro in sede",
+                 "Puoi ritirare in Piazza Umberto I a Galatone, negli orari del locale."),
+                ("Spedizione",
+                 "Costo e tempi te li confermiamo in chat prima di procedere."),
+                ("Pagamento",
+                 "Si paga al ritiro, o come concordato in chat."),
+            ],
+        },
         "btn_menu": "Vedi il menu",
         "btn_drinks": "Vini, birre e cocktail",
         "note": "Prezzi in euro, coperto €2.",
@@ -279,12 +395,19 @@ T = {
             "giardino-lampada-v": "Tavolo per due sotto la lampada a raggiera",
             "giardino-tavolata-v": "Dettaglio dei coperti sulla tavolata in marmo",
             "insegna": "L'insegna luminosa PLAGA tra le piante",
+            "piatto-gambero": "Gamberi rossi crudi in una crema gialla con cetriolo",
+            "piatto-gambero-det": "Dettaglio dei gamberi rossi crudi nel piatto",
+            "piatto-pasta": "Pasta fresca con tartare di tonno e crema bianca",
+            "piatto-cheesecake": "Cheesecake ai lamponi con coulis e menta",
+            "dispensa-card": "Due vasetti di passata sullo scaffale della Dispensa",
+            "stemma": "La Dispensa del Plaga",
         },
     },
     "en": {
         "dir": "en",
         "other": "it", "self_label": "EN",
-        "nav": ["Home", "The Rooms", "The Garden", "The Oven", "The Menu", "Contact"],
+        "nav": ["Home", "The Rooms", "The Garden", "The Kitchen", "The Oven",
+                "The Pantry", "The Menu", "Contact"],
         "burger_open": "Open menu",
         "burger_close": "Close menu",
         "lang_label": "Language",
@@ -313,7 +436,10 @@ T = {
             "index": "PLAGA — Restaurant · Pizzeria · Lounge Bar · Galatone",
             "sale": "The Rooms — PLAGA",
             "giardino": "The Garden — PLAGA",
+            "cucina": "The Kitchen — PLAGA",
             "forno": "The Oven — PLAGA",
+            "dispensa": "The Plaga Pantry — PLAGA",
+            "bottega": "The Plaga Shop — PLAGA",
             "menu": "The Menu — PLAGA",
             "contatti": "Contact — PLAGA",
             "privacy": "Privacy policy — PLAGA",
@@ -323,7 +449,10 @@ T = {
             "index": "Restaurant, pizzeria and lounge bar under Lecce stone vaults, with an open-air garden. Galatone, Salento, Puglia.",
             "sale": "The rooms at Plaga: Lecce stone star vaults, marble and green velvet.",
             "giardino": "The garden at Plaga: a white open-air courtyard with cacti, palms and hanging lights.",
+            "cucina": "The kitchen at Plaga: local catch, seasonal vegetables and produce from the region.",
             "forno": "The wood-fired oven at Plaga: long-fermented dough, wholegrain and charcoal bases.",
+            "dispensa": "The Plaga Pantry: preserves and jars to take home, available all year round.",
+            "bottega": "Order the Plaga Pantry preserves: passata, oils, jams and olive oil from Puglia.",
             "menu": "Starters, pasta, mains and pizza at Plaga in Galatone, Puglia.",
             "contatti": "Book a table at Plaga: Piazza Umberto I, Galatone (LE), Italy. Tel +39 351 572 1939.",
             "privacy": "Privacy notice for the Plaga website, Galatone (LE), Italy.",
@@ -333,11 +462,14 @@ T = {
             "index": "Lecce stone vaults, an open-air garden and a wood-fired oven.",
             "sale": "Marble, wood and green velvet beneath star vaults.",
             "giardino": "A white open-air courtyard. Cacti, palms and hanging lights.",
+            "cucina": "Tradition and the present day, in the same menu.",
             "forno": "Long-fermented dough. Wholegrain and charcoal bases.",
+            "dispensa": "It comes from the idea of keeping the best of every harvest and turning it into a store of authentic flavours, available all year round.",
             "menu": "Sea and land cooking, long-fermented pizza.",
             "contatti": "Call us, we'll find you a table.",
         },
-        "h1": {"sale": "The Rooms", "giardino": "The Garden", "forno": "The Oven",
+        "h1": {"sale": "The Rooms", "giardino": "The Garden", "cucina": "The Kitchen",
+               "forno": "The Oven", "dispensa": "The Pantry",
                "menu": "The Menu", "contatti": "Book"},
         "caps": {
             "volte": "The vaulted room", "bancone": "The bar", "candele": "Candlelight",
@@ -345,8 +477,74 @@ T = {
             "tavolata": "The long table", "palme": "The palms", "luci": "The hanging lights",
             "due": "Table for two", "coperti": "The place settings",
         },
-        "slots": ["Pizzas <i>—</i> coming soon", "Dishes <i>—</i> coming soon",
-                  "The kitchen <i>—</i> coming soon"],
+        "slots": ["Pizzas <i>—</i> coming soon", "The dough <i>—</i> coming soon",
+                  "The oven at work <i>—</i> coming soon"],
+
+        # ─────── testi del locale (settembre 2026) ───────
+        "manifesto": "Plaga was born from the wish to create an experience made of "
+                     "essential flavours, excellent raw ingredients and sincere "
+                     "hospitality: a place elegant yet authentic, built around the "
+                     "rhythms of the season and the value of things made with care.",
+        "chiusa_grande": "Luxury is not excess, but the quality of the time spent at the table.",
+        "chiusa_piccola": "At Plaga every visit is a memory. We want guests to come back "
+                          "not only for what they ate, but for how they felt.",
+        "eventi": {
+            "k": "Tailor-made",
+            "titolo": "The setting for the moments that matter",
+            "testo": "We also create bespoke experiences, with dedicated menus.",
+        },
+        "cucina": {
+            "testo": "Here tradition and the present day live in the same menu.",
+            "trio": ["Local catch", "Seasonal vegetables", "Produce from the region"],
+            "corpo": "Our kitchen turns them into dishes that are elegant yet recognisable.",
+            "chiusa": "Every detail, from the room to the service, is meant to make "
+                      "each guest feel in the right place.",
+            "nomi": ["Red prawn", "Pasta and tuna", "Cheesecake"],
+        },
+        "pizzeria": {
+            "n": "72", "k": "hours of patience",
+            "testo": "A few ingredients chosen without compromise.",
+            "trio": ["Lightness", "Fragrance", "Digestibility"],
+        },
+        "dispensa": {
+            "occhiello": "The taste that carries on at home",
+            "grande": "Every jar tells of a season, a recipe and the work of the "
+                      "hands that made it.",
+            "cta": "Ask what's in the pantry",
+            "comune": "Artisan organic production, made in Puglia",
+            "alt_scaffale": "The Plaga Pantry shelf, with the jars lined up",
+            "vetrina": "The jars",
+        },
+        "bottega": {
+            "occhiello": "The Plaga Pantry",
+            "titolo": "The Shop",
+            "lead": "Pick your jars and send the order on WhatsApp: "
+                    "we'll reply with availability and delivery.",
+            "aggiungi": "Add", "aggiunto": "Added",
+            "meno": "One fewer", "piu": "One more",
+            "togli": "Remove from order",
+            "carrello": "Your order",
+            "vuoto": "You haven't picked anything yet.",
+            "uno": "one item", "molti": "{n} items",
+            "totale": "Total",
+            "ordina": "Send the order on WhatsApp",
+            "apri": "See the order", "chiudi": "Close",
+            "nota": "The total does not include shipping: we confirm it in chat, "
+                    "together with availability.",
+            "msg_intro": "Hello PLAGA, I would like to order from the Pantry:",
+            "msg_totale": "Indicative total",
+            "info": [
+                ("How to order",
+                 "Fill the order and press the button: WhatsApp opens with "
+                 "everything already written. No online payment."),
+                ("Pick up in person",
+                 "You can collect at Piazza Umberto I in Galatone, during opening hours."),
+                ("Shipping",
+                 "Cost and times are confirmed in chat before going ahead."),
+                ("Payment",
+                 "Paid on collection, or as agreed in chat."),
+            ],
+        },
         "btn_menu": "See the menu",
         "btn_drinks": "Wines, beers and cocktails",
         "note": "Prices in euro, €2 cover charge.",
@@ -372,6 +570,12 @@ T = {
             "giardino-lampada-v": "Table for two beneath the starburst lamp",
             "giardino-tavolata-v": "Close-up of place settings on the marble table",
             "insegna": "The illuminated PLAGA sign among the plants",
+            "piatto-gambero": "Raw red prawns in a yellow cream with cucumber",
+            "piatto-gambero-det": "Close-up of the raw red prawns on the plate",
+            "piatto-pasta": "Fresh pasta with tuna tartare and white cream",
+            "piatto-cheesecake": "Raspberry cheesecake with coulis and mint",
+            "dispensa-card": "Two jars of passata on the Pantry shelf",
+            "stemma": "The Plaga Pantry",
         },
     },
 }
@@ -379,6 +583,76 @@ T = {
 # ═══════════════════════════════ MENU ═══════════════════════════════
 # (nome_it, nome_en, descrizione_it, descrizione_en, prezzo, in_evidenza)
 # I nomi delle pizze restano in italiano: sono nomi propri.
+
+# ───────────────────────── LA DISPENSA ─────────────────────────
+# I sette prodotti. Nome, formato e descrizione vengono dalle etichette
+# vere fotografate. ATTENZIONE AI PREZZI: dallo scaffale si leggevano solo
+# 7,50 e 11,00, gli altri cinque sono messi a occhio e vanno confermati dal
+# locale prima di pubblicare.
+# "tinta" è il colore
+# che la sezione prende quando quel prodotto è in campo — il rosso del
+# pomodoro, il verde dell'oliva — e il verde del sito torna appena finisce.
+DISPENSA = [
+    {"img": "disp-passata", "prezzo": "7,50", "tinta": "#B33A2B", "formato": "490 g",
+     "it": {"nome": "Passata Blend di Pomodori",
+            "desc": "Pomodoro Penny e pomodoro Regina, italiani, di Puglia. E sale.",
+            "alt": "Il barattolo di passata su un letto di pomodori maturi"},
+     "en": {"nome": "Tomato Passata Blend",
+            "desc": "Penny and Regina tomatoes, both Italian, from Puglia. And salt.",
+            "alt": "The passata jar on a bed of ripe tomatoes"}},
+
+    {"img": "disp-secchi", "prezzo": "8,50", "tinta": "#8C3122", "formato": "310 g",
+     "it": {"nome": "Pomodori Secchi",
+            "desc": "Con aceto di mele.",
+            "alt": "Il barattolo di pomodori secchi su un letto di pomodori essiccati"},
+     "en": {"nome": "Sun-dried Tomatoes",
+            "desc": "With apple cider vinegar.",
+            "alt": "The sun-dried tomato jar on a bed of dried tomatoes"}},
+
+    {"img": "disp-peperoni", "prezzo": "8,00", "tinta": "#C0621B", "formato": "290 g",
+     "it": {"nome": "Peperoni in Agrodolce",
+            "desc": "Con aceto di mele.",
+            "alt": "Il barattolo di peperoni su un letto di falde rosse e gialle"},
+     "en": {"nome": "Sweet and Sour Peppers",
+            "desc": "With apple cider vinegar.",
+            "alt": "The pepper jar on a bed of red and yellow strips"}},
+
+    {"img": "disp-giardiniera", "prezzo": "7,50", "tinta": "#C08A1C", "formato": "526 g",
+     "it": {"nome": "Giardiniera sott'aceto",
+            "desc": "Cavolo rapa, cipolline, carote, zucca, broccoli, piselli, "
+                    "sedano, fave, zucchine, finocchi, peperoni.",
+            "alt": "Il barattolo di giardiniera su un letto di verdure tagliate"},
+     "en": {"nome": "Pickled Giardiniera",
+            "desc": "Kohlrabi, baby onions, carrots, squash, broccoli, peas, "
+                    "celery, broad beans, courgettes, fennel, peppers.",
+            "alt": "The giardiniera jar on a bed of cut vegetables"}},
+
+    {"img": "disp-fico", "prezzo": "9,00", "tinta": "#A03A5C", "formato": "265 g",
+     "it": {"nome": "Confettura Extra di Fico d'India",
+            "desc": "Fichi d'India, zucchero di canna e limone. Nient'altro.",
+            "alt": "Il barattolo di confettura su un letto di fichi d'India aperti"},
+     "en": {"nome": "Prickly Pear Extra Jam",
+            "desc": "Prickly pears, cane sugar and lemon. Nothing else.",
+            "alt": "The jam jar on a bed of halved prickly pears"}},
+
+    {"img": "disp-olio", "prezzo": "11,00", "tinta": "#5C7A2C", "formato": "0,25 l",
+     "it": {"nome": "Olio Extra Vergine di Oliva",
+            "desc": "100% italiano, estratto a freddo.",
+            "alt": "La bottiglia d'olio su un letto di olive e foglie"},
+     "en": {"nome": "Extra Virgin Olive Oil",
+            "desc": "100% Italian, cold pressed.",
+            "alt": "The oil bottle on a bed of olives and leaves"}},
+
+    {"img": "disp-bergamotto", "prezzo": "12,50", "tinta": "#7D9A34", "formato": "0,25 l",
+     "it": {"nome": "Olio al Bergamotto",
+            "desc": "Il bergamotto viene franto insieme alle olive: "
+                    "l'essenza si estrae da sola, con l'olio.",
+            "alt": "La bottiglia d'olio al bergamotto su un letto di olive verdi"},
+     "en": {"nome": "Bergamot Olive Oil",
+            "desc": "The bergamot is milled together with the olives: "
+                    "the essence comes out on its own, with the oil.",
+            "alt": "The bergamot oil bottle on a bed of green olives"}},
+]
 
 MENU = [
     ("antipasti", "Antipasti", "Starters", [
@@ -562,8 +836,8 @@ def overlay(lang, name):
             f'<span class="menuNav__label">{t["nav"][i]}</span></a></li>')
     return f"""<nav class="menuOverlay" id="menuOverlay" aria-hidden="true">
   <div class="menuOverlay__bg"><i></i><i></i><i></i><i></i></div>
-  <div class="menuOverlay__inner">
-    <ul class="menuNav">
+  <div class="menuOverlay__inner" data-lenis-prevent>
+    <ul class="menuNav" style="--voci:{len(PAGES)}">
       {"".join(items)}
     </ul>
     <div class="menuFoot">
@@ -633,6 +907,9 @@ def footer(lang, sign=False):
 
 def page(lang, name, body, light_nav=False, loader=False):
     t = T[lang]
+    # la trama di fondo sta solo nella pagina iniziale: altrove il marchio
+    # ripetuto sotto ai titoloni diventa rumore
+    corpo_cls = ' class="is-home"' if name == "index" else ""
     root = "" if t["dir"] == "" else "../"
     it_url = f"{name}.html" if t["dir"] == "" else f"../{name}.html"
     en_url = f"en/{name}.html" if t["dir"] == "" else f"{name}.html"
@@ -657,7 +934,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{root}css/style.css?v={impronta("css/style.css")}">
 </head>
-<body>
+<body{corpo_cls}>
 {loader_block() if loader else ""}
 {header(lang, name, light_nav)}
 <main id="top">
@@ -926,13 +1203,24 @@ def _root(lang):
 def build_home(lang):
     t = T[lang]
     r = _root(lang)
+    # l'indice punta a t["nav"], che segue l'ordine di PAGES
     cards = [("sale", 1, "bar-arco"), ("giardino", 2, "giardino-cactus"),
-             ("forno", 3, "forno"), ("menu", 4, "sala-candele")]
-    html_cards = "".join(
-        f'<a class="card" href="{slug}.html">'
-        f'<div class="card__media">{picture(r, img, t["alt"][img])}</div>'
-        f'<span class="card__title">{t["nav"][i]}</span></a>'
-        for slug, i, img in cards)
+             ("cucina", 3, "piatto-gambero"), ("forno", 4, "forno"),
+             ("dispensa", 5, "dispensa-card"), ("menu", 6, "sala-candele")]
+    pezzi = []
+    for slug, i, img in cards:
+        media = f'<div class="card__media">{picture(r, img, t["alt"][img])}</div>'
+        if slug == "dispensa":
+            # la Dispensa ha un marchio suo, quello stampato sulle etichette:
+            # lì fa da titolo, e il nome della sezione non si ripete
+            pezzi.append(
+                f'<a class="card card--stemma" href="{slug}.html">{media}'
+                f'<span class="card__bollo">'
+                f'<img class="card__stemma" src="{r}assets/img/stemma-dispensa.webp" '
+                f'alt="{t["alt"]["stemma"]}" loading="lazy"></span></a>')
+        else:
+            pezzi.append(f'<a class="card" href="{slug}.html">{media}'
+                         f'<span class="card__title">{t["nav"][i]}</span></a>')
 
     return f"""<section class="hero">
   <div class="hero__media">{picture(r, "sala-volte", t["alt"]["sala-volte"], lazy=False, mobile="sala-volte-mob")}</div>
@@ -944,10 +1232,19 @@ def build_home(lang):
 </section>
 
 <section class="intro">
-  <p class="lead">{t["leads"]["index"]}</p>
+  <p class="apertura">{t["leads"]["index"]}</p>
 </section>
 
-<section class="cards" id="esplora">{html_cards}</section>"""
+<section class="scritta">
+  <p class="scritta__testo" data-scrive>{t["manifesto"]}</p>
+</section>
+
+<section class="cards" id="esplora">{"".join(pezzi)}</section>
+
+<section class="chiusa">
+  <p class="chiusa__grande" data-sale>{t["chiusa_grande"]}</p>
+  <p class="chiusa__piccola">{t["chiusa_piccola"]}</p>
+</section>"""
 
 
 def _fig(lang, cls, img, cap):
@@ -974,7 +1271,7 @@ def build_sale(lang):
 </section>
 
 <section class="cta">
-  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
@@ -997,12 +1294,14 @@ def build_giardino(lang):
 </section>
 
 <section class="cta">
-  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
 def build_forno(lang):
     t = T[lang]
+    p = t["pizzeria"]
+    trio = "".join(f'<li class="trio__voce">{v}</li>' for v in p["trio"])
     slot = ('<figure class="slot"><div class="slot__box">'
             '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/>'
             '<circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>{}</figcaption></figure>')
@@ -1012,6 +1311,17 @@ def build_forno(lang):
 </section>
 
 <section class="bleed">{picture(_root(lang), "forno", t["alt"]["forno"], lazy=False)}</section>
+
+<section class="cifra">
+  <span class="cifra__n" data-sale>{p["n"]}</span>
+  <span class="cifra__k">{p["k"]}</span>
+</section>
+
+<section class="dire">
+  <p class="dire__testo" data-sale>{p["testo"]}</p>
+</section>
+
+<section class="trio"><ul class="trio__lista">{trio}</ul></section>
 
 <!-- SLOT FOTO IN ARRIVO — pizze, piatti, cucina.
      Quando avrai le foto: convertile in webp in assets/img/ e qui in build.py
@@ -1028,8 +1338,202 @@ def build_forno(lang):
 <section class="cta">
   <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
+
+
+def build_cucina(lang):
+    """La cucina: una dichiarazione, i tre pilastri, i piatti.
+
+    I tre nomi non sono didascalie delle foto — non si corrispondono uno a
+    uno — quindi stanno in una fascia loro, e le foto in una griglia sotto
+    con il solo nome del piatto.
+    """
+    t = T[lang]
+    c = t["cucina"]
+    r = _root(lang)
+    trio = "".join(f'<li class="trio__voce">{v}</li>' for v in c["trio"])
+    foto = "".join(
+        f'<figure class="quad">{picture(r, img, t["alt"][img])}'
+        f'<figcaption class="quad__nome">{nome}</figcaption></figure>'
+        for img, nome in zip(("piatto-gambero", "piatto-pasta", "piatto-cheesecake"),
+                             c["nomi"]))
+
+    return f"""<section class="pageHead">
+  <h1 class="pageTitle">{t["h1"]["cucina"]}</h1>
+  <p class="lead">{t["leads"]["cucina"]}</p>
+</section>
+
+<section class="bleed">{picture(r, "piatto-gambero-det", t["alt"]["piatto-gambero-det"], lazy=False)}</section>
+
+<section class="dire">
+  <p class="dire__testo" data-sale>{c["testo"]}</p>
+</section>
+
+<section class="trio"><ul class="trio__lista">{trio}</ul></section>
+
+<section class="quadri">{foto}</section>
+
+<section class="dire dire--coda">
+  <p class="dire__testo" data-sale>{c["corpo"]}</p>
+  <p class="dire__sotto">{c["chiusa"]}</p>
+</section>
+
+<section class="cta">
+  <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
+</section>"""
+
+
+def build_dispensa(lang):
+    """La dispensa: i sette vasetti da portare a casa.
+
+    La vetrina è una foto sola che resta ferma mentre le schede le scorrono
+    accanto. Le immagini stanno tutte impilate nella stessa lastra e si
+    scambiano in dissolvenza: niente da caricare a metà scorrimento, e il
+    passaggio da un prodotto all'altro non è uno stacco.
+
+    Ogni prodotto porta la sua tinta — il rosso del pomodoro, il verde
+    dell'oliva — e la sezione ci si accorda intorno. Nome, formato e
+    descrizione vengono dalle etichette vere, vedi DISPENSA.
+    """
+    t = T[lang]
+    d = t["dispensa"]
+    r = _root(lang)
+
+    immagini = "".join(
+        f'<img class="disp__img{" is-on" if i == 0 else ""}" data-i="{i}" '
+        f'src="{r}assets/img/{p["img"]}-lg.webp" alt="{p[lang]["alt"]}"'
+        f'{"" if i == 0 else " loading=\"lazy\""}>'
+        for i, p in enumerate(DISPENSA))
+
+    schede = "".join(
+        f'<article class="prod" data-i="{i}" data-tinta="{p["tinta"]}" '
+        f'style="--tinta:{p["tinta"]}">'
+        # sul telefono la lastra ferma sparisce e ogni scheda si porta dietro
+        # la sua foto. Le due copie non si sovrappongono mai: quella spenta è
+        # display:none, quindi esce anche dalla lettura assistita.
+        f'<img class="prod__foto" src="{r}assets/img/{p["img"]}-sm.webp" '
+        f'alt="{p[lang]["alt"]}" loading="lazy">'
+        f'<span class="prod__n">{i + 1:02d}</span>'
+        f'<h3 class="prod__nome">{p[lang]["nome"]}</h3>'
+        f'<p class="prod__desc">{p[lang]["desc"]}</p>'
+        f'<p class="prod__meta">{p["formato"]} <i>·</i> {d["comune"]}</p>'
+        f'</article>'
+        for i, p in enumerate(DISPENSA))
+
+    return f"""<section class="pageHead">
+  <p class="occhiello">{d["occhiello"]}</p>
+  <h1 class="pageTitle">{t["h1"]["dispensa"]}</h1>
+  <p class="lead">{t["leads"]["dispensa"]}</p>
+</section>
+
+<section class="bleed">{picture(r, "disp-scaffale", d["alt_scaffale"], lazy=False)}</section>
+
+<section class="dire">
+  <p class="dire__testo" data-sale>{d["grande"]}</p>
+</section>
+
+<section class="disp" id="vetrina" style="--tinta:{DISPENSA[0]["tinta"]}">
+  <div class="disp__velo" aria-hidden="true"></div>
+  <div class="disp__foto">
+    <span class="disp__mat" aria-hidden="true"></span>
+    <div class="disp__lastra">{immagini}</div>
+  </div>
+  <div class="disp__testi">{schede}</div>
+</section>
+
+<section class="cta">
+  <a class="btn btn--pieno" href="bottega.html"><span>{t["bottega"]["titolo"]}</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a class="btn" href="{wa_href(lang)}" target="_blank" rel="noopener"><span>{d["cta"]}</span></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
+</section>"""
+
+
+def build_bottega(lang):
+    """La bottega: la Dispensa da ordinare.
+
+    È un negozio solo davanti. Non c'è cassa e non si paga qui: si riempie
+    l'ordine, e il tasto apre WhatsApp con la lista già scritta. È il modo in
+    cui il locale lavora davvero, e soprattutto non mette nessuno davanti a
+    una cassa finta che non incasserà mai.
+
+    Prezzi e articoli vengono da DISPENSA: un posto solo da aggiornare.
+    """
+    t = T[lang]
+    b = t["bottega"]
+    d = t["dispensa"]
+    r = _root(lang)
+
+    schede = "".join(
+        f'<article class="art" data-slug="{p["img"]}" '
+        f'data-nome="{p[lang]["nome"]}" data-prezzo="{p["prezzo"]}" '
+        f'style="--tinta:{p["tinta"]}">'
+        f'<div class="art__media">'
+        f'<img src="{r}assets/img/{p["img"]}-sm.webp" alt="{p[lang]["alt"]}" loading="lazy">'
+        f'</div>'
+        f'<h3 class="art__nome">{p[lang]["nome"]}</h3>'
+        f'<p class="art__misura">{p["formato"]}</p>'
+        f'<p class="art__prezzo">{p["prezzo"]} €</p>'
+        f'<div class="art__azione">'
+        f'<button class="art__tasto" type="button" data-agg>{b["aggiungi"]}</button>'
+        f'<div class="passo" hidden>'
+        f'<button type="button" class="passo__b" data-meno aria-label="{b["meno"]}">−</button>'
+        f'<span class="passo__n" data-qta aria-live="polite">0</span>'
+        f'<button type="button" class="passo__b" data-piu aria-label="{b["piu"]}">+</button>'
+        f'</div></div>'
+        f'</article>'
+        for p in DISPENSA)
+
+    info = "".join(
+        f'<div class="info__voce"><h3>{titolo}</h3><p>{testo}</p></div>'
+        for titolo, testo in b["info"])
+
+    return f"""<section class="pageHead">
+  <p class="occhiello">{b["occhiello"]}</p>
+  <h1 class="pageTitle">{b["titolo"]}</h1>
+  <p class="lead">{b["lead"]}</p>
+</section>
+
+<section class="scaffale" data-bottega
+         data-wa="{WA_NUM}" data-intro="{b["msg_intro"]}" data-tot="{b["msg_totale"]}">{schede}</section>
+
+<section class="info">{info}</section>
+
+<section class="cta">
+  <a class="btn" href="dispensa.html"><span>{d["vetrina"]}</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
+</section>
+
+<!-- L'ordine: una scheda che compare a destra appena scegli qualcosa.
+     Chiusa si riduce a una pastiglia, che la riapre. -->
+<aside class="ordine" id="ordine" hidden aria-label="{b["carrello"]}"
+       data-uno="{b["uno"]}" data-molti="{b["molti"]}">
+  <button class="ordine__pastiglia" type="button" data-apri>
+    <span class="ordine__conto" data-conto-p></span>
+    <span class="ordine__tot" data-tot-p>0,00 €</span>
+  </button>
+  <div class="ordine__scheda">
+    <div class="ordine__testa">
+      <div>
+        <h2>{b["carrello"]}</h2>
+        <p class="ordine__conto" data-conto></p>
+      </div>
+      <button type="button" class="ordine__x" data-chiudi aria-label="{b["chiudi"]}">&times;</button>
+    </div>
+    <ul class="ordine__righe" data-righe></ul>
+    <p class="ordine__vuoto" data-vuoto>{b["vuoto"]}</p>
+    <div class="ordine__fondo">
+      <p class="ordine__somma"><span>{b["totale"]}</span><b data-tot-foglio>0,00 €</b></p>
+      <p class="ordine__nota">{b["nota"]}</p>
+      <a class="btn btn--pieno" data-invia href="#"><span>{b["ordina"]}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</aside>"""
 
 
 def build_menu(lang):
@@ -1065,7 +1569,7 @@ def build_menu(lang):
   <div class="cta">
     <a class="btn" href="{MENU_URL}" target="_blank" rel="noopener"><span>{t["btn_drinks"]}</span>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-    <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+    <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
     <p class="note">{t["note"]}</p>
   </div>
 </section>"""
@@ -1073,6 +1577,7 @@ def build_menu(lang):
 
 def build_contatti(lang):
     t = T[lang]
+    e = t["eventi"]
     rows = "".join(
         f'<a class="contact__row" href="{href}"'
         f'{" target=" + chr(34) + "_blank" + chr(34) + " rel=" + chr(34) + "noopener" + chr(34) if href.startswith("http") else ""}>'
@@ -1085,21 +1590,31 @@ def build_contatti(lang):
 
 <section class="contact">{rows}</section>
 
+<section class="eventi">
+  <span class="eventi__k">{e["k"]}</span>
+  <h2 class="eventi__titolo" data-sale>{e["titolo"]}</h2>
+  <p class="eventi__testo">{e["testo"]}</p>
+</section>
+
 <section class="cta">
-  <a class="btn" href="{_root(lang)}index.html#esplora"><span>{t["btn_back"]}</span></a>
+  <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 
 
 BUILDERS = {"index": build_home, "sale": build_sale, "giardino": build_giardino,
-            "forno": build_forno, "menu": build_menu, "contatti": build_contatti}
+            "cucina": build_cucina, "forno": build_forno,
+            "dispensa": build_dispensa, "menu": build_menu,
+            "contatti": build_contatti}
 
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
+    trama()
     for lang in T:
         for name in PAGES:
             page(lang, name, BUILDERS[name](lang),
                  light_nav=(name == "index"), loader=(name == "index"))
+        page(lang, "bottega", build_bottega(lang))
         for quale in LEGAL_PAGES:
             page(lang, quale, build_legal(lang, quale))
-        print(f"{lang}: {len(PAGES) + len(LEGAL_PAGES)} pagine in "
+        print(f"{lang}: {len(PAGES) + len(LEGAL_PAGES) + 1} pagine in "
               f"{T[lang]['dir'] or 'site'}/")

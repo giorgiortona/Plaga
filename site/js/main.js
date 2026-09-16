@@ -32,9 +32,360 @@ function initLenis() {
 ------------------------------------------------------------------ */
 
 const REVEAL = [
-  '.pageTitle', '.lead', '.card', '.g', '.bleed img',
-  '.slot', '.contact__row', '.cta', '.menuTabs'
+  '.pageTitle', '.lead', '.card', '.g',
+  '.slot', '.contact__row', '.cta', '.menuTabs',
+  '.occhiello', '.trio__voce', '.cifra__k', '.quad__nome',
+  '.dire__sotto', '.chiusa__piccola', '.eventi__k', '.eventi__testo'
 ].join(',');
+
+/* le foto grandi non sfumano: si scoprono. Vedi velaFoto() */
+const VELATE = '.bleed .pic, .quad .pic';
+
+/* ───────── LE PAROLE CHE SALGONO ─────────
+   Le dichiarazioni non compaiono: salgono da sotto, una parola dopo
+   l'altra. Spezzo per parola e non per riga perché le parole si
+   riadattano da sole quando cambia la larghezza — le righe andrebbero
+   rimisurate a ogni resize, e a ogni rimisura l'animazione ripartirebbe.
+--------------------------------------------------------------------- */
+
+function saliParole() {
+  const blocchi = gsap.utils.toArray('[data-sale]');
+  if (!blocchi.length) return;
+
+  blocchi.forEach((el) => {
+    if (el.dataset.spezzato) return;
+    el.dataset.spezzato = '1';
+    const parole = el.textContent.trim().split(/\s+/);
+    el.textContent = '';
+    parole.forEach((parola, i) => {
+      const guscio = document.createElement('span');
+      guscio.className = 'parola';
+      const dentro = document.createElement('i');
+      dentro.textContent = parola;
+      guscio.appendChild(dentro);
+      el.appendChild(guscio);
+      // lo spazio resta testo vero: così la riga va a capo dove deve
+      if (i < parole.length - 1) el.appendChild(document.createTextNode(' '));
+    });
+  });
+
+  const pezzi = (el) => el.querySelectorAll('.parola > i');
+
+  if (REDUCED) return;
+
+  blocchi.forEach((el) => {
+    const righe = pezzi(el);
+    gsap.set(righe, { yPercent: 115 });
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 88%',
+      once: true,
+      onEnter: () => gsap.to(righe, {
+        yPercent: 0, duration: 0.9, ease: EASE_OUT, stagger: 0.035
+      })
+    });
+  });
+}
+
+/* ───────── LA FRASE CHE SI SCRIVE ─────────
+   Il manifesto non compare tutto insieme: si scrive mentre lo scorrimento
+   lo attraversa, una lettera dopo l'altra. Niente resta nascosto dietro un
+   gesto che quasi nessuno farebbe — basta passarci davanti.
+
+   Le lettere ci sono già tutte e tengono il loro posto: cambia solo la
+   trasparenza. Se sparissero davvero, la frase si riformerebbe a ogni
+   carattere e le righe ballerebbero.
+
+   Accendo con una classe invece di interpolare l'opacità: a ogni scatto
+   dello scorrimento tocco solo le lettere fra il vecchio confine e il
+   nuovo, non tutte e duecento.
+--------------------------------------------------------------------- */
+
+function scriviFrase() {
+  const blocchi = gsap.utils.toArray('[data-scrive]');
+  if (!blocchi.length) return;
+
+  blocchi.forEach((el) => {
+    if (el.dataset.scritto) return;
+    el.dataset.scritto = '1';
+
+    const testo = el.textContent.trim();
+    el.textContent = '';
+    const lettere = [];
+    for (const segno of testo) {
+      // gli spazi restano testo vero: sono lì che le righe vanno a capo
+      if (segno === ' ') { el.appendChild(document.createTextNode(' ')); continue; }
+      const s = document.createElement('span');
+      s.className = 'scritta__l';
+      s.textContent = segno;
+      el.appendChild(s);
+      lettere.push(s);
+    }
+
+    if (REDUCED) {
+      lettere.forEach((s) => s.classList.add('is-on'));
+      return;
+    }
+
+    let confine = 0;
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 85%',
+      end: 'bottom 45%',
+      scrub: true,
+      onUpdate: (self) => {
+        const quante = Math.round(self.progress * lettere.length);
+        if (quante === confine) return;
+        const avanti = quante > confine;
+        const da = Math.min(confine, quante), a = Math.max(confine, quante);
+        for (let i = da; i < a; i++) lettere[i].classList.toggle('is-on', avanti);
+        confine = quante;
+      }
+    });
+  });
+}
+
+/* ───────── IL TIMBRO ─────────
+   Lo stemma della Dispensa non compare: si stampa. Arriva più grande e
+   storto, poi scende in piano con un piccolo rimbalzo, come un timbro
+   premuto sulla carta.
+
+   La rotazione e la scala stanno solo qui, non nel CSS: così se il
+   JavaScript non parte lo stemma resta dritto e al suo posto invece di
+   restare storto per sempre.
+--------------------------------------------------------------------- */
+
+function timbro() {
+  if (REDUCED) return;
+  const bolli = gsap.utils.toArray('.card__stemma');
+  if (!bolli.length) return;
+
+  bolli.forEach((b) => {
+    gsap.set(b, { opacity: 0, scale: 1.45, rotate: -9 });
+    ScrollTrigger.create({
+      trigger: b.closest('.card') || b,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => gsap.timeline()
+        .to(b, { opacity: 1, duration: 0.3, ease: 'none' }, 0)
+        .to(b, { scale: 1, rotate: 0, duration: 0.85, ease: 'back.out(1.7)' }, 0)
+    });
+  });
+}
+
+/* ───────── LA BOTTEGA ─────────
+   Un negozio solo davanti. L'ordine vive nel browser di chi guarda, e il
+   tasto finale apre WhatsApp con la lista già scritta: non c'è una cassa,
+   quindi non c'è niente che finga di incassare.
+
+   I prezzi stanno nel DOM (data-prezzo) e non in una copia qui: il
+   generatore li scrive una volta sola, da DISPENSA, e qui si leggono.
+--------------------------------------------------------------------- */
+
+const CHIAVE_ORDINE = 'plaga-ordine';
+
+function euro(n) {
+  return n.toFixed(2).replace('.', ',') + ' \u20ac';
+}
+
+function bottega() {
+  const scaffale = document.querySelector('[data-bottega]');
+  const pannello = document.getElementById('ordine');
+  if (!scaffale || !pannello) return;
+
+  const schede = [...scaffale.querySelectorAll('.art')];
+  const righe = pannello.querySelector('[data-righe]');
+  const vuoto = pannello.querySelector('[data-vuoto]');
+  const invia = pannello.querySelector('[data-invia]');
+
+  const catalogo = new Map(schede.map((a) => [a.dataset.slug, {
+    nome: a.dataset.nome,
+    prezzo: parseFloat(a.dataset.prezzo.replace(',', '.')),
+    scheda: a
+  }]));
+
+  // Il carrello sopravvive al cambio pagina, ma è solo di chi guarda: sta
+  // nel suo browser e non arriva a nessun altro finché non preme il tasto.
+  let ordine = {};
+  try {
+    const salvato = JSON.parse(localStorage.getItem(CHIAVE_ORDINE) || '{}');
+    for (const [slug, q] of Object.entries(salvato)) {
+      if (catalogo.has(slug) && Number.isInteger(q) && q > 0) ordine[slug] = q;
+    }
+  } catch (e) { ordine = {}; }
+
+  const salva = () => {
+    try { localStorage.setItem(CHIAVE_ORDINE, JSON.stringify(ordine)); } catch (e) {}
+  };
+
+  const pezzi = () => Object.values(ordine).reduce((a, b) => a + b, 0);
+  const somma = () => Object.entries(ordine)
+    .reduce((t, [slug, q]) => t + catalogo.get(slug).prezzo * q, 0);
+
+  function passo(slug, delta) {
+    const q = (ordine[slug] || 0) + delta;
+    if (q > 0) ordine[slug] = Math.min(q, 99);
+    else delete ordine[slug];
+    salva();
+    // se aggiungi mentre la scheda è ritirata, torna in campo: il senso
+    // di averla a lato è proprio vedere l'ordine crescere
+    if (delta > 0) pannello.classList.remove('is-chiusa');
+    disegna();
+  }
+
+  function disegna() {
+    // le schede: tasto oppure selettore di quantità
+    schede.forEach((a) => {
+      const q = ordine[a.dataset.slug] || 0;
+      a.querySelector('[data-agg]').hidden = q > 0;
+      const sel = a.querySelector('.passo');
+      sel.hidden = q === 0;
+      sel.querySelector('[data-qta]').textContent = String(q);
+    });
+
+    const n = pezzi();
+    pannello.hidden = n === 0;
+    if (n === 0) pannello.classList.remove('is-chiusa');
+
+    const testo = n === 1 ? pannello.dataset.uno : pannello.dataset.molti.replace('{n}', n);
+    const tot = euro(somma());
+    pannello.querySelectorAll('[data-conto],[data-conto-p]').forEach((e) => { e.textContent = testo; });
+    pannello.querySelector('[data-tot-p]').textContent = tot;
+    pannello.querySelector('[data-tot-foglio]').textContent = tot;
+
+    // il riepilogo
+    righe.textContent = '';
+    for (const [slug, q] of Object.entries(ordine)) {
+      const v = catalogo.get(slug);
+      const li = document.createElement('li');
+      li.className = 'riga';
+      li.innerHTML =
+        '<span class="riga__nome"></span>' +
+        '<div class="passo">' +
+        '<button type="button" class="passo__b" data-meno>\u2212</button>' +
+        '<span class="passo__n"></span>' +
+        '<button type="button" class="passo__b" data-piu>+</button>' +
+        '</div><span class="riga__prezzo"></span>';
+      li.querySelector('.riga__nome').textContent = v.nome;
+      li.querySelector('.passo__n').textContent = String(q);
+      li.querySelector('.riga__prezzo').textContent = euro(v.prezzo * q);
+      li.querySelector('[data-meno]').addEventListener('click', () => passo(slug, -1));
+      li.querySelector('[data-piu]').addEventListener('click', () => passo(slug, 1));
+      righe.appendChild(li);
+    }
+    vuoto.hidden = n > 0;
+
+    // Lenis intercetta la rotellina su tutta la pagina: questo attributo gli
+    // dice di lasciar stare qui dentro. Lo metto solo quando la lista ha
+    // davvero qualcosa da scorrere, altrimenti sopra al riepilogo corto la
+    // rotellina non muoverebbe più niente.
+    righe.toggleAttribute('data-lenis-prevent',
+      righe.scrollHeight > righe.clientHeight + 1);
+
+    invia.href = collegamento();
+  }
+
+  function collegamento() {
+    const parti = [scaffale.dataset.intro, ''];
+    for (const [slug, q] of Object.entries(ordine)) {
+      const v = catalogo.get(slug);
+      parti.push(`${q} \u00d7 ${v.nome} \u2014 ${euro(v.prezzo * q)}`);
+    }
+    parti.push('', `${scaffale.dataset.tot}: ${euro(somma())}`);
+    return 'https://wa.me/' + scaffale.dataset.wa
+         + '?text=' + encodeURIComponent(parti.join('\n'));
+  }
+
+  schede.forEach((a) => {
+    const slug = a.dataset.slug;
+    a.querySelector('[data-agg]').addEventListener('click', () => passo(slug, 1));
+    a.querySelector('[data-meno]').addEventListener('click', () => passo(slug, -1));
+    a.querySelector('[data-piu]').addEventListener('click', () => passo(slug, 1));
+  });
+
+  pannello.querySelector('[data-apri]').addEventListener('click', () => {
+    pannello.classList.remove('is-chiusa');
+  });
+  pannello.querySelector('[data-chiudi]').addEventListener('click', () => {
+    pannello.classList.add('is-chiusa');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') pannello.classList.add('is-chiusa');
+  });
+
+  disegna();
+}
+
+/* ───────── LA VETRINA DELLA DISPENSA ─────────
+   La foto resta ferma e cambia insieme alla scheda che le scorre accanto,
+   e con lei cambia la tinta di tutta la sezione.
+
+   Il bersaglio è il centro dello schermo: il prodotto attivo è quello la
+   cui scheda ci sta sopra. Con onEnter/onEnterBack invece servirebbero due
+   soglie diverse per i due versi, e scorrendo all'indietro il cambio
+   arriverebbe sfasato.
+------------------------------------------------------------------- */
+
+function vetrinaDispensa() {
+  const scena = document.querySelector('.disp');
+  if (!scena) return;
+
+  const schede = gsap.utils.toArray('.prod', scena);
+  const foto = gsap.utils.toArray('.disp__img', scena);
+  if (!schede.length || !foto.length) return;
+
+  let attivo = -1;
+  const mostra = (i) => {
+    if (i === attivo || !foto[i]) return;
+    attivo = i;
+    foto.forEach((f, k) => f.classList.toggle('is-on', k === i));
+    scena.style.setProperty('--tinta', schede[i].dataset.tinta);
+  };
+
+  mostra(0);
+
+  schede.forEach((scheda, i) => {
+    ScrollTrigger.create({
+      trigger: scheda,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle: (self) => { if (self.isActive) mostra(i); }
+    });
+  });
+}
+
+/* ───────── LE FOTO CHE SI SCOPRONO ─────────
+   Un velo che si alza dal basso, e dentro l'immagine che rientra dalla
+   sua scala: due tempi sovrapposti, così non è uno stacco secco.
+   Alla fine tolgo la trasformazione, altrimenti lo stile in linea
+   lasciato da GSAP batte lo zoom al passaggio del mouse.
+------------------------------------------------------------------- */
+
+function velaFoto() {
+  if (REDUCED) return;
+  const foto = gsap.utils.toArray(VELATE);
+  if (!foto.length) return;
+
+  foto.forEach((velo) => {
+    const img = velo.querySelector('img');
+    if (!img) return;
+
+    gsap.set(velo, { clipPath: 'inset(0% 0% 100% 0%)' });
+    gsap.set(img, { scale: 1.14 });
+
+    ScrollTrigger.create({
+      trigger: velo,
+      start: 'top 88%',
+      once: true,
+      onEnter: () => gsap.timeline()
+        .to(velo, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: EASE })
+        .to(img, {
+          scale: 1, duration: 1.5, ease: EASE_OUT,
+          onComplete: () => gsap.set(img, { clearProps: 'transform' })
+        }, 0)
+    });
+  });
+}
 
 function reveals() {
   const els = gsap.utils.toArray(REVEAL);
@@ -283,6 +634,10 @@ function burgerMenu() {
   function openMenu() {
     if (open) return;
     open = true;
+    // All'avvio il font non è ancora quello definitivo e le voci risultano
+    // più strette di quanto saranno: la misura buona è questa. Un frame
+    // dopo, però — a pannello aperto, quando il testo è davvero disegnato.
+    requestAnimationFrame(adattaVociMenu);
     document.body.classList.add('is-menu-open');
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -405,6 +760,12 @@ function menuTabs() {
 /* ─────────────────────────── BOOT ─────────────────────────── */
 
 function start() {
+  saliParole();
+  scriviFrase();
+  vetrinaDispensa();
+  timbro();
+  bottega();
+  velaFoto();
   reveals();
   navBehaviour();
   menuTabs();

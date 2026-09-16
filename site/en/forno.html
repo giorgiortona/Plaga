@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css?v=dd8548ae">
+<link rel="stylesheet" href="../css/style.css?v=ca1359f3">
 </head>
 <body>
 
@@ -32,9 +32,9 @@
 </header>
 <nav class="menuOverlay" id="menuOverlay" aria-hidden="true">
   <div class="menuOverlay__bg"><i></i><i></i><i></i><i></i></div>
-  <div class="menuOverlay__inner">
-    <ul class="menuNav">
-      <li class="menuNav__item"><a href="index.html"><span class="menuNav__num">01</span><span class="menuNav__label">Home</span></a></li><li class="menuNav__item"><a href="sale.html"><span class="menuNav__num">02</span><span class="menuNav__label">The Rooms</span></a></li><li class="menuNav__item"><a href="giardino.html"><span class="menuNav__num">03</span><span class="menuNav__label">The Garden</span></a></li><li class="menuNav__item"><a href="forno.html" aria-current="page"><span class="menuNav__num">04</span><span class="menuNav__label">The Oven</span></a></li><li class="menuNav__item"><a href="menu.html"><span class="menuNav__num">05</span><span class="menuNav__label">The Menu</span></a></li><li class="menuNav__item"><a href="contatti.html"><span class="menuNav__num">06</span><span class="menuNav__label">Contact</span></a></li>
+  <div class="menuOverlay__inner" data-lenis-prevent>
+    <ul class="menuNav" style="--voci:8">
+      <li class="menuNav__item"><a href="index.html"><span class="menuNav__num">01</span><span class="menuNav__label">Home</span></a></li><li class="menuNav__item"><a href="sale.html"><span class="menuNav__num">02</span><span class="menuNav__label">The Rooms</span></a></li><li class="menuNav__item"><a href="giardino.html"><span class="menuNav__num">03</span><span class="menuNav__label">The Garden</span></a></li><li class="menuNav__item"><a href="cucina.html"><span class="menuNav__num">04</span><span class="menuNav__label">The Kitchen</span></a></li><li class="menuNav__item"><a href="forno.html" aria-current="page"><span class="menuNav__num">05</span><span class="menuNav__label">The Oven</span></a></li><li class="menuNav__item"><a href="dispensa.html"><span class="menuNav__num">06</span><span class="menuNav__label">The Pantry</span></a></li><li class="menuNav__item"><a href="menu.html"><span class="menuNav__num">07</span><span class="menuNav__label">The Menu</span></a></li><li class="menuNav__item"><a href="contatti.html"><span class="menuNav__num">08</span><span class="menuNav__label">Contact</span></a></li>
     </ul>
     <div class="menuFoot">
       <div class="menuFoot__col"><span class="menuFoot__k">Book</span>
@@ -55,6 +55,17 @@
 
 <section class="bleed"><picture class="pic"><source media="(max-width:700px)" srcset="../assets/img/forno-sm.webp"><img src="../assets/img/forno-lg.webp" alt="The wood-fired oven and the sage green counter" fetchpriority="high"></picture></section>
 
+<section class="cifra">
+  <span class="cifra__n" data-sale>72</span>
+  <span class="cifra__k">hours of patience</span>
+</section>
+
+<section class="dire">
+  <p class="dire__testo" data-sale>A few ingredients chosen without compromise.</p>
+</section>
+
+<section class="trio"><ul class="trio__lista"><li class="trio__voce">Lightness</li><li class="trio__voce">Fragrance</li><li class="trio__voce">Digestibility</li></ul></section>
+
 <!-- SLOT FOTO IN ARRIVO — pizze, piatti, cucina.
      Quando avrai le foto: convertile in webp in assets/img/ e qui in build.py
      sostituisci i tre slot con delle figure vere, per esempio
@@ -63,14 +74,14 @@
      di entrambe le lingue. Poi rilancia: python3 build.py -->
 <section class="slots">
   <figure class="slot"><div class="slot__box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>Pizzas <i>—</i> coming soon</figcaption></figure>
-  <figure class="slot"><div class="slot__box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>Dishes <i>—</i> coming soon</figcaption></figure>
-  <figure class="slot"><div class="slot__box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>The kitchen <i>—</i> coming soon</figcaption></figure>
+  <figure class="slot"><div class="slot__box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>The dough <i>—</i> coming soon</figcaption></figure>
+  <figure class="slot"><div class="slot__box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>The oven at work <i>—</i> coming soon</figcaption></figure>
 </section>
 
 <section class="cta">
   <a class="btn" href="menu.html"><span>See the menu</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-  <a class="btn" href="../index.html#esplora"><span>BACK TO SITE</span></a>
+  <a class="btn" href="index.html#esplora"><span>BACK TO SITE</span></a>
 </section>
 </main>
 <footer class="foot">
@@ -111,6 +122,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-<script src="../js/main.js?v=ffe55ed7"></script>
+<script src="../js/main.js?v=ab0f4586"></script>
 </body>
 </html>
