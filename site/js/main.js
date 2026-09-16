@@ -415,10 +415,15 @@ function reveals() {
 }
 
 /* ───────── LE VOCI DEL MENU, GRANDI QUANTO LO SPAZIO CONSENTE ─────────
-   Su telefono le voci devono pesare come da desktop, cioè riempire la
-   colonna. Ma "Il Giardino" e "The Garden" hanno larghezze diverse, e un
-   corpo fisso o va a capo o esce dal riquadro. Qui si misura la voce più
-   lunga e si riduce quel tanto che basta: mai oltre il valore del CSS.
+   "Il Giardino" e "The Garden" hanno larghezze diverse, e un corpo fisso o
+   va a capo o esce dal riquadro. Qui si misura la voce più lunga e si
+   riduce quel tanto che basta: mai oltre il valore del CSS.
+
+   Vale a ogni larghezza. Prima no — da desktop l'elenco era unico e
+   larghissimo, e ci stava comunque. Adesso le colonne sono tre: lo spazio
+   per voce è un terzo, e la misura va fatta anche lì. Il fattore è uno
+   solo per tutte, altrimenti le colonne avrebbero corpi diversi e l'indice
+   si sfalderebbe.
 ---------------------------------------------------------------------- */
 
 function adattaVociMenu() {
@@ -427,7 +432,6 @@ function adattaVociMenu() {
 
   const etichette = [...voci].map((a) => a.querySelector('.menuNav__label'));
   etichette.forEach((et) => et && et.style.removeProperty('font-size'));
-  if (window.innerWidth > 860) return;     // da desktop ci stanno già
 
   let fattore = 1;
   voci.forEach((a) => {
@@ -620,16 +624,28 @@ function burgerMenu() {
   if (!burger || !overlay) return;
 
   const panels = overlay.querySelectorAll('.menuOverlay__bg i');
+  const trama = overlay.querySelector('.menuOverlay__trama');
   const inner = overlay.querySelector('.menuOverlay__inner');
+  const top = overlay.querySelector('.menuTop');
+  const teste = overlay.querySelectorAll('.menuGroup__k');
   const items = overlay.querySelectorAll('.menuNav__item a');
   const foots = overlay.querySelectorAll('.menuFoot__col');
 
   let open = false;
   let anim = null;
 
-  // vedi sopra: neutralizzo la y che GSAP ricava dal transform del CSS
-  gsap.set(items, { y: 0, yPercent: 105 });
-  gsap.set(foots, { opacity: 0, y: 14 });
+  // Gli stati di partenza, tutti insieme: l'overlay resta montato tra
+  // un'apertura e l'altra, quindi vanno rimessi anche alla chiusura.
+  // Sono gli stessi valori, e stanno scritti una volta sola.
+  function azzera() {
+    // vedi sopra: neutralizzo la y che GSAP ricava dal transform del CSS
+    gsap.set(items, { y: 0, yPercent: 105 });
+    gsap.set(foots, { opacity: 0, y: 14 });
+    gsap.set(top, { opacity: 0, y: -12 });
+    gsap.set(teste, { opacity: 0, y: 10 });
+    gsap.set(trama, { opacity: 0 });
+  }
+  azzera();
 
   function openMenu() {
     if (open) return;
@@ -646,12 +662,18 @@ function burgerMenu() {
     nav.classList.remove('is-hidden');
     if (lenis) lenis.stop();
 
+    // L'ordine è quello della lettura: prima il fondo, poi il marchio che
+    // raccoglie il testimone da quello della barra, poi gli occhielli dei
+    // gruppi e le voci sotto, infine i contatti.
     anim && anim.kill();
     anim = gsap.timeline();
     anim.set(inner, { opacity: 1 })
       .to(panels, { scaleY: 1, duration: 0.8, stagger: 0.06, ease: 'power4.inOut', transformOrigin: 'top' }, 0)
-      .fromTo(items, { y: 0, yPercent: 105 }, { yPercent: 0, duration: 0.9, stagger: 0.06, ease: EASE_OUT }, 0.38)
-      .to(foots, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: EASE_OUT }, 0.68);
+      .to(trama, { opacity: 1, duration: 1, ease: EASE_OUT }, 0.3)
+      .to(top, { opacity: 1, y: 0, duration: 0.6, ease: EASE_OUT }, 0.34)
+      .to(teste, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: EASE_OUT }, 0.44)
+      .fromTo(items, { y: 0, yPercent: 105 }, { yPercent: 0, duration: 0.9, stagger: 0.05, ease: EASE_OUT }, 0.5)
+      .to(foots, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: EASE_OUT }, 0.74);
   }
 
   function closeMenu() {
@@ -668,12 +690,12 @@ function burgerMenu() {
         overlay.classList.remove('is-open');
         overlay.setAttribute('aria-hidden', 'true');
         gsap.set(inner, { opacity: 0 });
-        gsap.set(items, { y: 0, yPercent: 105 });
-        gsap.set(foots, { opacity: 0, y: 14 });
+        azzera();
       }
     });
     anim.to(items, { yPercent: -105, duration: 0.5, stagger: 0.035, ease: EASE }, 0)
-      .to(foots, { opacity: 0, duration: 0.25, ease: EASE }, 0)
+      .to([top, ...teste, ...foots], { opacity: 0, duration: 0.25, ease: EASE }, 0)
+      .to(trama, { opacity: 0, duration: 0.4, ease: EASE }, 0)
       .to(panels, { scaleY: 0, duration: 0.7, stagger: 0.05, ease: 'power4.inOut', transformOrigin: 'bottom' }, 0.18);
   }
 
