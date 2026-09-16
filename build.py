@@ -57,6 +57,28 @@ TRAMA_VERDE = "#1E6B3C"
 PAGES = ["index", "sale", "giardino", "cucina", "forno", "dispensa",
          "menu", "contatti"]
 
+# Il burger menu non e' l'elenco di PAGES: e' un indice in due gruppi.
+#
+#   la casa    il posto: le stanze, il giardino, e come arrivarci
+#   la tavola  cio' che ci si mette sopra, dal fuoco fino al vasetto
+#
+# Due nomi concreti e paralleli, non due etichette funzionali: le voci
+# numerate sotto dicono gia' con precisione dove portano, quindi
+# l'occhiello puo' fare l'altro mestiere, dare il tono.
+#
+# "index" non c'e': nel menu il ritorno alla home e' il marchio in alto.
+# "bottega" nemmeno: la Dispensa e la Bottega sono la stessa cosa, il
+# racconto e il banco dove si ordina, e due voci le facevano sembrare due
+# posti diversi. Resta la Dispensa; alla Bottega si arriva dal pulsante in
+# fondo alla sua pagina.
+#
+# La numerazione e' progressiva e scorre da un gruppo all'altro: e' un
+# indice, e un indice si conta una volta sola.
+MENU_GRUPPI = [
+    ("casa", ["sale", "giardino", "contatti"]),
+    ("tavola", ["cucina", "forno", "menu", "dispensa"]),
+]
+
 TAGLINE = "#DOWHATYOULOVE"
 
 LOGO_SVG = Path(__file__).parent / "logo" / "plaga-wordmark.svg"
@@ -233,6 +255,9 @@ T = {
         "other": "en", "self_label": "IT",
         "nav": ["Home", "Le Sale", "Il Giardino", "La Cucina", "Il Forno",
                 "La Dispensa", "Il Menu", "Contatti"],
+        # i due gruppi dell'indice nel burger menu
+        "gruppi": {"casa": "La Casa", "tavola": "La Tavola"},
+        "menu_indice": "Indice del sito",
         "burger_open": "Apri il menu",
         "burger_close": "Chiudi il menu",
         "lang_label": "Lingua",
@@ -408,6 +433,8 @@ T = {
         "other": "it", "self_label": "EN",
         "nav": ["Home", "The Rooms", "The Garden", "The Kitchen", "The Oven",
                 "The Pantry", "The Menu", "Contact"],
+        "gruppi": {"casa": "The House", "tavola": "The Table"},
+        "menu_indice": "Site index",
         "burger_open": "Open menu",
         "burger_close": "Close menu",
         "lang_label": "Language",
@@ -826,20 +853,48 @@ def lang_switch(lang, name):
 
 
 def overlay(lang, name):
+    """Il burger menu: un indice in tre gruppi, non un elenco.
+
+    Com'era: otto voci enormi, tutte dello stesso peso, una sopra l'altra
+    fino a riempire lo schermo. Funzionava con quattro sezioni; con otto
+    diceva soltanto che ce n'erano otto.
+
+    Com'e': in alto torna il marchio — nel menu era l'unico posto del sito
+    in cui PLAGA non compariva — e da li' si torna alla home, quindi "Home"
+    non serve piu' come voce. Sotto, le sezioni raccolte in due gruppi
+    (vedi MENU_GRUPPI) su altrettante colonne, col numero progressivo di
+    lato e un filetto sotto ogni occhiello: un indice, che e' poi quello
+    che e'. In fondo i contatti, identici a prima. Dietro, la trama del
+    marchio che nella home fa da filigrana: qui sostituisce il fondo piatto.
+    """
     t = T[lang]
-    items = []
-    for i, slug in enumerate(PAGES):
-        cur = ' aria-current="page"' if slug == name else ""
-        items.append(
-            f'<li class="menuNav__item"><a href="{slug}.html"{cur}>'
-            f'<span class="menuNav__num">{i + 1:02d}</span>'
-            f'<span class="menuNav__label">{t["nav"][i]}</span></a></li>')
-    return f"""<nav class="menuOverlay" id="menuOverlay" aria-hidden="true">
+    n = 0
+    gruppi = []
+    for chiave, slugs in MENU_GRUPPI:
+        voci = []
+        for slug in slugs:
+            n += 1
+            cur = ' aria-current="page"' if slug == name else ""
+            voci.append(
+                f'<li class="menuNav__item"><a href="{slug}.html"{cur}>'
+                f'<span class="menuNav__num">{n:02d}</span>'
+                f'<span class="menuNav__label">{t["nav"][PAGES.index(slug)]}</span></a></li>')
+        gruppi.append(
+            f'<section class="menuGroup">'
+            f'<h2 class="menuGroup__k">{t["gruppi"][chiave]}</h2>'
+            f'<ul class="menuNav">{"".join(voci)}</ul></section>')
+
+    casa = ' aria-current="page"' if name == "index" else ""
+    return f"""<nav class="menuOverlay" id="menuOverlay" aria-hidden="true" aria-label="{t["menu_indice"]}">
   <div class="menuOverlay__bg"><i></i><i></i><i></i><i></i></div>
+  <div class="menuOverlay__trama" aria-hidden="true"></div>
   <div class="menuOverlay__inner" data-lenis-prevent>
-    <ul class="menuNav" style="--voci:{len(PAGES)}">
-      {"".join(items)}
-    </ul>
+    <div class="menuTop">
+      <a class="menuBrand" href="index.html"{casa} aria-label="{t["home_aria"]}">{wordmark("menuMark")}</a>
+    </div>
+    <div class="menuIndex">
+      {"".join(gruppi)}
+    </div>
     <div class="menuFoot">
       <div class="menuFoot__col"><span class="menuFoot__k">{t["book"]}</span>
         <a href="{wa_href(lang)}" target="_blank" rel="noopener" class="menuFoot__v" aria-label="{t["call_aria"]}">{TEL}</a>
@@ -868,14 +923,13 @@ def header(lang, name, light=False):
 {overlay(lang, name)}"""
 
 
-def footer(lang, sign=False):
+def footer(lang, sign=True):
     """Il footer, identico su tutte le pagine.
 
-    Con `sign` l'insegna fa da fondo sotto un velo scuro, e il marchio non si
-    ripete in sovrimpressione perche' e' gia' dentro la foto. Ma il velo non
-    basta a spegnerla: la PLAGA della foto resta leggibile dietro ai contatti
-    e il piede perde il suo marchio vettoriale. Quindi di norma sta spento:
-    fondo pieno, wordmark a sinistra, payoff a destra.
+    L'insegna fa da fondo sotto un velo scuro. Li' il marchio
+    PLAGA e la tagline sono gia' dentro la foto, quindi non si ripetono in
+    sovrimpressione: restano il payoff e la firma. La foto e' decorativa —
+    alt vuoto e aria-hidden — perche' il marchio e' gia' testo altrove.
     """
     t = T[lang]
     bg = (f'<div class="foot__bg" aria-hidden="true">'
