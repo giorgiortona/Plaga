@@ -39,7 +39,8 @@ LEGAL_PAGES = ["privacy", "cookie"]
 # sul sito vero, non dedotti: se cambiano gli script, va aggiornata la cookie
 # policy che li elenca.
 TERZE_PARTI = ["fonts.googleapis.com", "fonts.gstatic.com",
-               "cdnjs.cloudflare.com", "cdn.jsdelivr.net"]
+               "cdnjs.cloudflare.com", "cdn.jsdelivr.net",
+               "awards.infcdn.net"]
 
 # ATTENZIONE — da completare prima della pubblicazione.
 TITOLARE = {
@@ -991,7 +992,7 @@ LEGAL = {
 <p>Google Maps, Instagram e WhatsApp non sono incorporati nella pagina. Il collegamento al relativo fornitore avviene soltanto dopo il click dell’utente, che visita un servizio distinto soggetto alla propria informativa. I messaggi WhatsApp ed e-mail vengono effettivamente inviati solo mediante un’ulteriore azione nell’applicazione scelta dall’utente.</p>
 <p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Prima di aprirlo il sito mostra un avviso che indica la destinazione e richiede una conferma esplicita. Dal momento dell’apertura il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
 <h3>Risorse caricate automaticamente</h3>
-<p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google) e le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
+<p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google), le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>, e — nella sola pagina iniziale — il sigillo del riconoscimento Restaurant Guru da <code>awards.infcdn.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
 <div class="legal__note"><strong>Base giuridica:</strong> legittimo interesse del titolare alla resa tipografica e al corretto funzionamento del sito, art. 6, par. 1, lett. f) GDPR.</div>"""),
                 ("destinatari", "Destinatari e trasferimenti", """
 <p>Possono accedere ai dati, nei limiti delle rispettive funzioni, personale autorizzato, consulenti e fornitori tecnici o di hosting che operano per conto del titolare. I dati possono inoltre essere comunicati quando richiesto dalla legge o da un’autorità competente.</p>
@@ -1029,6 +1030,7 @@ LEGAL = {
   <li><strong>Immagini e video</strong>Serviti dallo stesso dominio del sito.</li>
   <li><strong>Caratteri tipografici</strong>Archivo, richiesto a <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google) all’apertura di ogni pagina.</li>
   <li><strong>Librerie di animazione</strong>GSAP da <code>cdnjs.cloudflare.com</code> (Cloudflare) e Lenis da <code>cdn.jsdelivr.net</code>, richieste all’apertura di ogni pagina.</li>
+  <li><strong>Sigillo del riconoscimento</strong>Il distintivo Restaurant Guru, con il proprio foglio di stile, la grafica e i caratteri, richiesto a <code>awards.infcdn.net</code> alla sola apertura della pagina iniziale.</li>
 </ul>
 <div class="legal__note">I normali log del server non sono cookie e non leggono informazioni dal dispositivo; possono comunque contenere dati di navigazione e sono descritti nella <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
                 ("servizi", "Collegamenti a servizi esterni", """
@@ -1069,7 +1071,7 @@ LEGAL = {
 <p>Google Maps, Instagram and WhatsApp are not embedded in the page. The connection to the relevant provider occurs only after the user clicks, thereby visiting a separate service subject to its own notice. WhatsApp and e-mail messages are actually sent only through a further action in the application chosen by the user.</p>
 <p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. Before opening it the site displays a notice stating the destination and requires explicit confirmation. From the moment it opens, the provider may receive technical connection data and operates under its own notice.</p>
 <h3>Resources loaded automatically</h3>
-<p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google) and animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
+<p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google), animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>, and — on the home page only — the Restaurant Guru award seal from <code>awards.infcdn.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
 <div class="legal__note"><strong>Legal basis:</strong> the controller’s legitimate interest in the typographic rendering and correct operation of the site, art. 6(1)(f) GDPR.</div>"""),
                 ("destinatari", "Recipients and transfers", """
 <p>Authorised staff, consultants and technical or hosting providers acting on the controller’s behalf may access the data within the limits of their respective functions. Data may also be disclosed where required by law or by a competent authority.</p>
@@ -1107,6 +1109,7 @@ LEGAL = {
   <li><strong>Images and video</strong>Served from the site’s own domain.</li>
   <li><strong>Typefaces</strong>Archivo, requested from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google) whenever a page opens.</li>
   <li><strong>Animation libraries</strong>GSAP from <code>cdnjs.cloudflare.com</code> (Cloudflare) and Lenis from <code>cdn.jsdelivr.net</code>, requested whenever a page opens.</li>
+  <li><strong>Award seal</strong>The Restaurant Guru badge, with its own stylesheet, artwork and typefaces, requested from <code>awards.infcdn.net</code> when the home page opens only.</li>
 </ul>
 <div class="legal__note">Ordinary server logs are not cookies and read no information from the device; they may nonetheless contain browsing data and are described in the <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
                 ("servizi", "Links to external services", """
