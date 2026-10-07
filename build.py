@@ -28,8 +28,9 @@ WA_TESTO = {"it": "Ciao, vorrei prenotare un tavolo da PLAGA. ",
             "en": "Hello, I would like to book a table at PLAGA. "}
 
 
-def wa_href(lang):
-    return f"https://wa.me/{WA_NUM}?text={quote(WA_TESTO[lang])}"
+def wa_href(lang, messaggio=None):
+    testo = WA_TESTO[lang] if messaggio is None else messaggio
+    return f"https://wa.me/{WA_NUM}?text={quote(testo)}"
 
 
 # Pagine legali: stanno fuori da PAGES, cosi' non entrano nel burger menu.
@@ -313,7 +314,7 @@ T = {
             "index": "Volte in pietra leccese, un giardino a cielo aperto e un forno a legna.",
             "sale": "Marmo, legno e velluto verde sotto volte a stella.",
             "giardino": "Una corte bianca a cielo aperto. Cactus, palme e luci sospese.",
-            "cucina": "Tradizione e contemporaneità nello stesso menu.",
+            "cucina": "Radici salentine, materie prime del territorio e uno sguardo contemporaneo.",
             "forno": "Impasti a lunga lievitazione. Cereali, carbone vegetale.",
             "dispensa": "Nasce dall'idea di custodire il meglio di ogni raccolto e trasformarlo in un patrimonio di sapori autentici, disponibile tutto l'anno.",
             "menu": "Cucina di mare e di terra, pizza a lunga lievitazione.",
@@ -345,12 +346,19 @@ T = {
             "testo": "Creiamo esperienze su misura, con menu dedicati.",
         },
         "cucina": {
-            "testo": "Qui tradizione e contemporaneità convivono nello stesso menu.",
-            "trio": ["Pescato locale", "Verdure di stagione", "Prodotti del territorio"],
-            "corpo": "La nostra cucina li trasforma in piatti eleganti ma riconoscibili.",
-            "chiusa": "Ogni dettaglio, dall'ambiente al servizio, è pensato per far "
-                      "sentire ogni ospite nel posto giusto.",
-            "nomi": ["Gambero rosso", "Pasta e tonno", "Cheesecake"],
+            "testo": "Il Salento è il nostro punto di partenza.",
+            "descrizione": "La nostra cucina nasce dal legame con questa terra e con le materie prime "
+                           "che ne raccontano il gusto. La burrata pugliese, il capocollo di Martina "
+                           "Franca e la fragranza del tarallo incontrano il mare, le verdure e la "
+                           "freschezza degli agrumi. Sapori del Salento e della Puglia che danno "
+                           "carattere a un menu aperto a nuovi incontri.",
+            "trio": ["Radici salentine", "Materie prime del territorio", "Sguardo contemporaneo"],
+            "corpo": "Il gusto del territorio, la curiosità di interpretarlo.",
+            "chiusa": "Dalle paste della tradizione ai crudi, dalle cotture delicate alle consistenze "
+                      "croccanti, il menu si muove tra mare e terra. Creme di verdure, mandorle "
+                      "tostate e note agrumate accompagnano gli ingredienti; accenti come l’aglio "
+                      "nero e le marinature aprono il racconto a sapori contemporanei. Una cucina "
+                      "che conserva il piacere della tavola pugliese e lo esprime con sensibilità propria.",
         },
         "pizzeria": {
             "n": "72", "k": "ore di pazienza",
@@ -362,6 +370,7 @@ T = {
             "grande": "Ogni vasetto racconta una stagione, una ricetta e il lavoro "
                       "delle mani che l'hanno preparato.",
             "cta": "Chiedi cosa c'è in dispensa",
+            "msg_whatsapp": "Ciao PLAGA, vorrei informazioni sui prodotti della Dispensa e sulla loro disponibilità.",
             "comune": "Lavorazione pugliese artigianale bio",
             "alt_scaffale": "Lo scaffale della Dispensa del Plaga, con i vasetti in fila",
             "vetrina": "I vasetti",
@@ -396,6 +405,7 @@ T = {
                  "Si paga al ritiro, o come concordato in chat."),
             ],
         },
+        "premi": "Riconoscimenti",
         "btn_menu": "Vedi il menu",
         "btn_drinks": "Vini, birre e cocktail",
         "note": "Prezzi in euro, coperto €2.",
@@ -427,6 +437,12 @@ T = {
             "piatto-cheesecake": "Cheesecake ai lamponi con coulis e menta",
             "dispensa-card": "Due vasetti di passata sullo scaffale della Dispensa",
             "stemma": "La Dispensa del Plaga",
+            "forno-impasto": "La stesura a mano dell’impasto sul banco infarinato",
+            "dispensa-scelta": "Un vasetto di passata scelto dallo scaffale della Dispensa",
+            "pasta-dettaglio": "Dettaglio della pasta con tonno e crema bianca",
+            "fritto-servito": "Frittura di mare e verdure servita in una ciotola di legno",
+            "pasta-vongole": "Pasta con vongole in un piatto azzurro",
+
         },
     },
     "en": {
@@ -490,7 +506,7 @@ T = {
             "index": "Lecce stone vaults, an open-air garden and a wood-fired oven.",
             "sale": "Marble, wood and green velvet beneath star vaults.",
             "giardino": "A white open-air courtyard. Cacti, palms and hanging lights.",
-            "cucina": "Tradition and the present day, in the same menu.",
+            "cucina": "Roots in Salento, regional ingredients and a contemporary approach.",
             "forno": "Long-fermented dough. Wholegrain and charcoal bases.",
             "dispensa": "It comes from the idea of keeping the best of every harvest and turning it into a store of authentic flavours, available all year round.",
             "menu": "Sea and land cooking, long-fermented pizza.",
@@ -522,12 +538,19 @@ T = {
             "testo": "We also create bespoke experiences, with dedicated menus.",
         },
         "cucina": {
-            "testo": "Here tradition and the present day live in the same menu.",
-            "trio": ["Local catch", "Seasonal vegetables", "Produce from the region"],
-            "corpo": "Our kitchen turns them into dishes that are elegant yet recognisable.",
-            "chiusa": "Every detail, from the room to the service, is meant to make "
-                      "each guest feel in the right place.",
-            "nomi": ["Red prawn", "Pasta and tuna", "Cheesecake"],
+            "testo": "Salento is our starting point.",
+            "descrizione": "Our cooking grows from a connection to this land and the ingredients "
+                           "that express its character. Apulian burrata, capocollo from Martina "
+                           "Franca and crisp taralli meet seafood, vegetables and bright citrus "
+                           "notes. Flavours from Salento and the wider region of Puglia give "
+                           "shape to a menu that welcomes new influences.",
+            "trio": ["Roots in Salento", "Regional ingredients", "A contemporary approach"],
+            "corpo": "Regional flavours, interpreted with curiosity.",
+            "chiusa": "From traditional pasta shapes to raw seafood, from delicate cooking to "
+                      "crisp textures, the menu moves between sea and land. Vegetable creams, "
+                      "toasted almonds and citrus notes complement the ingredients, while black "
+                      "garlic and marinades bring a contemporary touch. Cooking that preserves "
+                      "the pleasure of the Apulian table and gives it an expression of its own.",
         },
         "pizzeria": {
             "n": "72", "k": "hours of patience",
@@ -539,6 +562,7 @@ T = {
             "grande": "Every jar tells of a season, a recipe and the work of the "
                       "hands that made it.",
             "cta": "Ask what's in the pantry",
+            "msg_whatsapp": "Hello PLAGA, I would like information about the Pantry products and their availability.",
             "comune": "Artisan organic production, made in Puglia",
             "alt_scaffale": "The Plaga Pantry shelf, with the jars lined up",
             "vetrina": "The jars",
@@ -573,6 +597,7 @@ T = {
                  "Paid on collection, or as agreed in chat."),
             ],
         },
+        "premi": "Awards",
         "btn_menu": "See the menu",
         "btn_drinks": "Wines, beers and cocktails",
         "note": "Prices in euro, €2 cover charge.",
@@ -604,6 +629,12 @@ T = {
             "piatto-cheesecake": "Raspberry cheesecake with coulis and mint",
             "dispensa-card": "Two jars of passata on the Pantry shelf",
             "stemma": "The Plaga Pantry",
+            "forno-impasto": "Pizza dough stretched by hand on the floured worktop",
+            "dispensa-scelta": "A jar of passata being picked from the Pantry shelf",
+            "pasta-dettaglio": "Close-up of pasta with tuna and white cream",
+            "fritto-servito": "Fried seafood and vegetables served in a wooden bowl",
+            "pasta-vongole": "Pasta with clams on a blue plate",
+
         },
     },
 }
@@ -681,6 +712,16 @@ DISPENSA = [
                     "the essence comes out on its own, with the oil.",
             "alt": "The bergamot oil bottle on a bed of green olives"}},
 ]
+
+# ───────────────────── IL SIGILLO DI RESTAURANT GURU ─────────────────────
+# Incollato come lo danno loro: è il marchio di un terzo, non lo ridisegno
+# né lo riospito. Si porta dietro un foglio di stile, una grafica e tre
+# caratteri da awards.infcdn.net — dichiarati nella cookie policy e nella
+# privacy, e chiesti solo all'apertura della pagina iniziale.
+# Quando i riconoscimenti diventeranno più d'uno si accodano dentro
+# .premi__fila, senza toccare altro.
+SIGILLO_CSS = "https://awards.infcdn.net/2026/circle_v2.css"
+SIGILLO_GURU = """<div id="circle-r-ribbon" onclick="if(event.target.nodeName.toLowerCase() != 'a') {window.open(this.querySelector('.r-ribbon_title').href);return 0;}" class=" rg-award-lang-en_US" style="cursor: pointer; overflow: hidden; position: relative; display: flex; flex-direction: column; padding: 0; max-width: 174px; min-width: 174px; height: 135px; font: 400 10px/normal 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif; align-items: center; text-align: center; color: #000 !important; text-shadow: none; background: url(https://awards.infcdn.net/img/bg.svg) no-repeat; box-sizing: border-box;"> <div class="r-ribbon_ahead " style="transform: rotate(-11deg); position: absolute; z-index: 4; top: -7px; left: 6px; letter-spacing: 0.2px; padding: 0;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="160px" height="160px" viewBox="0 0 160 160" style="width: 160px; height: 160px; margin-top: 0;"> <defs> <path id="heading-arc" d="M 30 80 a 50 50 0 1 1 100 0"></path> </defs> <text class="r-ribbon_ahead-heading" fill="#000" text-anchor="middle" style="font-size: 12px !important; font-family: 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif !important; line-height: 1; text-transform: uppercase !important; alignment-baseline: auto;"> <textPath startOffset="50%" xlink:href="#heading-arc">Best restaurant</textPath> </text> </svg> </div> <p class="r-ribbon_year" style="color: #000; width: 140px; font: 22px/normal 'Akrobat Black', 'Helvetica Neue', 'Arial', sans-serif !important; font-style: italic !important; transform: rotate(-12deg); position: absolute; top: 41px !important; left: 12px !important; letter-spacing: 0.6px; text-align: center !important; padding: 0 !important; margin: 0 !important;">2026</p> <a href="https://restaurantguru.com/Plaga-Galatone" class="r-ribbon_title" target="_blank" style="text-transform: uppercase; color: #fff !important; width: 140px; font-size: 16px !important; line-height: normal !important; font-family: 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif !important; font-style: italic !important; transform: rotate(-12deg); position: absolute; z-index: 5; top: 72px; left: 12px; letter-spacing: 0.4px !important; text-align: center !important; white-space: normal; padding: 0 !important; margin: 0 !important; text-decoration: none !important; border-bottom: none; box-shadow: none; ">Plaga</a> <div class="r-ribbon_ahead r-ribbon_ahead-bottom" style="top: auto; bottom: -14px; left: 26px; letter-spacing: 0.3px; transform: rotate(-13deg); height: 100% !important; max-width: 100%; padding: 0; position: absolute !important; z-index: 4;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120px" height="120px" viewBox="0 0 120 120" style="width: 120px; height: 120px; margin-top: 0;"> <defs> <path id="subheading-arc" d="M 12 60 a 48 48 0 0 0 96 0"></path> </defs> <text class="r-ribbon_ahead-subh" fill="#000" text-anchor="middle" style="font: 12px/1 'Akrobat Regular', 'Helvetica Neue', 'Arial', sans-serif !important; text-transform: uppercase; letter-spacing: normal;"> <textPath startOffset="50%" xlink:href="#subheading-arc"><a href="https://restaurantguru.com" target="_blank" style="font: 12px/1 'Akrobat Regular', 'Helvetica Neue', 'Arial', sans-serif !important; text-transform: uppercase; letter-spacing: 0.3px; text-decoration: none !important; border-bottom: none; box-shadow: none; padding: 0; margin: 0;">Restaurant Guru</a></textPath> </text> </svg> </div></div>"""
 
 MENU = [
     ("antipasti", "Antipasti", "Starters", [
@@ -835,9 +876,15 @@ def picture(root, name, alt, lazy=True, mobile=None):
     """
     load = ' loading="lazy"' if lazy else ' fetchpriority="high"'
     piccola = mobile or f"{name}-sm"
+    # Dimensioni intrinseche: lo spazio delle nuove foto è riservato anche
+    # prima del caricamento lazy, evitando salti durante lo scroll.
+    misure = {"forno-impasto": (1616, 2032), "dispensa-scelta": (1280, 1706),
+              "pasta-dettaglio": (1639, 2048), "fritto-servito": (1024, 1360),
+              "pasta-vongole": (1536, 2048)}
+    dimensioni = f' width="{misure[name][0]}" height="{misure[name][1]}"' if name in misure else ""
     return (f'<picture class="pic">'
             f'<source media="(max-width:700px)" srcset="{root}assets/img/{piccola}.webp">'
-            f'<img src="{root}assets/img/{name}-lg.webp" alt="{alt}"{load}>'
+            f'<img src="{root}assets/img/{name}-lg.webp" alt="{alt}"{dimensioni}{load}>'
             f'</picture>')
 
 
@@ -891,7 +938,7 @@ def overlay(lang, name):
   <div class="menuOverlay__trama" aria-hidden="true"></div>
   <div class="menuOverlay__inner" data-lenis-prevent>
     <div class="menuTop">
-      <a class="menuBrand" href="index.html"{casa} aria-label="{t["home_aria"]}">{wordmark("menuMark")}</a>
+      <a class="menuBrand" href="index.html?intro=logo"{casa} aria-label="{t["home_aria"]}">{wordmark("menuMark")}</a>
     </div>
     <div class="menuIndex">
       {"".join(gruppi)}
@@ -912,7 +959,7 @@ def overlay(lang, name):
 def header(lang, name, light=False):
     t = T[lang]
     return f"""<header class="nav{' is-light' if light else ''}" id="nav">
-  <a href="index.html" class="nav__brand" aria-label="{t["home_aria"]}">{wordmark("navMark")}</a>
+  <a href="index.html?intro=logo" class="nav__brand" aria-label="{t["home_aria"]}">{wordmark("navMark")}</a>
   <div class="nav__right">
     {lang_switch(lang, name)}
     <button class="burger" id="burger" aria-label="{t["burger_open"]}" aria-expanded="false"
@@ -965,6 +1012,9 @@ def page(lang, name, body, light_nav=False, loader=False):
     # la trama di fondo sta solo nella pagina iniziale: altrove il marchio
     # ripetuto sotto ai titoloni diventa rumore
     corpo_cls = ' class="is-home"' if name == "index" else ""
+    # il sigillo sta solo in home, e con lui il suo foglio di stile
+    sigillo = (f'\n<link href="{SIGILLO_CSS}" rel="stylesheet">'
+               if name == "index" else "")
     root = "" if t["dir"] == "" else "../"
     it_url = f"{name}.html" if t["dir"] == "" else f"../{name}.html"
     en_url = f"en/{name}.html" if t["dir"] == "" else f"{name}.html"
@@ -977,6 +1027,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 <title>{t["titles"][name]}</title>
 <meta name="description" content="{t["descs"][name]}">
 <meta name="theme-color" content="#E8DBC7">
+<script src="{root}js/intro.js?v={impronta("js/intro.js")}"></script>
 <link rel="alternate" hreflang="it" href="{it_url}">
 <link rel="alternate" hreflang="en" href="{en_url}">
 <link rel="alternate" hreflang="x-default" href="{it_url}">
@@ -987,10 +1038,10 @@ def page(lang, name, body, light_nav=False, loader=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{root}css/style.css?v={impronta("css/style.css")}">
+<link rel="stylesheet" href="{root}css/style.css?v={impronta("css/style.css")}">{sigillo}
 </head>
 <body{corpo_cls}>
-{loader_block() if loader else ""}
+{loader_block()}
 {header(lang, name, light_nav)}
 <main id="top">
 {body}
@@ -1301,6 +1352,11 @@ def build_home(lang):
 <section class="chiusa">
   <p class="chiusa__grande" data-sale>{t["chiusa_grande"]}</p>
   <p class="chiusa__piccola">{t["chiusa_piccola"]}</p>
+</section>
+
+<section class="premi">
+  <p class="premi__k">{t["premi"]}</p>
+  <div class="premi__fila">{SIGILLO_GURU}</div>
 </section>"""
 
 
@@ -1359,9 +1415,6 @@ def build_forno(lang):
     t = T[lang]
     p = t["pizzeria"]
     trio = "".join(f'<li class="trio__voce">{v}</li>' for v in p["trio"])
-    slot = ('<figure class="slot"><div class="slot__box">'
-            '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/>'
-            '<circle cx="12" cy="12" r="3.2"/></svg></div><figcaption>{}</figcaption></figure>')
     return f"""<section class="pageHead">
   <h1 class="pageTitle">{t["h1"]["forno"]}</h1>
   <p class="lead">{t["leads"]["forno"]}</p>
@@ -1374,23 +1427,12 @@ def build_forno(lang):
   <span class="cifra__k">{p["k"]}</span>
 </section>
 
-<section class="dire">
-  <p class="dire__testo" data-sale>{p["testo"]}</p>
+<section class="racconto">
+  <div class="racconto__foto">{picture(_root(lang), "forno-impasto", t["alt"]["forno-impasto"])}</div>
+  <p class="racconto__testo" data-sale>{p["testo"]}</p>
 </section>
 
 <section class="trio"><ul class="trio__lista">{trio}</ul></section>
-
-<!-- SLOT FOTO IN ARRIVO — pizze, piatti, cucina.
-     Quando avrai le foto: convertile in webp in assets/img/ e qui in build.py
-     sostituisci i tre slot con delle figure vere, per esempio
-       _fig(lang, "g--third", "pizza-01", "Nome della pizza")
-     ricordando di aggiungere nome file e testo alternativo nel dizionario "alt"
-     di entrambe le lingue. Poi rilancia: python3 build.py -->
-<section class="slots">
-  {slot.format(t["slots"][0])}
-  {slot.format(t["slots"][1])}
-  {slot.format(t["slots"][2])}
-</section>
 
 <section class="cta">
   <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
@@ -1400,21 +1442,14 @@ def build_forno(lang):
 
 
 def build_cucina(lang):
-    """La cucina: una dichiarazione, i tre pilastri, i piatti.
-
-    I tre nomi non sono didascalie delle foto — non si corrispondono uno a
-    uno — quindi stanno in una fascia loro, e le foto in una griglia sotto
-    con il solo nome del piatto.
-    """
+    """Un racconto del menu e del territorio, con fotografie senza didascalie."""
     t = T[lang]
     c = t["cucina"]
     r = _root(lang)
     trio = "".join(f'<li class="trio__voce">{v}</li>' for v in c["trio"])
     foto = "".join(
-        f'<figure class="quad">{picture(r, img, t["alt"][img])}'
-        f'<figcaption class="quad__nome">{nome}</figcaption></figure>'
-        for img, nome in zip(("piatto-gambero", "piatto-pasta", "piatto-cheesecake"),
-                             c["nomi"]))
+        f'<figure class="quad">{picture(r, img, t["alt"][img])}</figure>'
+        for img in ("pasta-vongole", "pasta-dettaglio", "fritto-servito"))
 
     return f"""<section class="pageHead">
   <h1 class="pageTitle">{t["h1"]["cucina"]}</h1>
@@ -1425,11 +1460,12 @@ def build_cucina(lang):
 
 <section class="dire">
   <p class="dire__testo" data-sale>{c["testo"]}</p>
+  <p class="dire__sotto">{c["descrizione"]}</p>
 </section>
 
 <section class="trio"><ul class="trio__lista">{trio}</ul></section>
 
-<section class="quadri">{foto}</section>
+<section class="quadri quadri--piatti">{foto}</section>
 
 <section class="dire dire--coda">
   <p class="dire__testo" data-sale>{c["corpo"]}</p>
@@ -1486,10 +1522,9 @@ def build_dispensa(lang):
   <p class="lead">{t["leads"]["dispensa"]}</p>
 </section>
 
-<section class="bleed">{picture(r, "disp-scaffale", d["alt_scaffale"], lazy=False)}</section>
-
-<section class="dire">
-  <p class="dire__testo" data-sale>{d["grande"]}</p>
+<section class="racconto racconto--dispensa">
+  <div class="racconto__foto">{picture(r, "dispensa-scelta", t["alt"]["dispensa-scelta"], lazy=False)}</div>
+  <p class="racconto__testo" data-sale>{d["grande"]}</p>
 </section>
 
 <section class="disp" id="vetrina" style="--tinta:{DISPENSA[0]["tinta"]}">
@@ -1504,7 +1539,7 @@ def build_dispensa(lang):
 <section class="cta">
   <a class="btn btn--pieno" href="bottega.html"><span>{t["bottega"]["titolo"]}</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-  <a class="btn" href="{wa_href(lang)}" target="_blank" rel="noopener"><span>{d["cta"]}</span></a>
+  <a class="btn" href="{wa_href(lang, d["msg_whatsapp"])}" target="_blank" rel="noopener"><span>{d["cta"]}</span></a>
   <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
 

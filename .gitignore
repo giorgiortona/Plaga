@@ -15,3 +15,7 @@ foto_plaga/
 
 # La cartella logo/ NON va ignorata: contiene l'originale del marchio,
 # che è una sorgente vera, non un file rigenerabile.
+
+# Configurazione di un servizio di hosting esterno, non riguarda questo sito
+# (punta a una cartella dist/ che qui non esiste).
+.openai/
