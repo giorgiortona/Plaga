@@ -36,7 +36,7 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:6rem;overflow-x:clip}
 
 /* ─────────────────────── LA TRAMA DI FONDO ───────────────────────
    Il marchio ripetuto, verde, quasi invisibile. Lo strato è più largo
@@ -50,11 +50,18 @@ html{-webkit-text-size-adjust:100%}
 ------------------------------------------------------------------- */
 body.is-home::before{
   content:'';
-  position:fixed;inset:-30%;
+  /* Ruotando di 16° serve il 124% della finestra per coprirla tutta
+     (cos16 + sin16 = 1,237). Stava al 160%: due volte e mezza lo schermo
+     da comporre a ogni fotogramma, per niente. */
+  position:fixed;inset:-14%;
   z-index:-1;
   background:url("../assets/img/trama-plaga.svg") repeat;
   background-size:clamp(300px,26vw,440px) auto;
   transform:rotate(-16deg);
+  /* le dico che quel riquadro non cambierà mai: così il browser lo disegna
+     una volta e poi lo sposta soltanto, invece di ridipingerlo mentre il
+     contenuto ci scorre sopra */
+  will-change:transform;
   /* la sola manopola da girare se la vuoi più o meno presente */
   opacity:.045;
   pointer-events:none;
@@ -69,9 +76,9 @@ body{
   font-size:clamp(1.08rem,1.2vw,1.3rem);
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  overflow-x:clip;
 }
-body.is-locked{overflow:hidden}
+body.is-locked{position:fixed;top:var(--scroll-top,0px);width:100%;overflow:hidden}
 
 img{display:block;max-width:100%;height:auto}
 .pic{display:block;width:100%;height:100%}
@@ -142,8 +149,9 @@ figcaption i{color:var(--green-500)}
 .loader{
   position:fixed;inset:0;z-index:1000;
   background:var(--green-900);
-  display:grid;place-items:center;
+  display:none;place-items:center;
 }
+html.has-intro .loader{display:grid}
 .loader__inner{
   display:flex;flex-direction:column;align-items:center;
   gap:clamp(1rem,3vh,1.9rem);
@@ -481,25 +489,12 @@ figcaption i{color:var(--green-500)}
   font-size:clamp(1.6rem,4vw,3.6rem);
   color:var(--skin-050);
 }
-/* Quattro schede identiche in colonna appiattiscono la home: stessa
-   larghezza, stessa altezza, stesso titolo. Qui si alternano — una a tutta
-   pagina alta, una rientrata e quadrata — e i titoli crescono. */
+/* Sul telefono le sei destinazioni condividono misura e allineamento. */
 @media (max-width:760px){
-  .cards{
-    grid-template-columns:repeat(6,1fr);
-    gap:clamp(1.6rem,5.5vw,2.4rem);
-  }
-  .card{grid-column:1/-1}
-  .card__media{aspect-ratio:4/5}
-  .card__title{font-size:clamp(2.1rem,9.5vw,3.2rem);padding:clamp(1.1rem,4vw,1.6rem)}
-
-  .card:nth-child(odd){margin-inline:calc(max(var(--pad),env(safe-area-inset-left)) * -1)}
-  .card:nth-child(odd) .card__title{padding-inline:max(var(--pad),env(safe-area-inset-left))}
-
-  .card:nth-child(even){grid-column:2/-1}
-  .card:nth-child(even) .card__media{aspect-ratio:1/1}
-  /* la scheda rientrata è più stretta: il titolo deve starci su una riga */
-  .card:nth-child(even) .card__title{font-size:clamp(1.7rem,7.2vw,2.5rem)}
+  .cards{grid-template-columns:minmax(0,1fr);gap:1.25rem}
+  .card{min-width:0}
+  .card__media{aspect-ratio:4/3}
+  .card__title{font-size:clamp(2rem,8vw,3.2rem);padding:1.25rem;max-width:100%}
 }
 
 /* immagine a tutta larghezza */
@@ -1435,6 +1430,33 @@ figcaption i{color:var(--green-500)}
 
 /* ─────────────────── FINE PAGINE LEGALI ─────────────────── */
 
+/* ─────────────────── RICONOSCIMENTI ───────────────────
+   Il sigillo arriva dal sito che lo assegna, con la sua grafica e i suoi
+   caratteri: non lo ridisegno nei colori di PLAGA — sarebbe rifare il
+   marchio di un altro. Quello che posso fare è dargli una cornice nostra,
+   così sta in pagina come una citazione e non come un adesivo.
+
+   .premi__fila è una fila: quando i riconoscimenti saranno più d'uno si
+   accodano lì dentro, e vanno a capo da soli.
+--------------------------------------------------------------------- */
+
+.premi{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(2rem,5vh,3rem) var(--pad) clamp(3.5rem,9vh,5.5rem);
+  border-top:1px solid rgba(39,79,58,.2);
+  text-align:center;
+}
+.premi__k{
+  font-size:.78rem;font-weight:700;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--green-500);
+}
+.premi__fila{
+  margin-top:clamp(1.2rem,3vh,1.8rem);
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:clamp(1.2rem,3vw,2.5rem);
+}
+
 /* ───────────────────────────── FOOTER ───────────────────────────── */
 
 .foot{
@@ -1687,4 +1709,104 @@ a,button{-webkit-tap-highlight-color:transparent}
   .btn:active::before{transform:translateY(0)}
   .btn:active{color:var(--skin-050)}
   .menuNav__item a:hover .menuNav__label{transform:none}
+}
+
+/* Spazio utilizzabile e bersagli touch, anche in orizzontale. */
+.menuOverlay{height:100dvh}
+.menuTop,.menuFoot{flex-shrink:0}
+.menuIndex{flex-shrink:0}
+.menuOverlay__inner{padding-top:max(1rem,env(safe-area-inset-top));padding-bottom:max(1.25rem,env(safe-area-inset-bottom))}
+.menuTop{padding-right:7rem}
+.leave{max-height:calc(100dvh - 2rem);overscroll-behavior:contain}
+.leave[open]{overflow-y:auto}
+:focus-visible{outline:2px solid var(--sage);outline-offset:5px}
+@media (max-width:760px){
+  .hero{min-height:0}
+  .hero__content{padding-bottom:max(2.5rem,env(safe-area-inset-bottom))}
+  .menuNav__item a{min-height:44px;align-items:center}
+  .menuOverlay__inner{gap:1.25rem}
+  .menuIndex{flex:1 0 auto;align-content:start}
+  .menuFoot__v{overflow-wrap:anywhere}
+  .pageTitle{font-size:clamp(2.5rem,10vw,4.75rem);overflow-wrap:anywhere}
+  .foot__mark{overflow-wrap:anywhere}
+  .legal__body a{overflow-wrap:anywhere}
+  .leave__actions{flex-direction:column-reverse}
+  .leave__btn{width:100%}
+  .ordine__scheda{max-height:min(64dvh,460px)}
+}
+@media (max-width:360px){
+  .scaffale{grid-template-columns:minmax(0,1fr)}
+}
+@media (pointer:coarse){
+  .hero__sub a{display:inline-flex;align-items:center;min-height:44px}
+  .lang a,.foot__legal a{display:inline-flex;align-items:center;min-height:44px}
+}
+
+@media (max-width:860px), (pointer:coarse){
+  .is-menu-open .nav{background:var(--skin-100)}
+  .is-menu-open .nav__brand{opacity:1;transform:none;pointer-events:auto;transition:none}
+  .menuTop{display:none}
+  .menuOverlay__inner{padding-top:calc(6rem + env(safe-area-inset-top))}
+  .menuTabs{mask-image:none}
+}
+
+.nav{padding-top:max(clamp(1rem,2vw,1.6rem),env(safe-area-inset-top))}
+
+/* Categorie: un'unica corsia touch, senza ritorni a capo o scatti forzati. */
+@media (max-width:860px), (pointer:coarse){
+  .menuTabs{
+    flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    touch-action:pan-x;overscroll-behavior-y:contain;
+    gap:1.5rem;padding-bottom:.85rem;
+    scroll-padding-inline:var(--pad);
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--sage) transparent;
+  }
+  .menuTabs::-webkit-scrollbar{display:block;height:3px}
+  .menuTabs::-webkit-scrollbar-thumb{background:var(--sage);border-radius:3px}
+  .menuTab{flex:0 0 auto;white-space:nowrap;min-height:44px;font-weight:800}
+  .menuTabs__ink{bottom:3px;transition:transform .3s var(--ease-out),width .3s var(--ease-out)}
+}
+
+/* Ritratti e gesti: immagini verticali affiancate alle parole già presenti. */
+.racconto{
+  max-width:1240px;margin-inline:auto;
+  padding:clamp(2rem,6vw,5rem) var(--pad);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(2rem,7vw,6rem);align-items:center;
+}
+.racconto__foto{overflow:hidden}
+.racconto__foto .pic{height:auto}
+.racconto__foto img{width:100%;height:auto}
+.racconto__testo{
+  font-size:clamp(1.8rem,3.2vw,3.1rem);line-height:1.13;
+  letter-spacing:-.03em;font-variation-settings:'wdth' 96;
+}
+.racconto--dispensa{padding-top:0}
+.quadri--piatti .quad img{aspect-ratio:3/4}
+@media(max-width:760px){
+  .racconto{grid-template-columns:minmax(0,1fr);gap:1.75rem;padding-block:2.5rem}
+  .racconto--dispensa{padding-top:0}
+  .racconto__testo{font-size:clamp(1.6rem,6vw,2.3rem);max-width:24ch}
+  .quadri--piatti .quad:first-child img{aspect-ratio:4/5}
+}
+
+/* Testi in scena: movimento dentro la riga, senza spostare il layout. */
+.motion-readable{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;
+}
+.pageTitle .parola,.apertura .parola{padding-top:.12em;margin-top:-.12em}
+.titolo-lettera{transform-origin:50% 100%}
+.parola--territorio{position:relative;color:var(--green-500)}
+.parola--territorio::after{
+  content:'';position:absolute;left:0;right:0;bottom:.08em;height:2px;
+  background:var(--sage);transform:scaleX(0);transform-origin:left;
+  transition:transform .65s var(--ease-out);
+}
+.is-written .parola--territorio::after{transform:scaleX(1)}
+@media(prefers-reduced-motion:reduce){
+  .parola--territorio::after{transition:none}
 }
