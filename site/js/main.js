@@ -624,15 +624,77 @@ function burgerMenu() {
   if (!burger || !overlay) return;
 
   const panels = overlay.querySelectorAll('.menuOverlay__bg i');
-  const trama = overlay.querySelector('.menuOverlay__trama');
+  const vista = overlay.querySelector('.menuVista');
   const inner = overlay.querySelector('.menuOverlay__inner');
   const top = overlay.querySelector('.menuTop');
-  const teste = overlay.querySelectorAll('.menuGroup__k');
   const items = overlay.querySelectorAll('.menuNav__item a');
   const foots = overlay.querySelectorAll('.menuFoot__col');
 
   let open = false;
   let anim = null;
+
+  /* La foto del menu. Le immagini hanno solo data-src: partono la prima
+     volta che il menu sta per aprirsi — anche al semplice passaggio sul
+     burger, così all'apertura la prima foto è spesso già arrivata. Due
+     sorgenti per foto: la verticale per la colonna da PC, l'orizzontale
+     per la fascia da telefono; sceglie il browser, col <source>. */
+  const foto = vista ? vista.querySelectorAll('.menuVista__foto') : [];
+  const partenza = vista ? vista.dataset.attiva : null;
+  let caricate = false;
+
+  function caricaFoto() {
+    if (caricate || !vista) return;
+    caricate = true;
+    vista.querySelectorAll('source[data-srcset]').forEach((src) => {
+      src.srcset = src.dataset.srcset;
+    });
+    vista.querySelectorAll('img[data-src]').forEach((img) => {
+      img.srcset = img.dataset.srcset;
+      img.src = img.dataset.src;
+    });
+  }
+
+  function mostra(voce) {
+    foto.forEach((f) => f.classList.toggle('is-on', f.dataset.voce === voce));
+  }
+
+  /* Sul telefono non si passa sopra a niente, e la foto resterebbe ferma
+     su quella della pagina: lì scorrono da sole, una dopo l'altra, con la
+     didascalia che dice di quale sezione è. Al tocco di una voce il giro si
+     ferma e la foto diventa la sua, il tempo che la pagina cambi. Con
+     "riduci animazioni" il giro non parte. */
+  const tocco = window.matchMedia('(hover: none)');
+  const ordine = [...foto].map((f) => f.dataset.voce).filter((v) => v !== 'index');
+  let giro = null;
+
+  function avviaGiro() {
+    fermaGiro();
+    if (!vista || !tocco.matches || REDUCED) return;
+    let i = ordine.indexOf(partenza);
+    giro = setInterval(() => {
+      i = (i + 1) % ordine.length;
+      mostra(ordine[i]);
+    }, 3400);
+  }
+  function fermaGiro() {
+    clearInterval(giro);
+    giro = null;
+  }
+
+  // Passando su una voce la foto diventa la sua; uscendo dalla colonna di
+  // testo torna quella della pagina in cui si è. Anche da tastiera, col focus.
+  if (vista) {
+    overlay.querySelectorAll('.menuOverlay__inner [data-voce]').forEach((a) => {
+      const vai = () => mostra(a.dataset.voce);
+      a.addEventListener('mouseenter', vai);
+      a.addEventListener('focus', vai);
+      a.addEventListener('touchstart', () => { fermaGiro(); vai(); }, { passive: true });
+    });
+    overlay.querySelector('.menuOverlay__inner').addEventListener('mouseleave', () => {
+      if (!tocco.matches) mostra(partenza);
+    });
+  }
+  burger.addEventListener('pointerenter', caricaFoto, { once: true });
 
   // Gli stati di partenza, tutti insieme: l'overlay resta montato tra
   // un'apertura e l'altra, quindi vanno rimessi anche alla chiusura.
@@ -642,8 +704,8 @@ function burgerMenu() {
     gsap.set(items, { y: 0, yPercent: 105 });
     gsap.set(foots, { opacity: 0, y: 14 });
     gsap.set(top, { opacity: 0, y: -12 });
-    gsap.set(teste, { opacity: 0, y: 10 });
-    gsap.set(trama, { opacity: 0 });
+    // la foto si ritira verso il basso e riparte chiusa dall'alto
+    if (vista) gsap.set(vista, { clipPath: 'inset(0% 0% 100% 0%)' });
   }
   azzera();
 
@@ -654,6 +716,9 @@ function burgerMenu() {
     // più strette di quanto saranno: la misura buona è questa. Un frame
     // dopo, però — a pannello aperto, quando il testo è davvero disegnato.
     requestAnimationFrame(adattaVociMenu);
+    caricaFoto();
+    mostra(partenza);
+    setTimeout(() => { if (open) avviaGiro(); }, 1400);   // dopo l'ingresso
     document.body.classList.add('is-menu-open');
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -662,16 +727,15 @@ function burgerMenu() {
     nav.classList.remove('is-hidden');
     if (lenis) lenis.stop();
 
-    // L'ordine è quello della lettura: prima il fondo, poi il marchio che
-    // raccoglie il testimone da quello della barra, poi gli occhielli dei
-    // gruppi e le voci sotto, infine i contatti.
+    // L'ordine è quello della lettura: prima il fondo e la foto che scende
+    // insieme alle ante, poi il marchio che raccoglie il testimone da quello
+    // della barra, le voci, infine i contatti.
     anim && anim.kill();
     anim = gsap.timeline();
     anim.set(inner, { opacity: 1 })
       .to(panels, { scaleY: 1, duration: 0.8, stagger: 0.06, ease: 'power4.inOut', transformOrigin: 'top' }, 0)
-      .to(trama, { opacity: 1, duration: 1, ease: EASE_OUT }, 0.3)
+      .to(vista, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.05, ease: 'power4.inOut' }, 0.1)
       .to(top, { opacity: 1, y: 0, duration: 0.6, ease: EASE_OUT }, 0.34)
-      .to(teste, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: EASE_OUT }, 0.44)
       .fromTo(items, { y: 0, yPercent: 105 }, { yPercent: 0, duration: 0.9, stagger: 0.05, ease: EASE_OUT }, 0.5)
       .to(foots, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: EASE_OUT }, 0.74);
   }
@@ -683,6 +747,7 @@ function burgerMenu() {
     burger.setAttribute('aria-expanded', 'false');
     burger.setAttribute('aria-label', burger.dataset.open || 'Apri il menu');
     if (lenis) lenis.start();
+    fermaGiro();
 
     anim && anim.kill();
     anim = gsap.timeline({
@@ -694,8 +759,8 @@ function burgerMenu() {
       }
     });
     anim.to(items, { yPercent: -105, duration: 0.5, stagger: 0.035, ease: EASE }, 0)
-      .to([top, ...teste, ...foots], { opacity: 0, duration: 0.25, ease: EASE }, 0)
-      .to(trama, { opacity: 0, duration: 0.4, ease: EASE }, 0)
+      .to([top, ...foots], { opacity: 0, duration: 0.25, ease: EASE }, 0)
+      .to(vista, { clipPath: 'inset(100% 0% 0% 0%)', duration: 0.75, ease: 'power4.inOut' }, 0.1)
       .to(panels, { scaleY: 0, duration: 0.7, stagger: 0.05, ease: 'power4.inOut', transformOrigin: 'bottom' }, 0.18);
   }
 
