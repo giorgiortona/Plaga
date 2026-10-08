@@ -173,6 +173,37 @@ function saliParole() {
   });
 }
 
+/* La storia segue i capitoli attraversati dallo scroll. I testi restano
+   leggibili senza JavaScript e con il movimento ridotto. */
+function raccontiInScena() {
+  if (REDUCED) return;
+
+  const storia = document.querySelector('.storia');
+  if (storia) {
+    const righe = [...storia.querySelectorAll('.storia__riga')];
+    const attiva = (riga) => righe.forEach((el) => el.classList.toggle('is-active', el === riga));
+    attiva(righe[0]);
+    storia.classList.add('is-motion-ready');
+    righe.forEach((riga) => ScrollTrigger.create({
+      trigger: riga, start: 'top 55%', end: 'bottom 45%',
+      onEnter: () => attiva(riga), onEnterBack: () => attiva(riga)
+    }));
+  }
+
+  document.querySelectorAll('.racconto--forno, .racconto--dispensa').forEach((sezione) => {
+    sezione.classList.add('is-motion-ready');
+    ScrollTrigger.create({
+      trigger: sezione, start: 'top 82%', once: true,
+      onEnter: () => {
+        sezione.classList.add('is-inview');
+        gsap.fromTo(sezione.querySelector('.racconto__copy'),
+          { y: 28, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity' });
+      }
+    });
+  });
+}
+
 /* ───────── LA FRASE CHE SI SCRIVE ─────────
    Il manifesto non compare tutto insieme: si scrive mentre lo scorrimento
    lo attraversa, una lettera dopo l'altra. Niente resta nascosto dietro un
@@ -1002,6 +1033,7 @@ function start() {
   titoliInScena();
   saliParole();
   scriviFrase();
+  raccontiInScena();
   vetrinaDispensa();
   timbro();
   bottega();

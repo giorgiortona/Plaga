@@ -324,11 +324,11 @@ T = {
         "storia": {
             "k": "La nostra storia",
             "titolo": "Una cucina di famiglia, una voce tutta sua.",
-            "testo": "Gabriele è cresciuto tra i fornelli di sua madre Annarita e il "
-                     "ristorante di famiglia guidato dal padre Claudio. Da loro ha "
-                     "imparato il rispetto per le materie prime, la pazienza e il "
-                     "piacere di accogliere chi entra come a casa. Nel 2024 ha dato "
-                     "a questa storia un nome e uno stile nuovi: Plaga.",
+            "capitoli": [
+                ("Le origini", "Gabriele è cresciuto tra i fornelli di sua madre Annarita e il ristorante di famiglia guidato dal padre Claudio."),
+                ("Ciò che resta", "Da loro ha imparato il rispetto per le materie prime, la pazienza e il piacere di accogliere chi entra come a casa."),
+                ("Un nome nuovo", "Nel 2024 ha dato a questa storia un nome e uno stile nuovi: Plaga."),
+            ],
         },
         "chiusa_grande": "Il tempo trascorso a tavola è la parte più preziosa.",
         "chiusa_piccola": "Scegliamo gli ingredienti, pensiamo il menu e curiamo ogni gesto "
@@ -345,11 +345,10 @@ T = {
         },
         "cucina": {
             "testo": "Il Salento è il nostro punto di partenza.",
-            "descrizione": "Il menu cambia con le stagioni e prende forma dalle materie prime "
-                           "del Salento, insieme a pescatori, allevatori, contadini e produttori "
-                           "del territorio. La burrata pugliese, il capocollo di Martina Franca "
-                           "e la fragranza del tarallo incontrano il mare, le verdure e gli agrumi.",
-            "trio": ["Radici salentine", "Materie prime del territorio", "Sguardo contemporaneo"],
+            "stagioni": "Il menu cambia con le stagioni e prende forma dalle materie prime del Salento.",
+            "filiera_k": "La nostra filiera",
+            "filiera": ["Pescatori", "Allevatori", "Contadini", "Produttori"],
+            "ingredienti": "La burrata pugliese, il capocollo di Martina Franca e la fragranza del tarallo incontrano il mare, le verdure e gli agrumi.",
             "corpo": "Il gusto del territorio, la curiosità di interpretarlo.",
             "chiusa": "Dalle paste della tradizione ai crudi, il menu si muove tra mare e "
                       "terra. Creme di verdure, mandorle tostate, note agrumate e marinature "
@@ -535,11 +534,11 @@ T = {
         "storia": {
             "k": "Our story",
             "titolo": "A family kitchen, a voice of his own.",
-            "testo": "Gabriele grew up around his mother Annarita's cooking and the "
-                     "family restaurant run by his father Claudio. From them he "
-                     "learned respect for ingredients, patience, and how to welcome "
-                     "people as if they were coming home. In 2024, he gave that "
-                     "story a new name and a style of his own: Plaga.",
+            "capitoli": [
+                ("The beginning", "Gabriele grew up around his mother Annarita's cooking and the family restaurant run by his father Claudio."),
+                ("What endures", "From them he learned respect for ingredients, patience, and how to welcome people as if they were coming home."),
+                ("A new name", "In 2024, he gave that story a new name and a style of his own: Plaga."),
+            ],
         },
         "chiusa_grande": "Time together at the table is the most precious part.",
         "chiusa_piccola": "We choose the ingredients, shape the menu and care for every "
@@ -556,11 +555,10 @@ T = {
         },
         "cucina": {
             "testo": "Salento is our starting point.",
-            "descrizione": "The menu changes with the seasons and begins with ingredients "
-                           "from Salento, alongside local fishers, farmers, breeders and "
-                           "producers. Apulian burrata, capocollo from Martina Franca "
-                           "and crisp taralli meet seafood, vegetables and citrus.",
-            "trio": ["Roots in Salento", "Regional ingredients", "A contemporary approach"],
+            "stagioni": "The menu changes with the seasons and begins with ingredients from Salento.",
+            "filiera_k": "Our local network",
+            "filiera": ["Fishers", "Breeders", "Farmers", "Producers"],
+            "ingredienti": "Apulian burrata, capocollo from Martina Franca and crisp taralli meet seafood, vegetables and citrus.",
             "corpo": "Regional flavours, interpreted with curiosity.",
             "chiusa": "From traditional pasta to raw seafood, the menu moves between "
                       "sea and land. Vegetable creams, toasted almonds, citrus and "
@@ -1398,6 +1396,10 @@ def _root(lang):
 def build_home(lang):
     t = T[lang]
     r = _root(lang)
+    capitoli = "".join(
+        f'<li class="storia__riga"><span class="storia__numero">{i:02d}</span>'
+        f'<div><h3 class="storia__nome">{nome}</h3><p class="storia__testo">{testo}</p></div></li>'
+        for i, (nome, testo) in enumerate(t["storia"]["capitoli"], 1))
     # l'indice punta a t["nav"], che segue l'ordine di PAGES
     cards = [("sale", 1, "bar-arco"), ("giardino", 2, "giardino-cactus"),
              ("cucina", 3, "piatto-gambero"), ("forno", 4, "forno"),
@@ -1436,10 +1438,12 @@ def build_home(lang):
 
 <section class="cards" id="esplora">{"".join(pezzi)}</section>
 
-<section class="dire dire--storia" aria-labelledby="storia-title">
-  <p class="occhiello">{t["storia"]["k"]}</p>
-  <h2 class="dire__testo" id="storia-title" data-sale>{t["storia"]["titolo"]}</h2>
-  <p class="dire__sotto">{t["storia"]["testo"]}</p>
+<section class="storia" aria-labelledby="storia-title">
+  <div class="storia__titolo">
+    <p class="occhiello">{t["storia"]["k"]}</p>
+    <h2 id="storia-title" data-sale>{t["storia"]["titolo"]}</h2>
+  </div>
+  <ol class="storia__capitoli">{capitoli}</ol>
 </section>
 
 <section class="chiusa">
@@ -1520,7 +1524,7 @@ def build_forno(lang):
   <span class="cifra__k">{p["k"]}</span>
 </section>
 
-<section class="racconto">
+<section class="racconto racconto--forno">
   <div class="racconto__foto">{picture(_root(lang), "forno-impasto", t["alt"]["forno-impasto"])}</div>
   <div class="racconto__copy">
     <p class="racconto__testo" data-sale>{p["testo"]}</p>
@@ -1542,7 +1546,7 @@ def build_cucina(lang):
     t = T[lang]
     c = t["cucina"]
     r = _root(lang)
-    trio = "".join(f'<li class="trio__voce">{v}</li>' for v in c["trio"])
+    filiera = "".join(f'<li>{v}</li>' for v in c["filiera"])
     foto = "".join(
         f'<figure class="quad">{picture(r, img, t["alt"][img])}</figure>'
         for img in ("pasta-vongole", "pasta-dettaglio", "fritto-servito"))
@@ -1554,18 +1558,23 @@ def build_cucina(lang):
 
 <section class="bleed">{picture(r, "piatto-gambero-det", t["alt"]["piatto-gambero-det"], lazy=False)}</section>
 
-<section class="dire">
-  <p class="dire__testo" data-sale>{c["testo"]}</p>
-  <p class="dire__sotto">{c["descrizione"]}</p>
+<section class="cucinaIntro">
+  <h2 class="cucinaIntro__titolo" data-sale>{c["testo"]}</h2>
+  <div class="cucinaIntro__dettagli">
+    <p class="cucinaIntro__lead">{c["stagioni"]}</p>
+    <div class="cucinaIntro__filiera">
+      <p class="occhiello">{c["filiera_k"]}</p>
+      <ul>{filiera}</ul>
+    </div>
+    <p class="cucinaIntro__ingredienti">{c["ingredienti"]}</p>
+  </div>
 </section>
-
-<section class="trio"><ul class="trio__lista">{trio}</ul></section>
 
 <section class="quadri quadri--piatti">{foto}</section>
 
-<section class="dire dire--coda">
-  <p class="dire__testo" data-sale>{c["corpo"]}</p>
-  <p class="dire__sotto">{c["chiusa"]}</p>
+<section class="cucinaFinale">
+  <p class="cucinaFinale__titolo" data-sale>{c["corpo"]}</p>
+  <p class="cucinaFinale__testo">{c["chiusa"]}</p>
 </section>
 
 <section class="cta">
@@ -1621,6 +1630,7 @@ def build_dispensa(lang):
 <section class="racconto racconto--dispensa">
   <div class="racconto__foto">{picture(r, "dispensa-scelta", t["alt"]["dispensa-scelta"], lazy=False)}</div>
   <div class="racconto__copy">
+    <p class="racconto__k">{d["occhiello"]}</p>
     <p class="racconto__testo" data-sale>{d["grande"]}</p>
     <p class="racconto__sotto">{d["descrizione"]}</p>
   </div>
@@ -1782,10 +1792,10 @@ def build_contatti(lang):
 <section class="contact">{rows}</section>
 
 <section class="eventi">
-  <span class="eventi__k">{e["k"]}</span>
-  <h2 class="eventi__titolo" data-sale>{e["titolo"]}</h2>
-  <p class="eventi__testo">{e["testo"]}</p>
-  <a class="btn eventi__cta" href="{wa_href(lang, e["msg_whatsapp"])}" target="_blank" rel="noopener"><span>{e["cta"]}</span></a>
+  <div class="eventi__testa"><span class="eventi__k">{e["k"]}</span>
+    <h2 class="eventi__titolo" data-sale>{e["titolo"]}</h2></div>
+  <div class="eventi__corpo"><p class="eventi__testo">{e["testo"]}</p>
+    <a class="btn eventi__cta" href="{wa_href(lang, e["msg_whatsapp"])}" target="_blank" rel="noopener"><span>{e["cta"]}</span></a></div>
 </section>
 
 <section class="cta">

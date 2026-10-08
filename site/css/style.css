@@ -606,30 +606,46 @@ html.has-intro .loader{display:grid}
   .slot:not(:first-child) .slot__box{aspect-ratio:3/4}
 }
 
-/* ═══════════════ SEZIONI DI TESTO E PIATTI ═══════════════
-   Tutto su un asse solo e in blocchi uguali: le sezioni nuove non
-   introducono un impaginato diverso, ripetono lo stesso centro.
---------------------------------------------------------------- */
-
-/* una dichiarazione, sola in mezzo alla pagina */
-.dire{
+/* La storia procede in tre capitoli; a schermo largo il titolo resta
+   accanto alla cronologia mentre lo scroll porta avanti il racconto. */
+.storia{
   max-width:var(--maxw);margin-inline:auto;
-  padding:clamp(3.5rem,9vh,6rem) var(--pad);
-  text-align:center;
+  padding:clamp(5rem,10vw,10rem) var(--pad);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(3rem,9vw,9rem);
 }
-.dire__testo{
-  max-width:26ch;margin-inline:auto;
-  font-size:clamp(1.55rem,3.4vw,2.9rem);
-  line-height:1.2;letter-spacing:-.022em;
-  font-variation-settings:'wdth' 98;
+.storia__titolo{align-self:start;position:sticky;top:clamp(7rem,18vh,11rem)}
+.storia__titolo h2{
+  max-width:14ch;font-size:clamp(2.4rem,5vw,5.5rem);line-height:1.03;
+  letter-spacing:-.045em;font-weight:500;font-variation-settings:'wdth' 92;
 }
-.dire__sotto{
-  max-width:44ch;margin:clamp(1.2rem,3vh,1.8rem) auto 0;
-  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
+.storia__capitoli{list-style:none;align-self:start}
+.storia__riga{
+  display:grid;grid-template-columns:3.6rem minmax(0,1fr);gap:clamp(.8rem,2vw,1.8rem);
+  min-height:clamp(12rem,32vh,18rem);padding:clamp(1.3rem,3vw,2.4rem) 0;
+  border-top:1px solid rgba(39,79,58,.3);position:relative;
 }
-.dire--coda{padding-top:clamp(2rem,5vh,3.5rem)}
-.dire--storia{padding-top:clamp(1rem,3vh,2rem)}
-.dire--storia .dire__testo{font-weight:400}
+.storia__riga:last-child{border-bottom:1px solid rgba(39,79,58,.3)}
+.storia__riga::before{
+  content:'';position:absolute;top:-1px;left:0;width:min(11rem,42%);height:2px;
+  background:var(--green-500);transform-origin:left;transform:scaleX(0);
+  transition:transform .7s var(--ease-out);
+}
+.storia__riga.is-active::before{transform:scaleX(1)}
+.storia__numero{
+  font-size:.85rem;font-weight:700;letter-spacing:.16em;color:var(--green-500);
+  padding-top:.25rem;
+}
+.storia__nome{
+  font-size:clamp(1.25rem,2vw,1.85rem);line-height:1.15;letter-spacing:-.02em;
+  font-weight:650;
+}
+.storia__testo{
+  max-width:36ch;margin-top:clamp(.85rem,2vw,1.4rem);
+  font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.65;color:var(--ink-soft);
+}
+.storia.is-motion-ready .storia__riga{opacity:.72;transition:opacity .65s var(--ease-out)}
+.storia.is-motion-ready .storia__riga.is-active{opacity:1}
 
 /* La frase che si scrive scorrendo.
    Le lettere ci sono già tutte e occupano il loro posto: quello che cambia
@@ -728,11 +744,12 @@ html.has-intro .loader{display:grid}
   font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
 }
 
-/* le esperienze su misura, in fondo ai contatti */
+/* Le esperienze su misura: titolo e invito su due colonne. */
 .eventi{
   max-width:var(--maxw);margin-inline:auto;
-  padding:clamp(3rem,8vh,5rem) var(--pad);
-  text-align:center;
+  padding:clamp(4rem,9vh,7rem) var(--pad);
+  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+  gap:clamp(2rem,8vw,8rem);align-items:end;
   border-top:1px solid rgba(39,79,58,.2);
 }
 .eventi__k{
@@ -741,11 +758,11 @@ html.has-intro .loader{display:grid}
   letter-spacing:.2em;text-transform:uppercase;color:var(--green-500);
 }
 .eventi__titolo{
-  max-width:22ch;margin:clamp(.9rem,2.5vh,1.4rem) auto 0;
+  max-width:18ch;margin:clamp(.9rem,2.5vh,1.4rem) 0 0;
   font-size:clamp(1.65rem,3.6vw,3rem);line-height:1.1;letter-spacing:-.025em;
 }
 .eventi__testo{
-  max-width:40ch;margin:clamp(.9rem,2.5vh,1.4rem) auto 0;
+  max-width:40ch;
   font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.6;color:var(--ink-soft);
 }
 .eventi__cta{margin-top:clamp(1.4rem,3vh,2rem)}
@@ -799,7 +816,6 @@ html.has-intro .loader{display:grid}
   .quad__nome{text-align:left}
   .quad:nth-child(1) .quad__nome{text-align:center}
 
-  .dire__testo{max-width:20ch}
   .chiusa__grande{max-width:14ch}
 }
 
@@ -1799,12 +1815,112 @@ a,button{-webkit-tap-highlight-color:transparent}
   max-width:44ch;margin-top:clamp(1.2rem,3vh,1.8rem);
   font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
 }
-.racconto--dispensa{padding-top:0}
+.racconto--forno .racconto__copy{
+  padding-left:clamp(1.5rem,3vw,3rem);position:relative;
+}
+.racconto--forno .racconto__copy::before{
+  content:'';position:absolute;top:0;bottom:0;left:0;width:2px;
+  background:var(--green-500);transform-origin:top;
+}
+.racconto--forno.is-motion-ready .racconto__copy::before{transform:scaleY(0)}
+.racconto--forno.is-inview .racconto__copy::before{
+  transform:scaleY(1);transition:transform 1.2s var(--ease-out);
+}
+.racconto--dispensa{
+  max-width:none;padding:0;gap:0;align-items:stretch;
+  background:var(--green-900);color:var(--skin-050);
+}
+.racconto--dispensa .racconto__foto{min-height:clamp(34rem,65vw,52rem)}
+.racconto--dispensa .pic,.racconto--dispensa img{height:100%}
+.racconto--dispensa img{object-fit:cover;object-position:center 45%}
+.racconto--dispensa .racconto__copy{
+  align-self:center;padding:clamp(3rem,7vw,8rem);max-width:44rem;
+}
+.racconto__k{
+  font-size:.78rem;font-weight:700;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--sage-200);margin-bottom:clamp(2rem,5vw,4rem);
+}
+.racconto--dispensa .racconto__testo{
+  font-size:clamp(2.1rem,4.1vw,4.8rem);line-height:1.07;font-weight:450;
+}
+.racconto--dispensa .racconto__sotto{color:var(--skin-100);opacity:.9}
+.racconto--dispensa.is-motion-ready .racconto__foto img{
+  transform:scale(1.055);transition:transform 1.7s var(--ease-out);
+}
+.racconto--dispensa.is-inview .racconto__foto img{transform:scale(1)}
+
+/* La cucina apre con una dichiarazione ampia e una piccola mappa della
+   filiera; dopo le foto chiude con un impaginato opposto. */
+.cucinaIntro{
+  max-width:var(--maxw);margin-inline:auto;
+  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+  gap:clamp(3rem,9vw,9rem);padding:clamp(5rem,11vw,10rem) var(--pad);
+}
+.cucinaIntro__titolo{
+  max-width:13ch;font-size:clamp(2.7rem,5.5vw,6.5rem);
+  line-height:1.02;letter-spacing:-.05em;font-weight:500;
+  font-variation-settings:'wdth' 92;
+}
+.cucinaIntro__dettagli{padding-top:clamp(.4rem,2vw,2rem)}
+.cucinaIntro__lead{
+  max-width:29ch;font-size:clamp(1.4rem,2.2vw,2.2rem);
+  line-height:1.28;letter-spacing:-.025em;
+}
+.cucinaIntro__filiera{
+  border-top:1px solid rgba(39,79,58,.32);
+  margin-top:clamp(2.5rem,5vw,5rem);padding-top:1.2rem;
+}
+.cucinaIntro__filiera ul{
+  list-style:none;display:flex;flex-wrap:wrap;gap:.7rem 1.5rem;
+  max-width:30rem;font-size:clamp(1rem,1.45vw,1.35rem);
+  font-weight:600;color:var(--green-500);
+}
+.cucinaIntro__filiera li::before{content:'·';margin-right:.55rem;color:var(--sage)}
+.cucinaIntro__ingredienti{
+  max-width:40ch;margin-top:clamp(2rem,5vw,4rem);
+  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
+}
+.cucinaFinale{
+  max-width:var(--maxw);margin-inline:auto;
+  padding:clamp(2rem,5vw,5rem) var(--pad) clamp(4rem,9vw,8rem);
+  display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:clamp(2rem,8vw,8rem);align-items:start;
+}
+.cucinaFinale__titolo{
+  max-width:18ch;font-size:clamp(1.75rem,3.3vw,3.5rem);
+  line-height:1.14;letter-spacing:-.035em;color:var(--green-500);
+}
+.cucinaFinale__testo{
+  max-width:48ch;border-top:1px solid rgba(39,79,58,.32);
+  padding-top:1.25rem;font-size:clamp(1rem,1.3vw,1.15rem);
+  line-height:1.68;color:var(--ink-soft);
+}
 .quadri--piatti .quad img{aspect-ratio:3/4}
+@media(max-width:860px){
+  .storia{gap:clamp(2rem,5vw,4rem)}
+  .storia__titolo h2{font-size:clamp(2.3rem,5.5vw,4rem)}
+}
 @media(max-width:760px){
+  .storia{grid-template-columns:1fr;gap:2rem;padding-block:4.5rem}
+  .storia__titolo{position:static}
+  .storia__titolo h2{max-width:16ch;font-size:clamp(2.6rem,9vw,4.5rem)}
+  .storia__riga{min-height:0;padding-block:1.6rem 2.3rem}
+  .storia__riga:last-child{padding-bottom:1.6rem}
+  .eventi{grid-template-columns:1fr;gap:1.5rem}
   .racconto{grid-template-columns:minmax(0,1fr);gap:1.75rem;padding-block:2.5rem}
-  .racconto--dispensa{padding-top:0}
+  .racconto--dispensa{gap:0;padding:0}
+  .racconto--dispensa .racconto__foto{min-height:0;aspect-ratio:4/3}
+  .racconto--dispensa .racconto__copy{padding:clamp(2.3rem,7vw,4rem) var(--pad) clamp(3.5rem,10vw,5rem)}
+  .racconto--dispensa .racconto__testo{font-size:clamp(2rem,7vw,3rem)}
+  .racconto__k{margin-bottom:1.6rem}
   .racconto__testo{font-size:clamp(1.6rem,6vw,2.3rem);max-width:24ch}
+  .cucinaIntro,.cucinaFinale{grid-template-columns:1fr;gap:2.3rem}
+  .cucinaIntro{padding-block:4.5rem 5rem}
+  .cucinaIntro__titolo{font-size:clamp(2.7rem,9vw,4.8rem)}
+  .cucinaIntro__dettagli{padding-top:0}
+  .cucinaIntro__filiera{margin-top:2.5rem}
+  .cucinaIntro__ingredienti{margin-top:2rem}
+  .cucinaFinale{padding-block:2rem 4rem}
   .quadri--piatti .quad:first-child img{aspect-ratio:4/5}
 }
 
