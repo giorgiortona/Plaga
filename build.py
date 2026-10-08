@@ -1021,7 +1021,7 @@ def footer(lang, sign=True):
       <a href="{IG}" target="_blank" rel="noopener" class="foot__v">@plaga.lounge</a></div>
   </div>
   <div class="foot__totop">
-    <button class="btn-top" onclick="window.scrollTo(0, 0)">{t["btn_top"]}</button>
+    <button class="btn-top" type="button" data-scroll-top>{t["btn_top"]}</button>
   </div>
   <div class="foot__bottom">
     <span class="foot__mark">{"" if sign else wordmark("footMark")}<em>{TAGLINE}</em></span>

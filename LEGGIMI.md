@@ -212,9 +212,13 @@ Dura circa 3,7 secondi. Per cambiarne il ritmo c'è `INTRO_VELOCITA` in cima a
 Si riscala tutto insieme, mantenendo le proporzioni.
 
 Chi ha attivato «riduci animazioni» nelle impostazioni di sistema salta
-direttamente alla pagina, senza intro. Anche sui dispositivi touch lo scroll
-è nativo, senza Lenis. Intro, ingresso dei contenuti e animazioni delle foto
-restano attivi anche su touch, salvo la preferenza «riduci animazioni». I cambi di altezza
+direttamente alla pagina, senza intro. La rotella su desktop usa Lenis con
+interpolazione breve; i collegamenti interni e «Torna su» scorrono con lo
+stesso ritmo. Sui dispositivi touch lo scroll resta nativo e i collegamenti
+interni si muovono fluidamente. La barra superiore cambia stato solo dopo un
+gesto deciso, così non oscilla ai piccoli cambi di direzione. Intro, ingresso
+dei contenuti e animazioni delle foto restano attivi anche su touch, salvo la
+preferenza «riduci animazioni». I cambi di altezza
 della barra del browser non provocano ricalcoli delle animazioni; rotazione
 e variazioni di larghezza continuano a riallineare il layout.
 

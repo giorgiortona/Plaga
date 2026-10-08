@@ -49,13 +49,36 @@ function unlockScroll(reason) {
 
 function initLenis() {
   if (TOUCH || LIGHT_MOTION || !HAS_MOTION || typeof Lenis === 'undefined') return;
-  // 1,05 era troppo: dopo che smetti di scorrere la pagina continuava a
-  // planare per un secondo abbondante, e quella coda si legge come ritardo.
-  // 0,8 la tiene attaccata alla rotellina senza perdere la morbidezza.
-  lenis = new Lenis({ duration: 0.8, smoothWheel: true });
+  // La rotella segue subito il gesto e si posa gradualmente, senza la coda
+  // lunga di un'animazione a durata fissa. Il tocco resta nativo.
+  lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
+}
+
+// I salti interni e il ritorno in cima seguono lo stesso ritmo dello scroll.
+// I collegamenti verso un'altra pagina conservano la navigazione normale.
+function scrollLinks() {
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const hash = link.getAttribute('href');
+      if (!hash || hash === '#') return;
+      let id;
+      try { id = decodeURIComponent(hash.slice(1)); } catch (_) { return; }
+      const target = document.getElementById(id);
+      if (!target) return;
+      event.preventDefault();
+      if (location.hash !== hash) history.pushState(null, '', hash);
+      if (lenis) lenis.scrollTo(target, { offset: -96 });
+      else target.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+    });
+  });
+
+  document.querySelector('[data-scroll-top]')?.addEventListener('click', () => {
+    if (lenis) lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+  });
 }
 
 /* ─────────────────────────── INGRESSO ───────────────────────────
@@ -876,15 +899,29 @@ function navBehaviour() {
   }
 
   let last = 0;
+  let direction = 0;
+  let travel = 0;
   ScrollTrigger.create({
     start: 0,
     end: 'max',
     onUpdate: (self) => {
-      if (document.body.classList.contains('is-menu-open')) return;
       const y = self.scroll();
-      if (Math.abs(y - last) < 8 && y > 240) return;
-      nav.classList.toggle('is-hidden', y > 240 && y > last);
+      const delta = y - last;
       last = y;
+      if (document.body.classList.contains('is-menu-open')) return;
+      if (y <= 240) {
+        nav.classList.remove('is-hidden');
+        travel = 0;
+        return;
+      }
+      if (Math.abs(delta) < 1) return;
+      const next = Math.sign(delta);
+      if (next !== direction) { direction = next; travel = 0; }
+      travel += Math.abs(delta);
+      // Un minimo di percorso prima di cambiare stato evita che la barra
+      // tremi con i piccoli rimbalzi della rotella o del gesto touch.
+      if (next > 0 && travel > 48) nav.classList.add('is-hidden');
+      if (next < 0 && travel > 24) nav.classList.remove('is-hidden');
     }
   });
 }
@@ -981,6 +1018,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Altrimenti i link a digitavolo si aprirebbero senza conferma.
   leaveNotice();
   initLenis();
+  scrollLinks();
   burgerMenu();
   if (!HAS_MOTION) {
     document.getElementById('loader')?.remove();
