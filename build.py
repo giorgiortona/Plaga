@@ -296,12 +296,12 @@ T = {
             "cookie": "Cookie policy e inventario tecnico del sito Plaga, Galatone (LE).",
         },
         "leads": {
-            "index": "Volte in pietra leccese, un giardino a cielo aperto e un forno a legna.",
+            "index": "Una terra, una tavola.",
             "sale": "Marmo, legno e velluto verde sotto volte a stella.",
             "giardino": "Una corte bianca a cielo aperto. Cactus, palme e luci sospese.",
             "cucina": "Radici salentine, materie prime del territorio e uno sguardo contemporaneo.",
-            "forno": "Impasti a lunga lievitazione. Cereali, carbone vegetale.",
-            "dispensa": "Nasce dall'idea di custodire il meglio di ogni raccolto e trasformarlo in un patrimonio di sapori autentici, disponibile tutto l'anno.",
+            "forno": "Settantadue ore di maturazione, prima del forno a legna.",
+            "dispensa": "La tradizione salentina di custodire i sapori delle stagioni, da portare a casa.",
             "menu": "Cucina di mare e di terra, pizza a lunga lievitazione.",
             "contatti": "Chiamaci, ti troviamo posto.",
         },
@@ -317,43 +317,63 @@ T = {
         "slots": ["Le pizze <i>—</i> in arrivo", "L'impasto <i>—</i> in arrivo",
                   "Il forno al lavoro <i>—</i> in arrivo"],
 
-        # ─────── testi del locale (settembre 2026) ───────
-        "manifesto": "Plaga nasce dal desiderio di creare un'esperienza fatta di sapori "
-                     "essenziali, materia prima eccellente e ospitalità sincera: un luogo "
-                     "elegante ma autentico, costruito attorno ai ritmi della stagione e "
-                     "al valore delle cose fatte con cura.",
-        "chiusa_grande": "Il lusso non è l'eccesso, ma la qualità del tempo trascorso a tavola.",
-        "chiusa_piccola": "Da Plaga ogni visita è un ricordo. Vogliamo che gli ospiti tornino "
-                          "non solo per ciò che hanno mangiato, ma per come si sono sentiti.",
+        # ─────── racconto del locale ───────
+        "manifesto": "Il nome Plaga richiama un tratto di terra e di cielo, uno spazio "
+                     "aperto. Qui le stagioni guidano il menu, la cucina di famiglia "
+                     "incontra uno sguardo nuovo e il tempo a tavola torna ad avere valore.",
+        "storia": {
+            "k": "La nostra storia",
+            "titolo": "Una cucina di famiglia, una voce tutta sua.",
+            "testo": "Gabriele è cresciuto tra i fornelli di sua madre Annarita e il "
+                     "ristorante di famiglia guidato dal padre Claudio. Da loro ha "
+                     "imparato il rispetto per le materie prime, la pazienza e il "
+                     "piacere di accogliere chi entra come a casa. Nel 2024 ha dato "
+                     "a questa storia un nome e uno stile nuovi: Plaga.",
+        },
+        "chiusa_grande": "Il tempo trascorso a tavola è la parte più preziosa.",
+        "chiusa_piccola": "Scegliamo gli ingredienti, pensiamo il menu e curiamo ogni gesto "
+                          "per lasciare spazio al tempo che passate insieme. Ci piacerebbe "
+                          "che tornaste anche per come vi siete sentiti.",
         "eventi": {
             "k": "Su misura",
             "titolo": "La cornice dei momenti che contano",
-            "testo": "Creiamo esperienze su misura, con menu dedicati.",
+            "testo": "Compleanni, anniversari, cene di lavoro e traguardi da festeggiare: "
+                     "costruiamo un menu dedicato alle persone che si siedono a tavola "
+                     "e al momento che desiderano ricordare.",
+            "cta": "Organizza il tuo evento",
+            "msg_whatsapp": "Ciao PLAGA, vorrei informazioni per organizzare un evento da voi.",
         },
         "cucina": {
             "testo": "Il Salento è il nostro punto di partenza.",
-            "descrizione": "La nostra cucina nasce dal legame con questa terra e con le materie prime "
-                           "che ne raccontano il gusto. La burrata pugliese, il capocollo di Martina "
-                           "Franca e la fragranza del tarallo incontrano il mare, le verdure e la "
-                           "freschezza degli agrumi. Sapori del Salento e della Puglia che danno "
-                           "carattere a un menu aperto a nuovi incontri.",
+            "descrizione": "Il menu cambia con le stagioni e prende forma dalle materie prime "
+                           "del Salento, insieme a pescatori, allevatori, contadini e produttori "
+                           "del territorio. La burrata pugliese, il capocollo di Martina Franca "
+                           "e la fragranza del tarallo incontrano il mare, le verdure e gli agrumi.",
             "trio": ["Radici salentine", "Materie prime del territorio", "Sguardo contemporaneo"],
             "corpo": "Il gusto del territorio, la curiosità di interpretarlo.",
-            "chiusa": "Dalle paste della tradizione ai crudi, dalle cotture delicate alle consistenze "
-                      "croccanti, il menu si muove tra mare e terra. Creme di verdure, mandorle "
-                      "tostate e note agrumate accompagnano gli ingredienti; accenti come l’aglio "
-                      "nero e le marinature aprono il racconto a sapori contemporanei. Una cucina "
-                      "che conserva il piacere della tavola pugliese e lo esprime con sensibilità propria.",
+            "chiusa": "Dalle paste della tradizione ai crudi, il menu si muove tra mare e "
+                      "terra. Creme di verdure, mandorle tostate, note agrumate e marinature "
+                      "accompagnano gli ingredienti. La tecnica contemporanea lascia spazio "
+                      "al sapore di casa, con la cura di una cucina pensata fino al dettaglio.",
         },
         "pizzeria": {
             "n": "72", "k": "ore di pazienza",
-            "testo": "Pochi ingredienti scelti senza compromessi.",
+            "testo": "Il tempo nell'impasto si sente al primo morso.",
+            "descrizione": "Per Gabriele la pizza è parte della sua storia in cucina: "
+                           "un incontro tra tradizione e ricerca. L'impasto matura per "
+                           "72 ore prima di arrivare al forno a legna, per una pizza "
+                           "leggera e fragrante. La carta lascia spazio alla creatività "
+                           "e ai gusti più familiari.",
             "trio": ["Leggerezza", "Fragranza", "Digeribilità"],
         },
         "dispensa": {
             "occhiello": "Il gusto che continua anche a casa",
             "grande": "Ogni vasetto racconta una stagione, una ricetta e il lavoro "
                       "delle mani che l'hanno preparato.",
+            "descrizione": "Conserve, passate, confetture e oli portano a casa i sapori "
+                           "della terra. È il gesto antico della cucina salentina: "
+                           "custodire ciò che una stagione offre per ritrovarne il gusto "
+                           "durante tutto l'anno.",
             "cta": "Chiedi cosa c'è in dispensa",
             "msg_whatsapp": "Ciao PLAGA, vorrei informazioni sui prodotti della Dispensa e sulla loro disponibilità.",
             "comune": "Lavorazione pugliese artigianale bio",
@@ -487,12 +507,12 @@ T = {
             "cookie": "Cookie policy and technical inventory of the Plaga website.",
         },
         "leads": {
-            "index": "Lecce stone vaults, an open-air garden and a wood-fired oven.",
+            "index": "One land, one table.",
             "sale": "Marble, wood and green velvet beneath star vaults.",
             "giardino": "A white open-air courtyard. Cacti, palms and hanging lights.",
             "cucina": "Roots in Salento, regional ingredients and a contemporary approach.",
-            "forno": "Long-fermented dough. Wholegrain and charcoal bases.",
-            "dispensa": "It comes from the idea of keeping the best of every harvest and turning it into a store of authentic flavours, available all year round.",
+            "forno": "Seventy-two hours of fermentation before the wood-fired oven.",
+            "dispensa": "A Salento tradition: keeping the flavours of each season to take home.",
             "menu": "Sea and land cooking, long-fermented pizza.",
             "contatti": "Call us, we'll find you a table.",
         },
@@ -508,43 +528,63 @@ T = {
         "slots": ["Pizzas <i>—</i> coming soon", "The dough <i>—</i> coming soon",
                   "The oven at work <i>—</i> coming soon"],
 
-        # ─────── testi del locale (settembre 2026) ───────
-        "manifesto": "Plaga was born from the wish to create an experience made of "
-                     "essential flavours, excellent raw ingredients and sincere "
-                     "hospitality: a place elegant yet authentic, built around the "
-                     "rhythms of the season and the value of things made with care.",
-        "chiusa_grande": "Luxury is not excess, but the quality of the time spent at the table.",
-        "chiusa_piccola": "At Plaga every visit is a memory. We want guests to come back "
-                          "not only for what they ate, but for how they felt.",
+        # ─────── the story of the restaurant ───────
+        "manifesto": "The name Plaga evokes a stretch of land and sky, an open horizon. "
+                     "Here the seasons guide the menu, family cooking meets a new "
+                     "perspective, and time at the table regains its value.",
+        "storia": {
+            "k": "Our story",
+            "titolo": "A family kitchen, a voice of his own.",
+            "testo": "Gabriele grew up around his mother Annarita's cooking and the "
+                     "family restaurant run by his father Claudio. From them he "
+                     "learned respect for ingredients, patience, and how to welcome "
+                     "people as if they were coming home. In 2024, he gave that "
+                     "story a new name and a style of his own: Plaga.",
+        },
+        "chiusa_grande": "Time together at the table is the most precious part.",
+        "chiusa_piccola": "We choose the ingredients, shape the menu and care for every "
+                          "detail so you can spend time together. We hope you come "
+                          "back for how you felt here, too.",
         "eventi": {
             "k": "Tailor-made",
             "titolo": "The setting for the moments that matter",
-            "testo": "We also create bespoke experiences, with dedicated menus.",
+            "testo": "Birthdays, anniversaries, work dinners and milestones: we create "
+                     "a menu around the people at your table and the occasion "
+                     "you want to remember.",
+            "cta": "Plan your event",
+            "msg_whatsapp": "Hello PLAGA, I would like information about planning an event at your restaurant.",
         },
         "cucina": {
             "testo": "Salento is our starting point.",
-            "descrizione": "Our cooking grows from a connection to this land and the ingredients "
-                           "that express its character. Apulian burrata, capocollo from Martina "
-                           "Franca and crisp taralli meet seafood, vegetables and bright citrus "
-                           "notes. Flavours from Salento and the wider region of Puglia give "
-                           "shape to a menu that welcomes new influences.",
+            "descrizione": "The menu changes with the seasons and begins with ingredients "
+                           "from Salento, alongside local fishers, farmers, breeders and "
+                           "producers. Apulian burrata, capocollo from Martina Franca "
+                           "and crisp taralli meet seafood, vegetables and citrus.",
             "trio": ["Roots in Salento", "Regional ingredients", "A contemporary approach"],
             "corpo": "Regional flavours, interpreted with curiosity.",
-            "chiusa": "From traditional pasta shapes to raw seafood, from delicate cooking to "
-                      "crisp textures, the menu moves between sea and land. Vegetable creams, "
-                      "toasted almonds and citrus notes complement the ingredients, while black "
-                      "garlic and marinades bring a contemporary touch. Cooking that preserves "
-                      "the pleasure of the Apulian table and gives it an expression of its own.",
+            "chiusa": "From traditional pasta to raw seafood, the menu moves between "
+                      "sea and land. Vegetable creams, toasted almonds, citrus and "
+                      "marinades complement the ingredients. Contemporary technique "
+                      "makes room for the taste of home, with attention to every detail.",
         },
         "pizzeria": {
             "n": "72", "k": "hours of patience",
-            "testo": "A few ingredients chosen without compromise.",
+            "testo": "You can taste the time we give the dough.",
+            "descrizione": "For Gabriele, pizza is part of his journey in the kitchen: "
+                           "a meeting of tradition and exploration. The dough "
+                           "ferments for 72 hours before entering the wood-fired oven, "
+                           "giving the pizza its light, crisp character. The menu "
+                           "has room for creativity and familiar favourites alike.",
             "trio": ["Lightness", "Fragrance", "Digestibility"],
         },
         "dispensa": {
             "occhiello": "The taste that carries on at home",
             "grande": "Every jar tells of a season, a recipe and the work of the "
                       "hands that made it.",
+            "descrizione": "Preserves, tomato passata, jams and oils bring the flavours "
+                           "of the land home. It is an old Salento kitchen tradition: "
+                           "keeping what each season offers so its flavours can be "
+                           "enjoyed throughout the year.",
             "cta": "Ask what's in the pantry",
             "msg_whatsapp": "Hello PLAGA, I would like information about the Pantry products and their availability.",
             "comune": "Artisan organic production, made in Puglia",
@@ -1396,6 +1436,12 @@ def build_home(lang):
 
 <section class="cards" id="esplora">{"".join(pezzi)}</section>
 
+<section class="dire dire--storia" aria-labelledby="storia-title">
+  <p class="occhiello">{t["storia"]["k"]}</p>
+  <h2 class="dire__testo" id="storia-title" data-sale>{t["storia"]["titolo"]}</h2>
+  <p class="dire__sotto">{t["storia"]["testo"]}</p>
+</section>
+
 <section class="chiusa">
   <p class="chiusa__grande" data-sale>{t["chiusa_grande"]}</p>
   <p class="chiusa__piccola">{t["chiusa_piccola"]}</p>
@@ -1476,7 +1522,10 @@ def build_forno(lang):
 
 <section class="racconto">
   <div class="racconto__foto">{picture(_root(lang), "forno-impasto", t["alt"]["forno-impasto"])}</div>
-  <p class="racconto__testo" data-sale>{p["testo"]}</p>
+  <div class="racconto__copy">
+    <p class="racconto__testo" data-sale>{p["testo"]}</p>
+    <p class="racconto__sotto">{p["descrizione"]}</p>
+  </div>
 </section>
 
 <section class="trio"><ul class="trio__lista">{trio}</ul></section>
@@ -1571,7 +1620,10 @@ def build_dispensa(lang):
 
 <section class="racconto racconto--dispensa">
   <div class="racconto__foto">{picture(r, "dispensa-scelta", t["alt"]["dispensa-scelta"], lazy=False)}</div>
-  <p class="racconto__testo" data-sale>{d["grande"]}</p>
+  <div class="racconto__copy">
+    <p class="racconto__testo" data-sale>{d["grande"]}</p>
+    <p class="racconto__sotto">{d["descrizione"]}</p>
+  </div>
 </section>
 
 <section class="disp" id="vetrina" style="--tinta:{DISPENSA[0]["tinta"]}">
@@ -1733,6 +1785,7 @@ def build_contatti(lang):
   <span class="eventi__k">{e["k"]}</span>
   <h2 class="eventi__titolo" data-sale>{e["titolo"]}</h2>
   <p class="eventi__testo">{e["testo"]}</p>
+  <a class="btn eventi__cta" href="{wa_href(lang, e["msg_whatsapp"])}" target="_blank" rel="noopener"><span>{e["cta"]}</span></a>
 </section>
 
 <section class="cta">

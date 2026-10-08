@@ -13,10 +13,12 @@ site/
   index.html        \
   sale.html          |
   giardino.html      |  italiano (lingua principale, sta nella radice)
+  cucina.html        |
   forno.html         |
+  dispensa.html      |
   menu.html          |
   contatti.html     /
-  en/…              le stesse sei pagine in inglese
+  en/…              le stesse pagine in inglese
   css/style.css     palette, tipografia, layout
   js/main.js        scroll morbido, ingresso, burger menu, tab del menu
   assets/img/       foto webp, due misure: -lg (1800px) e -sm (900px)
@@ -63,17 +65,13 @@ footer. Un file solo, nessuna variante di colore da mantenere.
 
 ## Le pagine
 
-`PAGES` in `build.py` decide l'ordine, e lo stesso ordine vale per le voci
-del burger menu (`nav`): i due elenchi vanno tenuti allineati, indice per
-indice. Dal settembre 2026 sono otto — con l'aggiunta di **La Cucina** e
-**La Dispensa** — e il numero conta: `overlay()` lo scrive nel CSS come
-`--voci`, e le voci del menu si dimensionano dividendo l'altezza per quel
-numero. Aggiungerne altre le rimpicciolisce da sola; toglierne le rialza.
+`PAGES` in `build.py` decide l'ordine delle otto pagine principali. Il burger
+menu usa `MENU_VOCI`: le sette sezioni senza la home, raggiungibile dal logo.
 
 I testi del locale stanno nel dizionario `T`, uno per lingua: `manifesto`,
-`chiusa_grande`, `chiusa_piccola`, `eventi`, `cucina`, `pizzeria`,
-`dispensa`. Sono le parole del ristorante, non riscritte: se cambiano, si
-cambia lì e si rilancia `build.py`.
+`storia`, `chiusa_grande`, `chiusa_piccola`, `eventi`, `cucina`, `pizzeria`,
+`dispensa`. Il racconto del cliente è stato adattato al tono del sito: per
+modificarlo si aggiornano i due blocchi di `T` e si rilancia `build.py`.
 
 ## La vetrina della Dispensa
 

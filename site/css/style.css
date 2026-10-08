@@ -628,6 +628,8 @@ html.has-intro .loader{display:grid}
   font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
 }
 .dire--coda{padding-top:clamp(2rem,5vh,3.5rem)}
+.dire--storia{padding-top:clamp(1rem,3vh,2rem)}
+.dire--storia .dire__testo{font-weight:400}
 
 /* La frase che si scrive scorrendo.
    Le lettere ci sono già tutte e occupano il loro posto: quello che cambia
@@ -746,6 +748,7 @@ html.has-intro .loader{display:grid}
   max-width:40ch;margin:clamp(.9rem,2.5vh,1.4rem) auto 0;
   font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.6;color:var(--ink-soft);
 }
+.eventi__cta{margin-top:clamp(1.4rem,3vh,2rem)}
 
 /* l'occhiello sopra il titolo di pagina */
 .occhiello{
@@ -1787,9 +1790,14 @@ a,button{-webkit-tap-highlight-color:transparent}
 .racconto__foto{overflow:hidden}
 .racconto__foto .pic{height:auto}
 .racconto__foto img{width:100%;height:auto}
+.racconto__copy{min-width:0}
 .racconto__testo{
   font-size:clamp(1.8rem,3.2vw,3.1rem);line-height:1.13;
   letter-spacing:-.03em;font-variation-settings:'wdth' 96;
+}
+.racconto__sotto{
+  max-width:44ch;margin-top:clamp(1.2rem,3vh,1.8rem);
+  font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.65;color:var(--ink-soft);
 }
 .racconto--dispensa{padding-top:0}
 .quadri--piatti .quad img{aspect-ratio:3/4}
