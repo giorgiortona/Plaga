@@ -43,12 +43,14 @@ TERZE_PARTI = ["fonts.googleapis.com", "fonts.gstatic.com",
                "cdnjs.cloudflare.com", "cdn.jsdelivr.net",
                "awards.infcdn.net"]
 
-# ATTENZIONE — da completare prima della pubblicazione.
+# Dati del titolare, usati dalla privacy policy e dalla cookie policy.
 TITOLARE = {
-    "nome": "[DA COMPLETARE: ragione sociale]",
-    "piva": "[DA COMPLETARE: P. IVA / C.F.]",
-    "sede": "[DA COMPLETARE: sede legale]",
-    "email": "[DA COMPLETARE: indirizzo e-mail]",
+    "nome": "Plaga srls",
+    "piva": "05336680755",
+    "sede": "Piazza Umberto I, n. 8, 73044 Galatone (LE)",
+    "sdi": "BA6ET11",
+    "pec": "plaga.srls@pec.it",
+    "email": "plaga.lounge@libero.it",
 }
 CREATOR_URL = "https://www.instagram.com/dimana.digitalcreations/"
 
@@ -59,27 +61,12 @@ TRAMA_VERDE = "#1E6B3C"
 PAGES = ["index", "sale", "giardino", "cucina", "forno", "dispensa",
          "menu", "contatti"]
 
-# Il burger menu non e' l'elenco di PAGES: e' un indice in due gruppi.
-#
-#   la casa    il posto: le stanze, il giardino, e come arrivarci
-#   la tavola  cio' che ci si mette sopra, dal fuoco fino al vasetto
-#
-# Due nomi concreti e paralleli, non due etichette funzionali: le voci
-# numerate sotto dicono gia' con precisione dove portano, quindi
-# l'occhiello puo' fare l'altro mestiere, dare il tono.
-#
-# "index" non c'e': nel menu il ritorno alla home e' il marchio in alto.
-# "bottega" nemmeno: la Dispensa e la Bottega sono la stessa cosa, il
-# racconto e il banco dove si ordina, e due voci le facevano sembrare due
-# posti diversi. Resta la Dispensa; alla Bottega si arriva dal pulsante in
+# Le voci del burger menu: un elenco unico, senza gruppi e senza numeri,
+# nell'ordine delle pagine. "index" non c'e': nel menu il ritorno alla
+# home e' il marchio in alto. La Bottega nemmeno: e' la Dispensa — il
+# racconto e il banco dove si ordina — e ci si arriva dal pulsante in
 # fondo alla sua pagina.
-#
-# La numerazione e' progressiva e scorre da un gruppo all'altro: e' un
-# indice, e un indice si conta una volta sola.
-MENU_GRUPPI = [
-    ("casa", ["sale", "giardino", "contatti"]),
-    ("tavola", ["cucina", "forno", "menu", "dispensa"]),
-]
+MENU_VOCI = [p for p in PAGES if p != "index"]
 
 TAGLINE = "#DOWHATYOULOVE"
 
@@ -257,8 +244,6 @@ T = {
         "other": "en", "self_label": "IT",
         "nav": ["Home", "Le Sale", "Il Giardino", "La Cucina", "Il Forno",
                 "La Dispensa", "Il Menu", "Contatti"],
-        # i due gruppi dell'indice nel burger menu
-        "gruppi": {"casa": "La Casa", "tavola": "La Tavola"},
         "menu_indice": "Indice del sito",
         "burger_open": "Apri il menu",
         "burger_close": "Chiudi il menu",
@@ -450,7 +435,6 @@ T = {
         "other": "it", "self_label": "EN",
         "nav": ["Home", "The Rooms", "The Garden", "The Kitchen", "The Oven",
                 "The Pantry", "The Menu", "Contact"],
-        "gruppi": {"casa": "The House", "tavola": "The Table"},
         "menu_indice": "Site index",
         "burger_open": "Open menu",
         "burger_close": "Close menu",
@@ -900,49 +884,92 @@ def lang_switch(lang, name):
             f'lang="{t["other"]}">{other["self_label"]}</a></div>')
 
 
+# Le foto del burger menu, due per voce, perche' le cornici sono due:
+#
+#   da PC        una colonna a tutta altezza, alta e stretta -> foto verticali
+#   da telefono  una fascia in cima, larga e bassa           -> foto orizzontali
+#
+# Nessuna e' una foto della home: il menu deve far vedere qualcosa che la
+# pagina iniziale non mostra gia'. Dove c'erano, hanno la precedenza le
+# ultime arrivate — il pizzaiolo, la mano sullo scaffale della Dispensa, le
+# vongole, la frittura. Le nuove sono tutte verticali: nella fascia da
+# telefono la stessa foto si centra sul punto che conta (le mani
+# sull'impasto, il piatto).
+#
+# Per ciascuna: file, larghezza della versione piccola e grande (per lo
+# srcset) e il punto su cui centrare il ritaglio.
+# "index" e' la foto di partenza dove la pagina non ha una voce sua.
+MENU_FOTO = {
+    #            da PC                                             da telefono
+    "index":    (("tamburelli", 900, 1800, "36% 50%"),            ("tamburelli", 900, 1800, "50% 50%")),
+    "sale":     (("sala-volte-b", 900, 1800, "50% 40%"),          ("sala-volte-b", 900, 1800, "50% 35%")),
+    "giardino": (("giardino-palme-v", 900, 1800, "50% 50%"),      ("giardino-pano", 900, 1800, "50% 55%")),
+    "cucina":   (("piatto-vongole", 900, 1536, "50% 55%"),        ("piatto-vongole", 900, 1536, "50% 55%")),
+    "forno":    (("forno-pizzaiolo", 900, 1616, "45% 50%"),       ("forno-pizzaiolo", 900, 1616, "50% 74%")),
+    "dispensa": (("dispensa-mano", 900, 1280, "55% 50%"),         ("dispensa-mano", 900, 1280, "50% 48%")),
+    "menu":     (("piatto-frittura", 900, 1024, "50% 50%"),       ("piatto-frittura", 900, 1024, "50% 62%")),
+    "contatti": (("ingresso", 900, 1800, "45% 50%"),              ("ingresso", 900, 1800, "40% 50%")),
+}
+
+
 def overlay(lang, name):
-    """Il burger menu: un indice in tre gruppi, non un elenco.
+    """Il burger menu, costruito come il resto del sito: testo e fotografia.
 
-    Com'era: otto voci enormi, tutte dello stesso peso, una sopra l'altra
-    fino a riempire lo schermo. Funzionava con quattro sezioni; con otto
-    diceva soltanto che ce n'erano otto.
+    Ogni sezione del sito si presenta con una foto e un titolo — le schede
+    della home, l'hero, il footer sull'insegna. Il menu era l'unico punto
+    fatto di sola tipografia, e per questo pareva un altro sito. Ora:
 
-    Com'e': in alto torna il marchio — nel menu era l'unico posto del sito
-    in cui PLAGA non compariva — e da li' si torna alla home, quindi "Home"
-    non serve piu' come voce. Sotto, le sezioni raccolte in due gruppi
-    (vedi MENU_GRUPPI) su altrettante colonne, col numero progressivo di
-    lato e un filetto sotto ogni occhiello: un indice, che e' poi quello
-    che e'. In fondo i contatti, identici a prima. Dietro, la trama del
-    marchio che nella home fa da filigrana: qui sostituisce il fondo piatto.
+      l'elenco delle sezioni, unico e senza numeri, nel taglio dei titoli
+      delle schede, con il marchio sopra e i contatti sotto, come prima;
+
+      una fotografia trattata come una scheda della home — velo scuro dal
+      basso, didascalia chiara — che mostra la sezione in cui ci si trova
+      e cambia passando sulle voci. Da PC e' una colonna a destra, a tutta
+      altezza; da telefono una fascia in cima, sotto il marchio e la X, e
+      siccome li' non si passa sopra a niente, le foto scorrono da sole.
+
+    Le foto partono solo all'apertura (data-src): sono sedici immagini e
+    non devono pesare su ogni pagina per un menu che magari non si apre.
     """
     t = T[lang]
-    n = 0
-    gruppi = []
-    for chiave, slugs in MENU_GRUPPI:
-        voci = []
-        for slug in slugs:
-            n += 1
-            cur = ' aria-current="page"' if slug == name else ""
-            voci.append(
-                f'<li class="menuNav__item"><a href="{slug}.html"{cur}>'
-                f'<span class="menuNav__num">{n:02d}</span>'
-                f'<span class="menuNav__label">{t["nav"][PAGES.index(slug)]}</span></a></li>')
-        gruppi.append(
-            f'<section class="menuGroup">'
-            f'<h2 class="menuGroup__k">{t["gruppi"][chiave]}</h2>'
-            f'<ul class="menuNav">{"".join(voci)}</ul></section>')
+    r = _root(lang)
+    didascalie = {"index": TAGLINE}
+    voci = []
+    for slug in MENU_VOCI:
+        nome = t["nav"][PAGES.index(slug)]
+        didascalie[slug] = nome
+        cur = ' aria-current="page"' if slug == name else ""
+        voci.append(
+            f'<li class="menuNav__item"><a href="{slug}.html" data-voce="{slug}"{cur}>'
+            f'<span class="menuNav__label">{nome}</span></a></li>')
+
+    # la foto di partenza: quella della pagina, se nel menu c'e'; la Bottega
+    # e' la Dispensa; tutto il resto (home, pagine legali) parte dall'ingresso
+    attiva = name if name in MENU_FOTO else ("dispensa" if name == "bottega" else "index")
+
+    def srcset(file, w_sm, w_lg):
+        return f"{r}assets/img/{file}-sm.webp {w_sm}w, {r}assets/img/{file}-lg.webp {w_lg}w"
+
+    foto = []
+    for voce, ((f_pc, s_pc, l_pc, c_pc), (f_tel, s_tel, l_tel, c_tel)) in MENU_FOTO.items():
+        on = " is-on" if voce == attiva else ""
+        foto.append(
+            f'<figure class="menuVista__foto{on}" data-voce="{voce}" '
+            f'style="--centro:{c_pc};--centro-tel:{c_tel}"><picture>'
+            f'<source media="(max-width:899px)" sizes="100vw" data-srcset="{srcset(f_tel, s_tel, l_tel)}">'
+            f'<img alt="" sizes="42vw" data-src="{r}assets/img/{f_pc}-lg.webp" '
+            f'data-srcset="{srcset(f_pc, s_pc, l_pc)}"></picture>'
+            f'<figcaption class="menuVista__dida">{didascalie[voce]}</figcaption></figure>')
 
     casa = ' aria-current="page"' if name == "index" else ""
     return f"""<nav class="menuOverlay" id="menuOverlay" aria-hidden="true" aria-label="{t["menu_indice"]}">
   <div class="menuOverlay__bg"><i></i><i></i><i></i><i></i></div>
-  <div class="menuOverlay__trama" aria-hidden="true"></div>
+  <div class="menuVista" aria-hidden="true" data-attiva="{attiva}">{"".join(foto)}</div>
   <div class="menuOverlay__inner" data-lenis-prevent>
     <div class="menuTop">
-      <a class="menuBrand" href="index.html?intro=logo"{casa} aria-label="{t["home_aria"]}">{wordmark("menuMark")}</a>
+      <a class="menuBrand" href="index.html?intro=logo" data-voce="index"{casa} aria-label="{t["home_aria"]}">{wordmark("menuMark")}</a>
     </div>
-    <div class="menuIndex">
-      {"".join(gruppi)}
-    </div>
+    <ul class="menuNav">{"".join(voci)}</ul>
     <div class="menuFoot">
       <div class="menuFoot__col"><span class="menuFoot__k">{t["book"]}</span>
         <a href="{wa_href(lang)}" target="_blank" rel="noopener" class="menuFoot__v" aria-label="{t["call_aria"]}">{TEL}</a>
@@ -1070,7 +1097,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 # da terze parti a ogni apertura di pagina. Bagno Maria serviva tutto in
 # locale e poteva dichiararlo; qui no, e la cookie policy lo elenca.
 
-LEGAL_UPDATED = {"it": "14 settembre 2026", "en": "14 September 2026"}
+LEGAL_UPDATED = {"it": "7 ottobre 2026", "en": "7 October 2026"}
 
 LEGAL = {
     "it": {
@@ -1083,8 +1110,8 @@ LEGAL = {
                        ("conservazione", "Conservazione"), ("diritti", "Diritti")],
             "sezioni": [
                 ("titolare", "Titolare del trattamento", """
-<p>Il titolare del trattamento è <strong>{nome}</strong>, P. IVA e C.F. <strong>{piva}</strong>, con sede legale in {sede}. PLAGA ha sede operativa in Piazza Umberto I, 73044 Galatone (LE).</p>
-<div class="legal__note">Per richieste relative alla protezione dei dati: <a href="mailto:{email}"><strong>{email}</strong></a> oppure <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
+<p>Il titolare del trattamento è <strong>{nome}</strong>, P. IVA <strong>{piva}</strong>, con sede legale in {sede}, codice univoco <strong>{sdi}</strong>. PLAGA ha sede operativa in Piazza Umberto I, 73044 Galatone (LE).</p>
+<div class="legal__note">Per richieste relative alla protezione dei dati: <a href="mailto:{email}"><strong>{email}</strong></a> oppure <a href="mailto:{pec}"><strong>{pec}</strong></a> (PEC) oppure <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
                 ("dati-finalita", "Dati trattati, finalità e basi giuridiche", """
 <h3>Dati di navigazione</h3>
 <p>I sistemi che rendono disponibile il sito possono registrare dati tecnici quali indirizzo IP, data e ora, pagina richiesta, esito della risposta, browser e sistema operativo. Sono utilizzati per erogare e proteggere il sito, diagnosticare anomalie e prevenire abusi.</p>
@@ -1116,10 +1143,20 @@ LEGAL = {
             "titolo": "Cookie policy",
             "kicker": "Tecnologie presenti nel sito",
             "intro": "Alla data dell’ultima verifica il sito non installa cookie, non utilizza strumenti analytics, pubblicitari o di profilazione e non salva nulla nel browser. Richiede però caratteri e librerie a fornitori terzi a ogni apertura di pagina.",
-            "indice": [("scelta-banner", "Scelta del banner"), ("inventario", "Inventario"),
+            "indice": [("titolare", "Titolare"), ("scelta-banner", "Scelta del banner"), ("inventario", "Inventario"),
                        ("servizi", "Servizi esterni"), ("aggiornamenti", "Aggiornamenti"),
                        ("riferimenti", "Riferimenti")],
             "sezioni": [
+                ("titolare", "Titolare del sito", """
+<ul class="legal__inv">
+  <li><strong>Ragione sociale</strong>{nome}</li>
+  <li><strong>Sede</strong>{sede}</li>
+  <li><strong>P. IVA</strong>{piva}</li>
+  <li><strong>Codice univoco</strong>{sdi}</li>
+  <li><strong>Telefono</strong><a href="{wa}" target="_blank" rel="noopener">{tel}</a></li>
+  <li><strong>E-mail</strong><a href="mailto:{email}">{email}</a></li>
+  <li><strong>PEC</strong><a href="mailto:{pec}">{pec}</a></li>
+</ul>"""),
                 ("scelta-banner", "Perché non compare un banner", """
 <div class="legal__note"><strong>Configurazione attuale: nessun consenso richiesto.</strong></div>
 <p>Non sono presenti cookie né strumenti facoltativi di misurazione o profilazione. Per questo un banner “Accetta/Rifiuta” non offrirebbe una scelta reale. Quando sono utilizzati soltanto strumenti tecnici, il Garante prevede che l’informazione possa essere resa nella home page o nell’informativa generale.</p>
@@ -1162,8 +1199,8 @@ LEGAL = {
                        ("conservazione", "Retention"), ("diritti", "Rights")],
             "sezioni": [
                 ("titolare", "Data controller", """
-<p>The data controller is <strong>{nome}</strong>, VAT and tax code <strong>{piva}</strong>, registered office at {sede}. PLAGA operates from Piazza Umberto I, 73044 Galatone (LE), Italy.</p>
-<div class="legal__note">For data protection requests: <a href="mailto:{email}"><strong>{email}</strong></a> or <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
+<p>The data controller is <strong>{nome}</strong>, VAT number <strong>{piva}</strong>, registered office at {sede}, recipient code (SDI) <strong>{sdi}</strong>. PLAGA operates from Piazza Umberto I, 73044 Galatone (LE), Italy.</p>
+<div class="legal__note">For data protection requests: <a href="mailto:{email}"><strong>{email}</strong></a> or <a href="mailto:{pec}"><strong>{pec}</strong></a> (PEC) or <a href="{wa}" target="_blank" rel="noopener"><strong>{tel}</strong></a>.</div>"""),
                 ("dati-finalita", "Data processed, purposes and legal bases", """
 <h3>Browsing data</h3>
 <p>The systems that make the site available may record technical data such as IP address, date and time, page requested, response status, browser and operating system. This data is used to deliver and protect the site, diagnose faults and prevent abuse.</p>
@@ -1195,10 +1232,20 @@ LEGAL = {
             "titolo": "Cookie policy",
             "kicker": "Technologies present on the site",
             "intro": "As at the last check the site sets no cookies, uses no analytics, advertising or profiling tools and stores nothing in the browser. It does, however, request typefaces and libraries from third-party providers each time a page opens.",
-            "indice": [("scelta-banner", "Why no banner"), ("inventario", "Inventory"),
+            "indice": [("titolare", "Owner"), ("scelta-banner", "Why no banner"), ("inventario", "Inventory"),
                        ("servizi", "External services"), ("aggiornamenti", "Updates"),
                        ("riferimenti", "References")],
             "sezioni": [
+                ("titolare", "Site owner", """
+<ul class="legal__inv">
+  <li><strong>Company name</strong>{nome}</li>
+  <li><strong>Registered office</strong>{sede}</li>
+  <li><strong>VAT number</strong>{piva}</li>
+  <li><strong>Recipient code (SDI)</strong>{sdi}</li>
+  <li><strong>Telephone</strong><a href="{wa}" target="_blank" rel="noopener">{tel}</a></li>
+  <li><strong>E-mail</strong><a href="mailto:{email}">{email}</a></li>
+  <li><strong>PEC (certified e-mail)</strong><a href="mailto:{pec}">{pec}</a></li>
+</ul>"""),
                 ("scelta-banner", "Why no banner appears", """
 <div class="legal__note"><strong>Current configuration: no consent required.</strong></div>
 <p>There are no cookies and no optional measurement or profiling tools. An “Accept/Reject” banner would therefore offer no real choice. Where only technical tools are used, the Italian Data Protection Authority allows the information to be given on the home page or in the general notice.</p>

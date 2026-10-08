@@ -228,10 +228,7 @@ html.has-intro .loader{display:grid}
 .burger:hover .burger__line--1{width:64%}
 .burger:hover .burger__line--2{width:100%}
 
-/* aperto → X sempre scura, perché l'overlay adesso è chiaro */
-.is-menu-open .nav .burger__line{background:var(--ink)}
-.is-menu-open .nav .burger__line--2{background:var(--green-500)}
-.is-menu-open .nav.is-light .burger__box{filter:none}
+/* aperto: la X sta sopra la foto del menu — vedi OVERLAY MENU */
 .is-menu-open .burger__line--1{transform:translateY(4.75px) rotate(45deg);width:100%}
 .is-menu-open .burger__line--2{transform:translateY(-4.75px) rotate(-45deg);width:100%}
 .is-menu-open .burger:hover .burger__line{width:100%}
@@ -244,13 +241,23 @@ html.has-intro .loader{display:grid}
   transition:opacity .25s var(--ease),transform .3s var(--ease);
 }
 /* ───────────────────────── OVERLAY MENU ─────────────────────────
-   Non piu' un elenco: un indice. In alto il marchio — e' l'unico punto
-   del sito in cui mancava — poi le sezioni raccolte in tre gruppi su
-   altrettante colonne, in fondo i contatti. Dietro, la stessa trama che
-   nella home fa da filigrana, al posto del fondo piatto.
+   Costruito come il resto del sito: testo e fotografia. L'elenco delle
+   sezioni nel taglio dei titoli delle schede della home, e accanto una
+   foto trattata come una scheda — velo scuro dal basso, didascalia
+   chiara — che mostra la sezione in cui si è e cambia con le voci.
+
+   Due cornici:
+     da 900px in su   la foto è una colonna a destra, a tutta altezza;
+     sotto i 900px    è una fascia in cima, a tutta larghezza, e il
+                      marchio, la lingua e la X ci stanno sopra come
+                      sopra l'hero della home.
 ----------------------------------------------------------------- */
 
-.menuOverlay{position:fixed;inset:0;z-index:400;pointer-events:none;visibility:hidden}
+.menuOverlay{
+  position:fixed;inset:0;z-index:400;pointer-events:none;visibility:hidden;
+  --vista:42%;                              /* colonna foto, da PC */
+  --banda:clamp(190px,29svh,440px);         /* fascia foto, da telefono */
+}
 .menuOverlay.is-open{pointer-events:auto;visibility:visible}
 
 .menuOverlay__bg{position:absolute;inset:0;display:flex}
@@ -258,31 +265,61 @@ html.has-intro .loader{display:grid}
   flex:1;height:100%;
   background:var(--skin-100);
   /* un filo dello stesso colore tutt'intorno: le quattro ante hanno bordi
-     frazionari e fra l'una e l'altra restava una cucitura chiara, che con
-     la trama dietro si vedeva benissimo */
+     frazionari e fra l'una e l'altra restava una cucitura chiara */
   box-shadow:0 0 0 1px var(--skin-100);
   transform:scaleY(0);transform-origin:top;
 }
-.menuOverlay__bg i:nth-child(even){background:var(--skin-100)}
 
-/* La filigrana. Stessa piastrella e stessa inclinazione della home: lo
-   strato deborda e la rotazione sta su di lui, non sulla piastrella, che
-   ruotata non si incastrerebbe piu' con se stessa. Qui e' appena piu'
-   marcata che nella home: il fondo del menu e' di un tono piu' scuro. */
-.menuOverlay__trama{
-  position:absolute;inset:0;overflow:hidden;
-  pointer-events:none;opacity:0;
+/* ── la foto ── */
+
+.menuVista{
+  position:absolute;top:0;left:0;right:0;height:var(--banda);
+  overflow:hidden;background:var(--green-900);
 }
-.menuOverlay__trama::before{
-  content:'';position:absolute;inset:-30%;
-  background:url("../assets/img/trama-plaga.svg") repeat;
-  background-size:clamp(260px,22vw,380px) auto;
-  transform:rotate(-16deg);
-  /* più tenue che nella home: lì corre sotto a fotografie e testi fitti e
-     fa da grana, qui il menu è quasi tutto spazio vuoto e alla stessa
-     intensità si metterebbe a leggere lei al posto delle voci */
-  opacity:.03;
+.menuVista__foto{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .8s var(--ease)}
+.menuVista__foto.is-on{opacity:1}
+.menuVista__foto picture{display:block;width:100%;height:100%}
+.menuVista__foto img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  object-position:var(--centro-tel,50% 50%);
+  /* entrando, la foto si posa: parte appena ingrandita e torna al suo
+     formato — lo stesso movimento lento delle schede della home */
+  transform:scale(1.06);transition:transform 1.6s var(--ease-out);
 }
+.menuVista__foto.is-on img{transform:scale(1)}
+/* il velo delle schede della home, più un'ombra in cima: lì passano la X,
+   la lingua e — da telefono — il marchio, e devono restare leggibili */
+.menuVista__foto::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,
+    rgba(18,13,7,.72) 0%,rgba(18,13,7,.12) 40%,rgba(18,13,7,0) 58%,rgba(18,13,7,.5) 100%);
+}
+/* la didascalia nel registro delle figcaption del sito: maiuscolo stretto
+   e spaziato, qui chiaro perché sta sulla foto */
+.menuVista__dida{
+  position:absolute;left:0;right:0;bottom:0;z-index:1;margin:0;
+  padding:clamp(.9rem,2.4vw,2.2rem) var(--pad);
+  font-size:clamp(.78rem,1.05vw,1.05rem);font-weight:600;
+  font-variation-settings:'wdth' 110;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--skin-050);
+}
+
+@media (min-width:900px){
+  .menuVista{left:auto;bottom:0;height:auto;width:var(--vista)}
+  .menuVista__foto img{object-position:var(--centro,50% 50%)}
+  .menuVista__dida{padding:clamp(1.3rem,2.6vw,2.2rem)}
+}
+
+/* La X sta sempre sopra la foto, in tutte e due le cornici: chiara, con
+   l'ombra che ha già sopra l'hero. (La lingua è più giù, nel blocco
+   SWITCHER DI LINGUA: lì le regole del menu aperto vengono dopo queste.) */
+.is-menu-open .nav .burger__line{background:var(--skin-050)}
+.is-menu-open .nav .burger__line--2{background:var(--sage-200)}
+.is-menu-open .nav .burger__box,
+.is-menu-open .nav.is-light .burger__box{filter:drop-shadow(0 1px 10px rgba(10,16,8,.6))}
+
+/* ── la colonna di testo ── */
 
 .menuOverlay__inner{
   position:relative;z-index:1;height:100%;
@@ -290,123 +327,111 @@ html.has-intro .loader{display:grid}
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
   display:flex;flex-direction:column;
-  gap:clamp(1.5rem,4vh,2.8rem);
-  /* in alto la stessa spaziatura della barra: il marchio grande prende il
-     posto di quello piccolo che si ritira, nello stesso angolo */
-  padding:clamp(1rem,2vw,1.6rem) var(--pad) clamp(1.5rem,4vh,2.4rem);
+  gap:clamp(1rem,3vh,2.4rem);
+  padding:clamp(1rem,2vw,1.6rem) var(--pad) clamp(1.3rem,3.5vh,2.4rem);
   opacity:0;
+  /* lo scorrimento resta, ma senza barra: accanto alla foto sarebbe una
+     riga grigia piantata in mezzo alla pagina */
+  scrollbar-width:none;
 }
+.menuOverlay__inner::-webkit-scrollbar{display:none}
 
-/* ── il marchio, in alto a sinistra ── */
-
-.menuTop{display:flex;align-items:flex-start}
+/* Da telefono il marchio sta sulla fascia, in alto a sinistra come quello
+   della barra, e l'elenco comincia subito sotto la foto: il blocco del
+   marchio è alto quanto la fascia, meno il margine superiore. */
+.menuTop{
+  display:flex;align-items:flex-start;flex:none;
+  height:calc(var(--banda) - clamp(1rem,2vw,1.6rem));
+}
 .menuBrand{
-  display:block;color:var(--green-500);
+  display:block;color:var(--skin-050);
+  filter:drop-shadow(0 1px 12px rgba(10,16,8,.55));
   transition:color .4s var(--ease);
 }
-.menuBrand:hover{color:var(--ink)}
-.menuMark{height:clamp(34px,4.4vw,58px);width:auto}
+.menuMark{height:clamp(30px,4.4vw,58px);width:auto}
 .menuMark--text{
   font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;
   font-variation-settings:'wdth' 118;
   letter-spacing:.02em;text-transform:uppercase;
 }
 
-/* ── l'indice ── */
+@media (min-width:900px){
+  .menuOverlay__inner{width:calc(100% - var(--vista))}
+  .menuTop{height:auto}
+  /* da PC il marchio torna sul fondo sabbia: verde, come in tutto il sito */
+  .menuBrand{color:var(--green-500);filter:none}
+  .menuBrand:hover{color:var(--ink)}
+}
 
-.menuIndex{
-  flex:1;
-  display:grid;grid-template-columns:repeat(2,1fr);
+/* L'elenco. Una colonna sola, senza numeri né occhielli: le voci hanno il
+   corpo e il taglio dei titoli delle schede della home, e basta questo. */
+.menuNav{
+  list-style:none;flex:1;
+  display:flex;flex-direction:column;
   /* centrato, ma "safe": su una finestra bassa un centraggio secco
      spingerebbe le prime voci sopra il bordo, dove non si arriva nemmeno
      scorrendo. Con safe, quando non ci sta, riparte dall'alto. */
-  align-content:center;
-  align-content:safe center;
-  gap:clamp(1.6rem,3.5vw,4rem);
+  justify-content:center;
+  justify-content:safe center;
 }
-.menuGroup{display:flex;flex-direction:column;align-items:flex-start}
-.menuGroup__k{
-  width:100%;
-  font-size:clamp(.7rem,.82vw,.84rem);font-weight:700;
-  font-variation-settings:'wdth' 110;
-  letter-spacing:.2em;text-transform:uppercase;
-  color:var(--green-500);
-  padding-bottom:clamp(.5rem,1.2vh,.8rem);
-  margin-bottom:clamp(.3rem,.9vh,.6rem);
-  border-bottom:1px solid rgba(39,79,58,.28);
-}
-/* I tre bolli in fondo alle colonne. Stessa altezza per tutti e tre, così
-   chiudono la riga alla pari; i due disegnati prendono il verde da qui,
-   via currentColor. Lo stemma è una fotografia del marchio e il suo colore
-   ce l'ha già dentro: per lui il `color` non conta.
-   Si staccano dal fondo perché il disco è --skin-050, un tono più chiaro
-   dello --skin-100 del menu: è quello che li fa leggere come adesivi. */
-.menuNav{list-style:none;width:100%}
 .menuNav__item{overflow:hidden}
 .menuNav__item a{
-  display:flex;align-items:baseline;gap:clamp(.5rem,1vw,.9rem);
-  padding:clamp(.12rem,.7vh,.42rem) 0;
+  display:block;
+  padding:clamp(.12rem,.6vh,.4rem) 0;
   transform:translateY(105%);
-}
-.menuNav__num{
-  flex:none;width:2.2em;
-  /* cresciuto con le voci: a due colonne l'etichetta è molto più grossa,
-     e col corpo di prima il numero spariva accanto */
-  font-size:clamp(.75rem,.95vw,1.05rem);font-weight:700;
-  font-variation-settings:'wdth' 110;
-  letter-spacing:.14em;
-  color:var(--sage);
-  transition:color .4s var(--ease);
 }
 .menuNav__label{
   display:block;
-  /* Due colonne invece di una: il corpo non deve più riempire lo schermo
-     ma la colonna — che però, essendo metà e non un terzo, regge un corpo
-     più grosso. La misura vera la rifinisce adattaVociMenu(), che
-     rimpicciolisce quel tanto che basta perché la voce più lunga ci
-     stia — mai oltre questo valore. */
-  font-size:clamp(1.45rem,3.6vw,3.6rem);
-  line-height:1.02;
-  /* mai a capo: una voce spezzata in due righe sfonderebbe la riga
-     dell'indice, e soprattutto renderebbe cieca la misura di
+  /* Il termine in vh tiene sette voci, il marchio e i contatti sugli
+     schermi bassi; adattaVociMenu() rimpicciolisce se la voce più lunga
+     non ci sta in larghezza — mai oltre questo valore. */
+  font-size:clamp(1.5rem,min(7.4vw,4.6vh),3.8rem);
+  line-height:1;
+  /* mai a capo: una voce spezzata renderebbe cieca la misura di
      adattaVociMenu(), che leggerebbe la larghezza della colonna invece
-     di quella delle lettere e non rimpicciolirebbe più niente */
+     di quella delle lettere */
   white-space:nowrap;
   color:var(--ink);
   transition:transform .5s var(--ease),color .4s var(--ease);
 }
+@media (min-width:900px){
+  .menuNav__label{font-size:clamp(2rem,min(4.6vw,6.4vh),4.8rem)}
+}
 .menuNav__item a:hover .menuNav__label,
+.menuNav__item a:focus-visible .menuNav__label,
 .menuNav__item a[aria-current="page"] .menuNav__label{color:var(--green-500)}
-.menuNav__item a:hover .menuNav__num,
-.menuNav__item a[aria-current="page"] .menuNav__num{color:var(--green-500)}
 .menuNav__item a:hover .menuNav__label{transform:translateX(.06em)}
 
 /* ── i contatti, invariati ── */
 
 .menuFoot{
-  display:flex;flex-wrap:wrap;gap:clamp(1.4rem,5vw,4.5rem);
-  padding-top:clamp(1.4rem,3.5vh,2.2rem);
+  flex:none;
+  /* la colonna di testo è più stretta di quando il menu era a tutto
+     schermo: col passo vecchio Seguici andava a capo da solo */
+  display:flex;flex-wrap:wrap;gap:1.1rem clamp(1.2rem,2.6vw,2.8rem);
+  padding-top:clamp(1.1rem,3vh,2.2rem);
   border-top:1px solid rgba(39,79,58,.28);
 }
 .menuFoot__col{display:flex;flex-direction:column;gap:.3em}
 .menuFoot__k{
-  font-size:clamp(.9rem,1.05vw,1.05rem);font-weight:700;
+  font-size:clamp(.82rem,1.05vw,1.05rem);font-weight:700;
   font-variation-settings:'wdth' 110;
   letter-spacing:.16em;text-transform:uppercase;
   color:var(--green-500);
 }
 .menuFoot__v{
-  font-size:clamp(1.15rem,1.9vw,1.7rem);font-weight:500;
+  font-size:clamp(1.05rem,1.35vw,1.45rem);font-weight:500;
   color:var(--ink);
   transition:color .4s var(--ease);
 }
 .menuFoot__v:hover{color:var(--green-500)}
 
-/* Sotto i 760px le due colonne si incolonnano: sette voci in colonna
-   sono alte, ma affiancate su uno schermo stretto sarebbero illeggibili. */
-@media (max-width:760px){
-  .menuIndex{grid-template-columns:1fr;gap:clamp(1.1rem,2.6vh,1.7rem)}
-  .menuNav__label{font-size:clamp(1.3rem,6.6vw,2rem)}
+/* Da telefono le tre colonne una sotto l'altra rubavano mezzo schermo:
+   Prenota e Seguici affiancate, l'indirizzo, che è lungo, sotto a tutta
+   riga. Stessi contenuti, stesso ordine di lettura. */
+@media (max-width:899px){
+  .menuFoot{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.4rem}
+  .menuFoot__col:nth-child(2){grid-column:1 / -1;order:3}
 }
 
 /* ───────────────────────────── HERO (home) ───────────────────────────── */
@@ -1622,11 +1647,13 @@ html.has-intro .loader{display:grid}
 .nav.is-light .lang__sep{color:rgba(255,255,255,.4)}
 .nav.is-light .lang__off{color:var(--skin-100)}
 
-/* col menu aperto il fondo è chiaro: torna scuro */
-.is-menu-open .nav .lang{text-shadow:none}
-.is-menu-open .nav .lang__on{color:var(--green-500)}
-.is-menu-open .nav .lang__sep{color:var(--skin-400)}
-.is-menu-open .nav .lang__off{color:var(--ink-soft)}
+/* col menu aperto la lingua cade sulla foto del menu — la colonna da PC,
+   la fascia da telefono: chiara, come sopra l'hero */
+.is-menu-open .nav .lang{text-shadow:0 1px 12px rgba(10,16,8,.6)}
+.is-menu-open .nav .lang__on{color:var(--skin-050)}
+.is-menu-open .nav .lang__sep{color:var(--skin-300)}
+.is-menu-open .nav .lang__off{color:var(--skin-200)}
+.is-menu-open .nav .lang__off:hover{color:var(--skin-050)}
 
 /* ───────────────────────────── TELEFONO ─────────────────────────────
    Aree di tocco, notch e liste che scorrono di lato.
@@ -1675,29 +1702,15 @@ a,button{-webkit-tap-highlight-color:transparent}
   /* riga contatti: chiave sopra, valore sotto */
   .contact__row{flex-direction:column;align-items:flex-start;gap:.35rem}
   .contact__row:hover{padding-left:0}
-
-  /* Il menu qui è una colonna sola, e non deve più riempire lo schermo:
-     deve starci tutto — marchio, tre gruppi, otto voci, contatti — senza
-     scorrere. Quindi corpo misurato, numeri stretti e poca aria fra le
-     righe. Il marchio resta in cima, accanto alla X, dove stava quello
-     della barra: è il posto che gli spetta, non c'è ragione di spingerlo
-     giù come faceva la vecchia lista. */
-  .menuOverlay__inner{gap:.9rem;padding-block:1rem 1.1rem}
-  .menuIndex{gap:.9rem}
-  .menuGroup__k{font-size:.66rem;padding-bottom:.35rem;margin-bottom:.1rem}
-  .menuNav__label{font-size:clamp(1.5rem,7.4vw,2.3rem);line-height:1.04}
-  .menuNav__num{width:1.5em;font-size:.68rem;letter-spacing:.1em}
-  .menuNav__item a{gap:.45rem;padding-block:.06rem}
-  .menuFoot{gap:.7rem 1.8rem;padding-top:1.1rem}
 }
 
-/* telefoni bassi (SE, o con la barra del browser aperta): si stringe
-   ancora, altrimenti indice e contatti non ci stanno insieme */
-@media (max-width:640px) and (max-height:720px){
-  .menuNav__label{font-size:clamp(1.35rem,6.2vw,1.9rem)}
-  .menuOverlay__inner{gap:.8rem;padding-block:.9rem 1rem}
-  .menuIndex{gap:.9rem}
-  .menuFoot{gap:.6rem 1.6rem;padding-top:1rem}
+/* telefoni bassi (SE, o con la barra del browser aperta): fascia foto e
+   voci più basse, altrimenti elenco e contatti non ci stanno insieme */
+@media (max-width:899px) and (max-height:720px){
+  .menuOverlay{--banda:clamp(150px,25svh,210px)}
+  .menuOverlay__inner{gap:.75rem}
+  .menuNav__label{font-size:clamp(1.3rem,min(6.4vw,4.2vh),1.9rem)}
+  .menuFoot{padding-top:.8rem}
 }
 
 /* su touch gli hover restano attaccati: li spengo */
@@ -1714,7 +1727,6 @@ a,button{-webkit-tap-highlight-color:transparent}
 /* Spazio utilizzabile e bersagli touch, anche in orizzontale. */
 .menuOverlay{height:100dvh}
 .menuTop,.menuFoot{flex-shrink:0}
-.menuIndex{flex-shrink:0}
 .menuOverlay__inner{padding-top:max(1rem,env(safe-area-inset-top));padding-bottom:max(1.25rem,env(safe-area-inset-bottom))}
 .menuTop{padding-right:7rem}
 .leave{max-height:calc(100dvh - 2rem);overscroll-behavior:contain}
@@ -1724,8 +1736,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   .hero{min-height:0}
   .hero__content{padding-bottom:max(2.5rem,env(safe-area-inset-bottom))}
   .menuNav__item a{min-height:44px;align-items:center}
-  .menuOverlay__inner{gap:1.25rem}
-  .menuIndex{flex:1 0 auto;align-content:start}
   .menuFoot__v{overflow-wrap:anywhere}
   .pageTitle{font-size:clamp(2.5rem,10vw,4.75rem);overflow-wrap:anywhere}
   .foot__mark{overflow-wrap:anywhere}
@@ -1738,15 +1748,12 @@ a,button{-webkit-tap-highlight-color:transparent}
   .scaffale{grid-template-columns:minmax(0,1fr)}
 }
 @media (pointer:coarse){
+  .menuNav__item a{min-height:44px}
   .hero__sub a{display:inline-flex;align-items:center;min-height:44px}
   .lang a,.foot__legal a{display:inline-flex;align-items:center;min-height:44px}
 }
 
 @media (max-width:860px), (pointer:coarse){
-  .is-menu-open .nav{background:var(--skin-100)}
-  .is-menu-open .nav__brand{opacity:1;transform:none;pointer-events:auto;transition:none}
-  .menuTop{display:none}
-  .menuOverlay__inner{padding-top:calc(6rem + env(safe-area-inset-top))}
   .menuTabs{mask-image:none}
 }
 

@@ -152,8 +152,8 @@ pastiglia allo stesso angolo. In basso e non centrata perché centrata
 coprirebbe il titolo a chi torna con l'ordine già pieno. Sotto gli 860px non
 c'è larghezza per una colonna a lato: lì la stessa scheda arriva dal basso.
 
-La pagina **non sta nel burger menu** — le voci sono già otto e questa è una
-figlia della Dispensa, non una sezione a sé. Ci si arriva dal tasto pieno in
+La pagina **non sta nel burger menu**: è la Dispensa stessa — il racconto e
+il banco dove si ordina — non una sezione a sé. Ci si arriva dal tasto pieno in
 fondo a `dispensa.html`.
 
 ## La trama di fondo
@@ -277,13 +277,26 @@ paesaggio 3:2 dentro uno schermo verticale perderebbe i lati e mostrerebbe una
 fascia centrale senza senso. La riga sotto il marchio resta obbligatoriamente
 su una riga sola, altrimenti il blocco si sfalda.
 
-**Le voci del burger** riempiono la colonna come da desktop. Il corpo non è
-fisso: `adattaVociMenu()` misura la voce più lunga — «Il Giardino» in italiano,
-«The Garden» in inglese — e riduce quel tanto che basta perché stia su una
-riga. Sui telefoni bassi le voci si accorciano ancora, così lista e contatti
-restano leggibili. Il pannello scorre sotto un’intestazione fissa, con aree
-di tocco di almeno 44px. Il menu blocca la pagina sottostante e alla chiusura
-ripristina esattamente la posizione precedente.
+**Il burger menu** è un elenco unico di sette voci (`MENU_VOCI` in
+`build.py`), il marchio sopra, i contatti sotto, e accanto una foto per voce
+(`MENU_FOTO`) trattata come le schede della home. Da 900px in su la foto è
+una colonna a destra e cambia passando sulle voci; sotto i 900px è una fascia
+in cima, e siccome lì non si passa sopra a niente le foto scorrono da sole
+ogni 3,4 secondi. Ogni voce ha due foto, una verticale per la colonna e una
+per la fascia, con il punto su cui centrare il ritaglio: per cambiarle basta
+quella tabella. Nessuna è una foto della home. Le immagini si caricano solo
+quando il menu sta per aprirsi.
+
+Il corpo delle voci non è fisso: `adattaVociMenu()` misura la voce più lunga
+e riduce quel tanto che basta perché stia su una riga. Sui telefoni bassi
+fascia e voci si accorciano, così elenco e contatti ci stanno insieme; in
+ultima istanza il pannello scorre, con aree di tocco di almeno 44px.
+
+Il marchio in alto riporta alla home con `?intro=logo`, cioè rigiocando
+l'animazione d'ingresso. All'apertura il menu blocca la pagina sottostante
+(`lockScroll`) e alla chiusura ripristina esattamente la posizione da cui
+eri partito; l'`inert` sul pannello e il fuoco che torna al bottone tengono
+fuori la tastiera da quello che non è in campo.
 
 Altre accortezze: rientri di sicurezza per notch e barra home, bersagli da
 almeno 44px, tab del menu che scorrono di lato con una sfumatura a segnalarlo,
