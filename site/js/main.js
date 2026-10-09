@@ -204,6 +204,61 @@ function raccontiInScena() {
   });
 }
 
+function pizzaInScena() {
+  const box = document.querySelector('.pizzaScene__video');
+  if (!box || !('IntersectionObserver' in window)) return;
+  const video = box.querySelector('video');
+  const pulsante = box.querySelector('.pizzaScene__toggle');
+  if (!video || !pulsante) return;
+
+  const aggiorna = () => {
+    const testo = video.paused ? pulsante.dataset.play : pulsante.dataset.pause;
+    pulsante.querySelector('span').textContent = testo;
+    pulsante.setAttribute('aria-label', testo);
+    box.classList.toggle('is-playing', !video.paused);
+  };
+  video.addEventListener('play', aggiorna);
+  video.addEventListener('pause', aggiorna);
+  video.addEventListener('error', () => {
+    box.classList.remove('is-enhanced');
+    video.setAttribute('controls', '');
+  });
+  const riproduci = () => video.play().catch((errore) => {
+    // Uno scroll rapido può interrompere play() con AbortError: è normale.
+    if (errore.name === 'AbortError') return;
+    box.classList.remove('is-enhanced');
+    video.setAttribute('controls', '');
+  });
+  pulsante.addEventListener('click', () => {
+    if (video.paused) {
+      video.dataset.userPaused = '';
+      riproduci();
+    } else {
+      video.dataset.userPaused = '1';
+      video.pause();
+    }
+  });
+
+  const osserva = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting || document.hidden) {
+      video.pause();
+    } else if (!REDUCED && !video.dataset.userPaused) {
+      riproduci();
+    }
+  }, { threshold: 0.25 });
+  osserva.observe(video);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) video.pause();
+    else if (!REDUCED && !video.dataset.userPaused) {
+      const rect = video.getBoundingClientRect();
+      if (rect.top < innerHeight && rect.bottom > 0) riproduci();
+    }
+  });
+  video.removeAttribute('controls');
+  box.classList.add('is-enhanced');
+  aggiorna();
+}
+
 /* ───────── LA FRASE CHE SI SCRIVE ─────────
    Il manifesto non compare tutto insieme: si scrive mentre lo scorrimento
    lo attraversa, una lettera dopo l'altra. Niente resta nascosto dietro un
@@ -1052,6 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLenis();
   scrollLinks();
   burgerMenu();
+  pizzaInScena();
   if (!HAS_MOTION) {
     document.getElementById('loader')?.remove();
     bottega();

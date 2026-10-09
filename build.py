@@ -364,6 +364,12 @@ T = {
                            "leggera e fragrante. La carta lascia spazio alla creatività "
                            "e ai gusti più familiari.",
             "trio": ["Leggerezza", "Fragranza", "Digeribilità"],
+            "scena_k": "Dal forno alla tavola",
+            "scena_titolo": "Il tempo prende forma.",
+            "video_alt": "La pizza di Plaga vista da vicino",
+            "video_play": "Riproduci video",
+            "video_pause": "Metti in pausa",
+            "video_fallback": "Il tuo browser non supporta il video.",
         },
         "dispensa": {
             "occhiello": "Il gusto che continua anche a casa",
@@ -442,6 +448,7 @@ T = {
             "dispensa-card": "Due vasetti di passata sullo scaffale della Dispensa",
             "stemma": "La Dispensa del Plaga",
             "forno-impasto": "La stesura a mano dell’impasto sul banco infarinato",
+            "pizza-dettaglio": "Dettaglio di una pizza Plaga appena servita",
             "dispensa-scelta": "Un vasetto di passata scelto dallo scaffale della Dispensa",
             "pasta-dettaglio": "Dettaglio della pasta con tonno e crema bianca",
             "fritto-servito": "Frittura di mare e verdure servita in una ciotola di legno",
@@ -574,6 +581,12 @@ T = {
                            "giving the pizza its light, crisp character. The menu "
                            "has room for creativity and familiar favourites alike.",
             "trio": ["Lightness", "Fragrance", "Digestibility"],
+            "scena_k": "From oven to table",
+            "scena_titolo": "Time takes shape.",
+            "video_alt": "A close view of Plaga's pizza",
+            "video_play": "Play video",
+            "video_pause": "Pause video",
+            "video_fallback": "Your browser does not support video.",
         },
         "dispensa": {
             "occhiello": "The taste that carries on at home",
@@ -652,6 +665,7 @@ T = {
             "dispensa-card": "Two jars of passata on the Pantry shelf",
             "stemma": "The Plaga Pantry",
             "forno-impasto": "Pizza dough stretched by hand on the floured worktop",
+            "pizza-dettaglio": "Close-up of a freshly served Plaga pizza",
             "dispensa-scelta": "A jar of passata being picked from the Pantry shelf",
             "pasta-dettaglio": "Close-up of pasta with tuna and white cream",
             "fritto-servito": "Fried seafood and vegetables served in a wooden bowl",
@@ -901,6 +915,7 @@ def picture(root, name, alt, lazy=True, mobile=None):
     # Dimensioni intrinseche: lo spazio delle nuove foto è riservato anche
     # prima del caricamento lazy, evitando salti durante lo scroll.
     misure = {"forno-impasto": (1616, 2032), "dispensa-scelta": (1280, 1706),
+              "pizza-dettaglio": (1920, 1280),
               "pasta-dettaglio": (1639, 2048), "fritto-servito": (1024, 1360),
               "pasta-vongole": (1536, 2048)}
     dimensioni = f' width="{misure[name][0]}" height="{misure[name][1]}"' if name in misure else ""
@@ -1529,6 +1544,26 @@ def build_forno(lang):
   <div class="racconto__copy">
     <p class="racconto__testo" data-sale>{p["testo"]}</p>
     <p class="racconto__sotto">{p["descrizione"]}</p>
+  </div>
+</section>
+
+<section class="pizzaScene" aria-labelledby="pizza-scene-title">
+  <div class="pizzaScene__head">
+    <p class="occhiello">{p["scena_k"]}</p>
+    <h2 id="pizza-scene-title" data-sale>{p["scena_titolo"]}</h2>
+  </div>
+  <div class="pizzaScene__media">
+    <div class="pizzaScene__video">
+      <video controls muted playsinline loop preload="none" width="1280" height="720"
+             poster="{_root(lang)}assets/img/pizza-video-poster.webp" aria-label="{p["video_alt"]}">
+        <source src="{_root(lang)}assets/img/pizza-video.mp4" type="video/mp4">
+        {p["video_fallback"]}
+      </video>
+      <button class="pizzaScene__toggle" type="button"
+              data-play="{p["video_play"]}" data-pause="{p["video_pause"]}"
+              aria-label="{p["video_play"]}"><span>{p["video_play"]}</span></button>
+    </div>
+    <figure class="pizzaScene__foto">{picture(_root(lang), "pizza-dettaglio", t["alt"]["pizza-dettaglio"])}</figure>
   </div>
 </section>
 
