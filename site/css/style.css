@@ -1833,15 +1833,10 @@ a,button{-webkit-tap-highlight-color:transparent}
   padding:clamp(3rem,7vw,7rem) var(--pad) clamp(3rem,7vw,7rem);
 }
 .pizzaScene__head{
-  display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);
-  gap:clamp(1rem,5vw,5rem);align-items:start;
   margin-bottom:clamp(1.5rem,3vw,3rem);
   border-top:1px solid rgba(39,79,58,.32);padding-top:1.25rem;
 }
-.pizzaScene__head h2{
-  font-size:clamp(2rem,3.8vw,4.1rem);line-height:1.08;
-  letter-spacing:-.035em;font-weight:500;
-}
+.pizzaScene__head .occhiello{margin-bottom:0}
 .pizzaScene__media{
   display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,.83fr);
   gap:clamp(1rem,2.5vw,2.5rem);align-items:end;
@@ -1850,19 +1845,6 @@ a,button{-webkit-tap-highlight-color:transparent}
 .pizzaScene__video video{
   display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;
 }
-.pizzaScene__toggle{
-  display:none;position:absolute;left:clamp(.8rem,2vw,1.5rem);
-  bottom:clamp(.8rem,2vw,1.5rem);z-index:1;
-  align-items:center;gap:.75rem;padding:.7rem 1rem;
-  background:rgba(14,32,24,.88);color:var(--skin-050);
-  font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
-  border:1px solid rgba(232,219,199,.6);
-  transition:background .3s var(--ease-out);
-}
-.pizzaScene__video.is-enhanced .pizzaScene__toggle{display:flex}
-.pizzaScene__toggle:hover{background:var(--green-500)}
-.pizzaScene__toggle::before{content:'▶';font-size:.85em;line-height:1}
-.pizzaScene__video.is-playing .pizzaScene__toggle::before{content:'Ⅱ';font-size:1.1em}
 .pizzaScene__foto{overflow:hidden}
 .pizzaScene__foto .pic{height:100%}
 .pizzaScene__foto img{
@@ -1958,8 +1940,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   .racconto__k{margin-bottom:1.6rem}
   .racconto__testo{font-size:clamp(1.6rem,6vw,2.3rem);max-width:24ch}
   .pizzaScene{padding-block:3rem 4rem}
-  .pizzaScene__head{grid-template-columns:1fr;gap:.4rem}
-  .pizzaScene__head h2{font-size:clamp(2rem,7vw,3rem)}
   .pizzaScene__media{display:block}
   .pizzaScene__foto{width:78%;margin:-1.3rem 0 0 auto;position:relative}
   .pizzaScene__foto img{aspect-ratio:4/3;object-position:30% center}

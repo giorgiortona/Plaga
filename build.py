@@ -365,10 +365,7 @@ T = {
                            "e ai gusti più familiari.",
             "trio": ["Leggerezza", "Fragranza", "Digeribilità"],
             "scena_k": "Dal forno alla tavola",
-            "scena_titolo": "Il tempo prende forma.",
             "video_alt": "La pizza di Plaga vista da vicino",
-            "video_play": "Riproduci video",
-            "video_pause": "Metti in pausa",
             "video_fallback": "Il tuo browser non supporta il video.",
         },
         "dispensa": {
@@ -582,10 +579,7 @@ T = {
                            "has room for creativity and familiar favourites alike.",
             "trio": ["Lightness", "Fragrance", "Digestibility"],
             "scena_k": "From oven to table",
-            "scena_titolo": "Time takes shape.",
             "video_alt": "A close view of Plaga's pizza",
-            "video_play": "Play video",
-            "video_pause": "Pause video",
             "video_fallback": "Your browser does not support video.",
         },
         "dispensa": {
@@ -1547,21 +1541,17 @@ def build_forno(lang):
   </div>
 </section>
 
-<section class="pizzaScene" aria-labelledby="pizza-scene-title">
+<section class="pizzaScene" aria-label="{p["scena_k"]}">
   <div class="pizzaScene__head">
     <p class="occhiello">{p["scena_k"]}</p>
-    <h2 id="pizza-scene-title" data-sale>{p["scena_titolo"]}</h2>
   </div>
   <div class="pizzaScene__media">
     <div class="pizzaScene__video">
-      <video controls muted playsinline loop preload="none" width="1280" height="720"
+      <video muted playsinline loop preload="none" width="1280" height="720"
              poster="{_root(lang)}assets/img/pizza-video-poster.webp" aria-label="{p["video_alt"]}">
         <source src="{_root(lang)}assets/img/pizza-video.mp4" type="video/mp4">
         {p["video_fallback"]}
       </video>
-      <button class="pizzaScene__toggle" type="button"
-              data-play="{p["video_play"]}" data-pause="{p["video_pause"]}"
-              aria-label="{p["video_play"]}"><span>{p["video_play"]}</span></button>
     </div>
     <figure class="pizzaScene__foto">{picture(_root(lang), "pizza-dettaglio", t["alt"]["pizza-dettaglio"])}</figure>
   </div>
