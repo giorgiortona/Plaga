@@ -1466,27 +1466,25 @@ def build_home(lang):
 </section>"""
 
 
-def _fig(lang, cls, img, cap):
+def _fig(lang, cls, img):
     t = T[lang]
-    return (f'<figure class="g {cls}">{picture(_root(lang), img, t["alt"][img])}'
-            f'<figcaption>{cap}</figcaption></figure>')
+    return f'<figure class="g {cls}">{picture(_root(lang), img, t["alt"][img])}</figure>'
 
 
 def build_sale(lang):
     t = T[lang]
-    c = t["caps"]
     return f"""<section class="pageHead">
   <h1 class="pageTitle">{t["h1"]["sale"]}</h1>
   <p class="lead">{t["leads"]["sale"]}</p>
 </section>
 
 <section class="gallery">
-  {_fig(lang, "g--wide", "sala-volte-b", c["volte"])}
-  {_fig(lang, "g--tall", "bar-arco-v", c["bancone"])}
-  {_fig(lang, "g--half", "sala-candele", c["candele"])}
-  {_fig(lang, "g--half", "ingresso", c["ingresso"])}
-  {_fig(lang, "g--tall", "sala-volte-v", c["stelle"])}
-  {_fig(lang, "g--wide", "tamburelli", c["tamburelli"])}
+  {_fig(lang, "g--wide", "sala-volte-b")}
+  {_fig(lang, "g--tall", "bar-arco-v")}
+  {_fig(lang, "g--half", "sala-candele")}
+  {_fig(lang, "g--half", "ingresso")}
+  {_fig(lang, "g--tall", "sala-volte-v")}
+  {_fig(lang, "g--wide", "tamburelli")}
 </section>
 
 <section class="cta">
@@ -1496,7 +1494,6 @@ def build_sale(lang):
 
 def build_giardino(lang):
     t = T[lang]
-    c = t["caps"]
     return f"""<section class="pageHead">
   <h1 class="pageTitle">{t["h1"]["giardino"]}</h1>
   <p class="lead">{t["leads"]["giardino"]}</p>
@@ -1505,11 +1502,11 @@ def build_giardino(lang):
 <section class="bleed">{picture(_root(lang), "giardino-pano", t["alt"]["giardino-pano"], lazy=False)}</section>
 
 <section class="gallery">
-  {_fig(lang, "g--wide", "giardino-tavolata", c["tavolata"])}
-  {_fig(lang, "g--tall", "giardino-palme-v", c["palme"])}
-  {_fig(lang, "g--half", "giardino-cactus", c["luci"])}
-  {_fig(lang, "g--half", "giardino-lampada-v", c["due"])}
-  {_fig(lang, "g--tall", "giardino-tavolata-v", c["coperti"])}
+  {_fig(lang, "g--wide", "giardino-tavolata")}
+  {_fig(lang, "g--tall", "giardino-palme-v")}
+  {_fig(lang, "g--half", "giardino-cactus")}
+  {_fig(lang, "g--half", "giardino-lampada-v")}
+  {_fig(lang, "g--tall", "giardino-tavolata-v")}
 </section>
 
 <section class="cta">

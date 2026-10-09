@@ -566,8 +566,6 @@ html.has-intro .loader{display:grid}
     margin-inline:calc(max(var(--pad),env(safe-area-inset-left)) * -1);
   }
   .g:nth-child(5n+1) img{aspect-ratio:5/4}
-  .g:nth-child(5n+1) figcaption{padding-inline:max(var(--pad),env(safe-area-inset-left))}
-
   /* 2 e 3 · affiancate, la seconda sfalsata verso il basso */
   .g:nth-child(5n+2){grid-column:1/span 3}
   .g:nth-child(5n+3){grid-column:4/span 3;margin-top:clamp(1.5rem,6vw,2.6rem)}
