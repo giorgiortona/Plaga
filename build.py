@@ -1451,11 +1451,6 @@ def build_home(lang):
 <section class="chiusa">
   <p class="chiusa__grande" data-sale>{t["chiusa_grande"]}</p>
   <p class="chiusa__piccola">{t["chiusa_piccola"]}</p>
-</section>
-
-<section class="premi">
-  <p class="premi__k">{t["premi"]}</p>
-  <div class="premi__fila">{SIGILLO_GURU}</div>
 </section>"""
 
 
