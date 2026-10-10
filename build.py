@@ -22,6 +22,11 @@ IG = "https://www.instagram.com/plaga.lounge/"
 MAPS = "https://www.google.com/maps/place/Plaga+Lounge/@40.1478749,18.0728846,17z"
 MENU_URL = "https://www.digitavolo.com/plaga/menu"
 
+
+def section_href(slug):
+    """DigiTavolo e' l'unica fonte aggiornata del menu."""
+    return MENU_URL if slug == "menu" else f"{slug}.html"
+
 # Il numero apre WhatsApp con il messaggio gia' pronto, non il dialer.
 WA_NUM = "393515721939"
 WA_TESTO = {"it": "Ciao, vorrei prenotare un tavolo da PLAGA. ",
@@ -987,7 +992,7 @@ def overlay(lang, name):
         didascalie[slug] = nome
         cur = ' aria-current="page"' if slug == name else ""
         voci.append(
-            f'<li class="menuNav__item"><a href="{slug}.html" data-voce="{slug}"{cur}>'
+            f'<li class="menuNav__item"><a href="{section_href(slug)}" data-voce="{slug}"{cur}>'
             f'<span class="menuNav__label">{nome}</span></a></li>')
 
     # la foto di partenza: quella della pagina, se nel menu c'e'; la Bottega
@@ -1092,6 +1097,9 @@ def page(lang, name, body, light_nav=False, loader=False):
     root = "" if t["dir"] == "" else "../"
     it_url = f"{name}.html" if t["dir"] == "" else f"../{name}.html"
     en_url = f"en/{name}.html" if t["dir"] == "" else f"{name}.html"
+    menu_redirect = (f'<meta http-equiv="refresh" content="0;url={MENU_URL}">\n'
+                     f'<script>location.replace("{MENU_URL}")</script>'
+                     if name == "menu" else "")
 
     html = f"""<!DOCTYPE html>
 <html lang="{lang}">
@@ -1100,6 +1108,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{t["titles"][name]}</title>
 <meta name="description" content="{t["descs"][name]}">
+{menu_redirect}
 <meta name="theme-color" content="#E8DBC7">
 <script src="{root}js/intro.js?v={impronta("js/intro.js")}"></script>
 <link rel="alternate" hreflang="it" href="{it_url}">
@@ -1121,7 +1130,6 @@ def page(lang, name, body, light_nav=False, loader=False):
 {body}
 </main>
 {footer(lang)}
-{leave_dialog(lang)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
@@ -1169,7 +1177,7 @@ LEGAL = {
                 ("servizi-esterni", "Contatti e servizi esterni", """
 <h3>Servizi attivati dall’utente</h3>
 <p>Google Maps, Instagram e WhatsApp non sono incorporati nella pagina. Il collegamento al relativo fornitore avviene soltanto dopo il click dell’utente, che visita un servizio distinto soggetto alla propria informativa. I messaggi WhatsApp ed e-mail vengono effettivamente inviati solo mediante un’ulteriore azione nell’applicazione scelta dall’utente.</p>
-<p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Prima di aprirlo il sito mostra un avviso che indica la destinazione e richiede una conferma esplicita. Dal momento dell’apertura il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
+<p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Il collegamento si apre quando l’utente sceglie il menu; da quel momento il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
 <h3>Risorse caricate automaticamente</h3>
 <p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google), le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>, e — nella sola pagina iniziale — il sigillo del riconoscimento Restaurant Guru da <code>awards.infcdn.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
 <div class="legal__note"><strong>Base giuridica:</strong> legittimo interesse del titolare alla resa tipografica e al corretto funzionamento del sito, art. 6, par. 1, lett. f) GDPR.</div>"""),
@@ -1224,7 +1232,7 @@ LEGAL = {
 <div class="legal__note">I normali log del server non sono cookie e non leggono informazioni dal dispositivo; possono comunque contenere dati di navigazione e sono descritti nella <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
                 ("servizi", "Collegamenti a servizi esterni", """
 <p>I pulsanti verso Google Maps, Instagram e WhatsApp sono normali collegamenti. Prima del click non viene effettuata alcuna richiesta ai relativi domini: non ci sono mappe, pixel, iframe o script dei fornitori. Aprendo il collegamento si visita un servizio distinto, che può utilizzare cookie secondo la propria informativa.</p>
-<p>Il menu digitale su <strong>digitavolo.com</strong> è un servizio esterno. Il sito non vi effettua alcuna richiesta finché l’utente non apre il collegamento e non conferma l’avviso di uscita. Da quel momento il fornitore può utilizzare tecnologie proprie secondo la sua informativa. Chi preferisce non aprirlo può consultare il menu nella pagina <a href="menu.html"><strong>Il Menu</strong></a> di questo sito.</p>"""),
+<p>Il menu digitale su <strong>digitavolo.com</strong> è un servizio esterno. Il sito non vi effettua alcuna richiesta finché l’utente non sceglie di aprire il menu. Da quel momento il fornitore può utilizzare tecnologie proprie secondo la sua informativa.</p>"""),
                 ("aggiornamenti", "Aggiornamenti della policy", """
 <p>Se in futuro il sito adotterà nuovi servizi che utilizzano cookie o altre tecnologie facoltative, questa informativa verrà aggiornata prima della loro attivazione. Quando richiesto, tali servizi saranno disponibili solo dopo una scelta esplicita dell’utente.</p>"""),
                 ("riferimenti", "Riferimenti ufficiali", """
@@ -1258,7 +1266,7 @@ LEGAL = {
                 ("servizi-esterni", "Contacts and external services", """
 <h3>Services activated by the user</h3>
 <p>Google Maps, Instagram and WhatsApp are not embedded in the page. The connection to the relevant provider occurs only after the user clicks, thereby visiting a separate service subject to its own notice. WhatsApp and e-mail messages are actually sent only through a further action in the application chosen by the user.</p>
-<p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. Before opening it the site displays a notice stating the destination and requires explicit confirmation. From the moment it opens, the provider may receive technical connection data and operates under its own notice.</p>
+<p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. The link opens when the visitor selects the menu; from that moment the provider may receive technical connection data and operates under its own notice.</p>
 <h3>Resources loaded automatically</h3>
 <p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google), animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>, and — on the home page only — the Restaurant Guru award seal from <code>awards.infcdn.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
 <div class="legal__note"><strong>Legal basis:</strong> the controller’s legitimate interest in the typographic rendering and correct operation of the site, art. 6(1)(f) GDPR.</div>"""),
@@ -1313,7 +1321,7 @@ LEGAL = {
 <div class="legal__note">Ordinary server logs are not cookies and read no information from the device; they may nonetheless contain browsing data and are described in the <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
                 ("servizi", "Links to external services", """
 <p>The buttons to Google Maps, Instagram and WhatsApp are ordinary links. No request is made to those domains before the click: there are no maps, pixels, iframes or provider scripts. Opening the link takes you to a separate service, which may use cookies under its own notice.</p>
-<p>The digital menu on <strong>digitavolo.com</strong> is an external service. The site makes no request to it until the user opens the link and confirms the exit notice. From that point the provider may use its own technologies under its own notice. Anyone who prefers not to open it can read the menu on the <a href="menu.html"><strong>The Menu</strong></a> page of this site.</p>"""),
+<p>The digital menu on <strong>digitavolo.com</strong> is an external service. The site makes no request to it until the visitor chooses to open the menu. From that point the provider may use its own technologies under its own notice.</p>"""),
                 ("aggiornamenti", "Policy updates", """
 <p>If the site adopts new services in future that use cookies or other optional technologies, this notice will be updated before they are activated. Where required, such services will be available only after an explicit choice by the user.</p>"""),
                 ("riferimenti", "Official references", """
@@ -1361,41 +1369,14 @@ def build_legal(lang, quale):
 def tagline_links(lang):
     """La tagline con le tre voci cliccabili.
 
-    Ristorante e Pizzeria portano alla pagina Menu del sito; Lounge Bar va
-    dritto al menu digitale su digitavolo. Le voci si ricavano dalla tagline
-    gia' tradotta, cosi' il testo resta scritto una volta sola in T.
-
-    `menu.html` senza prefisso vale in entrambe le lingue: ogni lingua ha la
-    propria menu.html nella stessa cartella delle pagine che la linkano.
+    Le tre voci portano al menu digitale, senza una copia statica nel sito.
     """
     parts = [p.strip() for p in T[lang]["tagline"].split("<i>·</i>")]
     assert len(parts) == 3, f"tagline inattesa in {lang}: {T[lang]['tagline']}"
     ristorante, pizzeria, lounge = parts
-    return (f'<a href="menu.html">{ristorante}</a> <i>·</i> '
-            f'<a href="menu.html">{pizzeria}</a> <i>·</i> '
-            f'<a href="{MENU_URL}" target="_blank" rel="noopener">{lounge}</a>')
-
-
-def leave_dialog(lang):
-    """Avviso prima di aprire digitavolo.
-
-    Non dice all\u2019utente che il collegamento e\u2019 sicuro — non e\u2019 una cosa che
-    il sito possa garantire per conto di terzi. Dice cosa e\u2019 digitavolo,
-    che non e\u2019 gestito da PLAGA, e mostra l\u2019indirizzo per intero.
-    """
-    d = T[lang]["leave"]
-    return f"""<dialog class="leave" id="leaveDialog" aria-labelledby="leaveTitle">
-  <div class="leave__box">
-    <p class="leave__kicker">{d["kicker"]}</p>
-    <h2 class="leave__title" id="leaveTitle">{d["titolo"]}</h2>
-    <p class="leave__text">{d["testo"]}</p>
-    <p class="leave__dest"><span>{d["url_label"]}</span><code id="leaveUrl"></code></p>
-    <div class="leave__actions">
-      <button type="button" class="leave__btn leave__btn--ghost" id="leaveCancel">{d["annulla"]}</button>
-      <button type="button" class="leave__btn" id="leaveGo">{d["continua"]}</button>
-    </div>
-  </div>
-</dialog>"""
+    return (f'<a href="{MENU_URL}">{ristorante}</a> <i>·</i> '
+            f'<a href="{MENU_URL}">{pizzeria}</a> <i>·</i> '
+            f'<a href="{MENU_URL}">{lounge}</a>')
 
 
 def _root(lang):
@@ -1425,7 +1406,7 @@ def build_home(lang):
                 f'<img class="card__stemma" src="{r}assets/img/stemma-dispensa.webp" '
                 f'alt="{t["alt"]["stemma"]}" loading="lazy"></span></a>')
         else:
-            pezzi.append(f'<a class="card" href="{slug}.html">{media}'
+            pezzi.append(f'<a class="card" href="{section_href(slug)}">{media}'
                          f'<span class="card__title">{t["nav"][i]}</span></a>')
 
     return f"""<section class="hero">
@@ -1557,7 +1538,7 @@ def build_forno(lang):
 <section class="trio"><ul class="trio__lista">{trio}</ul></section>
 
 <section class="cta">
-  <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
+  <a class="btn" href="{MENU_URL}"><span>{t["btn_menu"]}</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
   <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
@@ -1600,7 +1581,7 @@ def build_cucina(lang):
 </section>
 
 <section class="cta">
-  <a class="btn" href="menu.html"><span>{t["btn_menu"]}</span>
+  <a class="btn" href="{MENU_URL}"><span>{t["btn_menu"]}</span>
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
   <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
 </section>"""
@@ -1760,42 +1741,10 @@ def build_bottega(lang):
 
 
 def build_menu(lang):
-    t = T[lang]
-    ni, di = (1, 3) if lang == "en" else (0, 2)   # indice nome / descrizione
-    ci = 2 if lang == "en" else 1                  # indice etichetta categoria
-
-    tabs = "".join(
-        f'<button class="menuTab{" is-active" if i == 0 else ""}" role="tab" '
-        f'aria-selected="{"true" if i == 0 else "false"}" data-tab="{cat[0]}">{cat[ci]}</button>'
-        for i, cat in enumerate(MENU))
-
-    panels = ""
-    for i, cat in enumerate(MENU):
-        rows = "".join(
-            f'<article class="dish{" is-featured" if d[5] else ""}">'
-            f'<h3>{d[ni]}</h3><p>{d[di]}</p>'
-            f'<span class="dish__price">{d[4]}</span></article>'
-            for d in cat[3])
-        panels += (f'<div class="menuPanel{" is-active" if i == 0 else ""}" data-panel="{cat[0]}" '
-                   f'role="tabpanel"{"" if i == 0 else " hidden"}>{rows}</div>')
-
-    return f"""<section class="pageHead">
-  <h1 class="pageTitle">{t["h1"]["menu"]}</h1>
-  <p class="lead">{t["leads"]["menu"]}</p>
-</section>
-
-<section class="menu">
-  <div class="menuTabs" role="tablist" aria-label="{t["h1"]["menu"]}">
-    {tabs}<span class="menuTabs__ink" data-tab-ink></span>
-  </div>
-  <div class="menuPanels">{panels}</div>
-  <div class="cta">
-    <a class="btn" href="{MENU_URL}" target="_blank" rel="noopener"><span>{t["btn_drinks"]}</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-    <a class="btn" href="index.html#esplora"><span>{t["btn_back"]}</span></a>
-    <p class="note">{t["note"]}</p>
-  </div>
-</section>"""
+    # I vecchi URL /menu e /en/menu reindirizzano; il link resta disponibile
+    # come ripiego nei browser che non eseguono il reindirizzamento automatico.
+    label = "Apri il menu aggiornato" if lang == "it" else "Open the current menu"
+    return f'<section class="cta"><a class="btn" href="{MENU_URL}"><span>{label}</span></a></section>'
 
 
 def build_contatti(lang):
@@ -1803,7 +1752,7 @@ def build_contatti(lang):
     e = t["eventi"]
     rows = "".join(
         f'<a class="contact__row" href="{href}"'
-        f'{" target=" + chr(34) + "_blank" + chr(34) + " rel=" + chr(34) + "noopener" + chr(34) if href.startswith("http") else ""}>'
+        f'{" target=" + chr(34) + "_blank" + chr(34) + " rel=" + chr(34) + "noopener" + chr(34) if href.startswith("http") and href != MENU_URL else ""}>'
         f'<span class="contact__k">{k}</span><span class="contact__v">{v}</span></a>'
         for k, v, href in t["contact"])
     return f"""<section class="pageHead">

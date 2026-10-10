@@ -16,15 +16,15 @@ site/
   cucina.html        |
   forno.html         |
   dispensa.html      |
-  menu.html          |
+  menu.html          |  reindirizza al menu DigiTavolo aggiornato
   contatti.html     /
   en/…              le stesse pagine in inglese
   css/style.css     palette, tipografia, layout
-  js/main.js        scroll morbido, ingresso, burger menu, tab del menu
+  js/main.js        scroll morbido, ingresso, burger menu
   assets/img/       foto webp, due misure: -lg (1800px) e -sm (900px)
 ```
 
-**Gli .html sono generati.** Testi, menu, header, footer e switcher di lingua
+**Gli .html sono generati.** Testi, header, footer e switcher di lingua
 stanno tutti in `build.py`. Per cambiare qualcosa modifica quello e rilancia:
 ```
 python3 build.py
@@ -32,18 +32,18 @@ python3 build.py
 
 ## Lingue
 Italiano e inglese sono **pagine vere**, non uno scambio di testi via
-JavaScript: hanno indirizzi propri (`/menu.html` e `/en/menu.html`), l'attributo
+JavaScript: hanno indirizzi propri, l'attributo
 `lang` corretto e i tag `hreflang`, così Google le indicizza entrambe.
 
-Lo switcher **IT / EN** è in alto a destra e resta sulla stessa pagina: se sei
-sul menu in italiano e premi EN, arrivi al menu in inglese.
+Lo switcher **IT / EN** è in alto a destra e resta sulla stessa pagina.
 
-I testi stanno nel dizionario `T` di `build.py`, uno per lingua. Il menu sta in
-`MENU`: ogni piatto ha nome e descrizione nelle due lingue. I nomi delle pizze
-restano in italiano anche in inglese — sono nomi propri.
+I testi stanno nel dizionario `T` di `build.py`, uno per lingua. Tutti i
+collegamenti al menu aprono DigiTavolo (`MENU_URL`), così le modifiche
+effettuate dal ristoratore sono visibili subito. Anche i vecchi indirizzi
+`/menu.html` e `/en/menu.html` reindirizzano a DigiTavolo.
 
 **Per aggiungere una terza lingua** (tedesco, francese) basta copiare un blocco
-di `T`, tradurlo, aggiungere le traduzioni dei piatti in `MENU` e rilanciare.
+di `T`, tradurlo e rilanciare.
 
 ## Logo
 

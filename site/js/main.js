@@ -1067,10 +1067,6 @@ function start() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Per prima, e prima di tutto cio' che dipende da GSAP o Lenis: se una
-  // libreria dal CDN non arriva, l'avviso di uscita deve restare in piedi.
-  // Altrimenti i link a digitavolo si aprirebbero senza conferma.
-  leaveNotice();
   initLenis();
   scrollLinks();
   burgerMenu();
@@ -1108,45 +1104,6 @@ window.addEventListener('resize', () => {
   rt = setTimeout(() => { if (HAS_MOTION) ScrollTrigger.refresh(); }, 200);
 });
 
-
-/* ------------------------------------------------------------------
-   Avviso prima di uscire verso digitavolo.
-   Un solo listener sul documento: vale anche per i link nel footer e
-   nel burger menu, che esistono su ogni pagina.
------------------------------------------------------------------- */
-
-function leaveNotice() {
-  const dlg = document.getElementById('leaveDialog');
-  if (!dlg || typeof dlg.showModal !== 'function') return;
-
-  const out = dlg.querySelector('#leaveUrl');
-  const go = dlg.querySelector('#leaveGo');
-  const cancel = dlg.querySelector('#leaveCancel');
-  let atteso = null;
-
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="https://www.digitavolo.com"]');
-    if (!a) return;
-    e.preventDefault();
-    atteso = a.href;
-    out.textContent = a.href;
-    dlg.showModal();
-    lockScroll('dialog');
-  });
-
-  // window.open sta nel gestore del click, non nell'evento close:
-  // serve il gesto dell'utente, altrimenti il browser blocca la scheda.
-  go.addEventListener('click', () => {
-    if (atteso) window.open(atteso, '_blank', 'noopener');
-    dlg.close();
-  });
-
-  cancel.addEventListener('click', () => dlg.close());
-  dlg.addEventListener('close', () => {
-    atteso = null;
-    unlockScroll('dialog');
-  });
-}
 
 // La cronologia può ripristinare una pagina conservata durante l'intro.
 window.addEventListener('pageshow', event => {
