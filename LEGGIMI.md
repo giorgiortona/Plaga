@@ -92,6 +92,24 @@ Da telefono la foto ferma sparisce e ogni scheda si porta dietro la sua
 immagine. Le due copie non convivono mai — quella spenta è `display:none`,
 quindi esce anche dalla lettura assistita.
 
+## Il sigillo di Restaurant Guru
+
+In fondo alla home, sotto la chiusa, c'è la sezione `.premi`. Il distintivo è
+incollato **come lo danno loro** (`SIGILLO_GURU` in `build.py`): è il marchio
+di un terzo, non va ridisegnato nei colori di PLAGA né riospitato sul nostro
+dominio. Quello che gli diamo è una cornice nostra — occhiello verde e filo
+sopra — così sta in pagina come una citazione e non come un adesivo.
+
+Si porta dietro un foglio di stile, una grafica e tre caratteri da
+`awards.infcdn.net`, chiesti **solo all'apertura della home**: il `<link>` lo
+scrive `page()` solo per `index`. Quella terza parte è dichiarata nella
+privacy e nella cookie policy — se un domani il sigillo si toglie, vanno
+tolte anche quelle righe.
+
+`.premi__fila` è una fila: i riconoscimenti futuri si accodano lì dentro e
+vanno a capo da soli. Quando diventerà una sezione vera, con anche la storia
+dello staff, questa è la sua testa di ponte.
+
 ## Lo stemma della Dispensa
 
 `site/assets/img/stemma-dispensa.webp` è il marchio stampato sulle etichette,
@@ -194,7 +212,11 @@ Dura circa 3,7 secondi. Per cambiarne il ritmo c'è `INTRO_VELOCITA` in cima a
 Si riscala tutto insieme, mantenendo le proporzioni.
 
 Chi ha attivato «riduci animazioni» nelle impostazioni di sistema salta
-direttamente alla pagina, senza intro.
+direttamente alla pagina, senza intro. Anche sui dispositivi touch lo scroll
+è nativo, senza Lenis. Intro, ingresso dei contenuti e animazioni delle foto
+restano attivi anche su touch, salvo la preferenza «riduci animazioni». I cambi di altezza
+della barra del browser non provocano ricalcoli delle animazioni; rotazione
+e variazioni di larghezza continuano a riallineare il layout.
 
 ### Come è fatta
 
@@ -247,8 +269,8 @@ Non è il sito desktop ristretto: la composizione cambia.
 cinque: una a tutta pagina fuori dai margini, due affiancate con la seconda
 sfalsata verso il basso, una rientrata a destra, una rientrata a sinistra.
 
-**Le schede della home** si alternano: una alta a tutta pagina, una quadrata
-rientrata. Sulla stretta il titolo si accorcia per restare su una riga.
+**Le schede della home** formano una colonna allineata, con immagini in 4:3,
+margini uniformi e titoli leggibili. Nessun margine negativo sui telefoni.
 
 **L'hero** usa una foto ritagliata apposta (`sala-volte-mob.webp`): un
 paesaggio 3:2 dentro uno schermo verticale perderebbe i lati e mostrerebbe una
@@ -268,7 +290,13 @@ quando il menu sta per aprirsi.
 Il corpo delle voci non è fisso: `adattaVociMenu()` misura la voce più lunga
 e riduce quel tanto che basta perché stia su una riga. Sui telefoni bassi
 fascia e voci si accorciano, così elenco e contatti ci stanno insieme; in
-ultima istanza il pannello scorre.
+ultima istanza il pannello scorre, con aree di tocco di almeno 44px.
+
+Il marchio in alto riporta alla home con `?intro=logo`, cioè rigiocando
+l'animazione d'ingresso. All'apertura il menu blocca la pagina sottostante
+(`lockScroll`) e alla chiusura ripristina esattamente la posizione da cui
+eri partito; l'`inert` sul pannello e il fuoco che torna al bottone tengono
+fuori la tastiera da quello che non è in campo.
 
 Altre accortezze: rientri di sicurezza per notch e barra home, bersagli da
 almeno 44px, tab del menu che scorrono di lato con una sfumatura a segnalarlo,
@@ -277,13 +305,18 @@ effetti al passaggio del mouse disattivati.
 ## Animazioni
 Volutamente poche: scroll morbido, una sola animazione d'ingresso (il blocco
 sale di 18px in 0,7s), il burger menu a tendina, e l'intro col logo, che parte
-a ogni caricamento della home.
+all’apertura del sito, alla ricarica della pagina e al clic sul logo.
+I collegamenti interni, il cambio lingua e la cronologia non la riattivano.
 
 Per cambiarne il ritmo c'è `INTRO_VELOCITA` in cima a `site/js/main.js`:
 1 è il valore progettato (~3,4s), 1.3 la porta a ~2,6s, 1.6 a ~2,1s.
 
 Chi ha attivato «riduci animazioni» nelle impostazioni di sistema salta
-direttamente alla pagina, senza intro.
+direttamente alla pagina, senza intro. Anche sui dispositivi touch lo scroll
+è nativo, senza Lenis. Intro, ingresso dei contenuti e animazioni delle foto
+restano attivi anche su touch, salvo la preferenza «riduci animazioni». I cambi di altezza
+della barra del browser non provocano ricalcoli delle animazioni; rotazione
+e variazioni di larghezza continuano a riallineare il layout.
 
 ## Aggiungere le foto di pizze e piatti
 1. Converti in webp dentro `site/assets/img/`:
@@ -300,3 +333,28 @@ direttamente alla pagina, senza intro.
 ## Da completare
 Gli **orari di apertura** non sono pubblicati da nessuna parte: quando me li dai
 li aggiungo al footer e alla pagina Contatti, in entrambe le lingue.
+
+
+## Foto integrate — ottobre 2026
+Originali conservati in `foto_plaga/`, versioni WebP `-lg` e `-sm` in
+`site/assets/img/`. Nessun ingrandimento oltre la risoluzione originale.
+
+- `forno-impasto`: ritratto al lavoro nella pagina Forno, al posto degli slot vuoti.
+- `dispensa-scelta`: apertura della Dispensa, affiancata alla frase esistente.
+- `pasta-vongole`, `pasta-dettaglio`, `fritto-servito`: il trittico della Cucina,
+  mantenendo tre immagini e conservando il gambero nella foto di apertura.
+
+La classe `racconto` conserva l'intera inquadratura verticale dei primi due
+scatti. Testi alternativi e didascalie sono presenti in italiano e inglese.
+
+## Animazioni tipografiche
+I titoli di pagina e la frase d’apertura della home entrano lettera per
+lettera. Le dichiarazioni `data-sale` entrano per parole, con un accento
+verde e una sottolineatura sui riferimenti al Salento e alla Puglia.
+Ogni ingresso avviene una volta per caricamento; non si blocca lo scroll.
+La preferenza di sistema «riduci animazioni» mantiene i testi statici.
+La copia destinata alla lettura assistita conserva le frasi intere.
+
+La scelta dell’intro avviene in `site/js/intro.js`, prima del primo disegno:
+i rientri interni non mostrano neppure un lampo del pannello. I loghi usano
+un parametro temporaneo, rimosso subito dall’indirizzo.

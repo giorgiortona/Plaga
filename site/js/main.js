@@ -4,11 +4,18 @@
    il burger menu. Niente parallax, niente maschere, niente cursore.
    ═══════════════════════════════════════════════════════════════ */
 
-gsap.registerPlugin(ScrollTrigger);
+const HAS_MOTION = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+if (HAS_MOTION) {
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
 
 const EASE = 'power3.inOut';
 const EASE_OUT = 'power3.out';
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TOUCH = window.matchMedia('(pointer: coarse)').matches;
+// Il touch usa scroll nativo, ma conserva le animazioni del sito.
+const LIGHT_MOTION = REDUCED;
 
 /* Ritmo dell'intro. 1 = come progettata (~3,7s in tutto).
    Alza per accorciarla — 1.3 la porta a ~2,9s, 1.6 a ~2,3s. */
@@ -16,11 +23,36 @@ const INTRO_VELOCITA = 1;
 
 let lenis = null;
 
+// Un unico blocco per menu e dialoghi: lo scroll torna al punto di partenza,
+// anche su Safari iOS e quando due pannelli si sovrappongono.
+const scrollLocks = new Set();
+let savedScroll = 0;
+function lockScroll(reason) {
+  if (!scrollLocks.size) {
+    savedScroll = window.scrollY;
+    document.body.style.setProperty('--scroll-top', `-${savedScroll}px`);
+    document.body.classList.add('is-locked');
+    if (lenis) lenis.stop();
+  }
+  scrollLocks.add(reason);
+}
+function unlockScroll(reason) {
+  scrollLocks.delete(reason);
+  if (scrollLocks.size) return;
+  document.body.classList.remove('is-locked');
+  document.body.style.removeProperty('--scroll-top');
+  window.scrollTo(0, savedScroll);
+  if (lenis) lenis.start();
+}
+
 /* ─────────────────────────── SCROLL MORBIDO ─────────────────────────── */
 
 function initLenis() {
-  if (REDUCED) return;
-  lenis = new Lenis({ duration: 1.05, smoothWheel: true });
+  if (TOUCH || LIGHT_MOTION || !HAS_MOTION || typeof Lenis === 'undefined') return;
+  // 1,05 era troppo: dopo che smetti di scorrere la pagina continuava a
+  // planare per un secondo abbondante, e quella coda si legge come ritardo.
+  // 0,8 la tiene attaccata alla rotellina senza perdere la morbidezza.
+  lenis = new Lenis({ duration: 0.8, smoothWheel: true });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -32,7 +64,7 @@ function initLenis() {
 ------------------------------------------------------------------ */
 
 const REVEAL = [
-  '.pageTitle', '.lead', '.card', '.g',
+  '.lead', '.card', '.g',
   '.slot', '.contact__row', '.cta', '.menuTabs',
   '.occhiello', '.trio__voce', '.cifra__k', '.quad__nome',
   '.dire__sotto', '.chiusa__piccola', '.eventi__k', '.eventi__testo'
@@ -48,40 +80,71 @@ const VELATE = '.bleed .pic, .quad .pic';
    rimisurate a ogni resize, e a ogni rimisura l'animazione ripartirebbe.
 --------------------------------------------------------------------- */
 
-function saliParole() {
-  const blocchi = gsap.utils.toArray('[data-sale]');
-  if (!blocchi.length) return;
+// Il testo accessibile rimane intero; solo la copia visiva viene suddivisa.
+function testoAnimabile(el, letters = false) {
+  const text = el.textContent.trim();
+  const accessible = document.createElement('span');
+  accessible.className = 'motion-readable';
+  accessible.textContent = text;
+  const visual = document.createElement('span');
+  visual.setAttribute('aria-hidden', 'true');
+  text.split(/\s+/).forEach((word, index) => {
+    if (index) visual.append(' ');
+    const mask = document.createElement('span');
+    mask.className = 'parola';
+    if (/^(salento|puglia)[.,!?]?$/i.test(word)) mask.classList.add('parola--territorio');
+    if (letters) {
+      for (const char of word) {
+        const letter = document.createElement('i');
+        letter.className = 'titolo-lettera';
+        letter.textContent = char;
+        mask.append(letter);
+      }
+    } else {
+      const inside = document.createElement('i');
+      inside.textContent = word;
+      mask.append(inside);
+    }
+    visual.append(mask);
+  });
+  el.replaceChildren(accessible, visual);
+  return visual.querySelectorAll('.parola > i');
+}
 
-  blocchi.forEach((el) => {
-    if (el.dataset.spezzato) return;
-    el.dataset.spezzato = '1';
-    const parole = el.textContent.trim().split(/\s+/);
-    el.textContent = '';
-    parole.forEach((parola, i) => {
-      const guscio = document.createElement('span');
-      guscio.className = 'parola';
-      const dentro = document.createElement('i');
-      dentro.textContent = parola;
-      guscio.appendChild(dentro);
-      el.appendChild(guscio);
-      // lo spazio resta testo vero: così la riga va a capo dove deve
-      if (i < parole.length - 1) el.appendChild(document.createTextNode(' '));
+function titoliInScena() {
+  if (REDUCED) return;
+  gsap.utils.toArray('.pageTitle, .apertura').forEach(el => {
+    const letters = testoAnimabile(el, true);
+    gsap.set(letters, { yPercent: 120, rotation: 7, opacity: 0 });
+    ScrollTrigger.create({
+      trigger: el, start: 'top 92%', once: true,
+      onEnter: () => gsap.to(letters, {
+        yPercent: 0, rotation: 0, opacity: 1,
+        duration: 0.85, stagger: { amount: Math.min(0.55, letters.length * 0.025) },
+        ease: 'power4.out', clearProps: 'transform,opacity'
+      })
     });
   });
+  const hero = document.querySelector('.hero__word');
+  if (hero) gsap.fromTo(hero,
+    { clipPath: 'inset(100% 0 0 0)', y: 24 },
+    { clipPath: 'inset(0% 0 0 0)', y: 0, duration: 1.2, ease: 'power4.out', clearProps: 'clipPath,transform' });
+}
 
-  const pezzi = (el) => el.querySelectorAll('.parola > i');
-
+function saliParole() {
   if (REDUCED) return;
-
-  blocchi.forEach((el) => {
-    const righe = pezzi(el);
-    gsap.set(righe, { yPercent: 115 });
+  gsap.utils.toArray('[data-sale]').forEach(el => {
+    if (el.dataset.spezzato) return;
+    el.dataset.spezzato = '1';
+    const words = testoAnimabile(el);
+    gsap.set(words, { yPercent: 115, rotation: 4, opacity: 0 });
     ScrollTrigger.create({
-      trigger: el,
-      start: 'top 88%',
-      once: true,
-      onEnter: () => gsap.to(righe, {
-        yPercent: 0, duration: 0.9, ease: EASE_OUT, stagger: 0.035
+      trigger: el, start: 'top 87%', once: true,
+      onEnter: () => gsap.to(words, {
+        yPercent: 0, rotation: 0, opacity: 1, duration: 0.85,
+        stagger: { amount: Math.min(0.65, words.length * 0.065) },
+        ease: 'power4.out', clearProps: 'transform,opacity',
+        onComplete: () => el.classList.add('is-written')
       })
     });
   });
@@ -122,7 +185,7 @@ function scriviFrase() {
       lettere.push(s);
     }
 
-    if (REDUCED) {
+    if (LIGHT_MOTION) {
       lettere.forEach((s) => s.classList.add('is-on'));
       return;
     }
@@ -156,7 +219,7 @@ function scriviFrase() {
 --------------------------------------------------------------------- */
 
 function timbro() {
-  if (REDUCED) return;
+  if (LIGHT_MOTION) return;
   const bolli = gsap.utils.toArray('.card__stemma');
   if (!bolli.length) return;
 
@@ -362,7 +425,7 @@ function vetrinaDispensa() {
 ------------------------------------------------------------------- */
 
 function velaFoto() {
-  if (REDUCED) return;
+  if (LIGHT_MOTION) return;
   const foto = gsap.utils.toArray(VELATE);
   if (!foto.length) return;
 
@@ -393,7 +456,7 @@ function reveals() {
 
   els.forEach((el) => el.setAttribute('data-up', ''));
 
-  if (REDUCED) {
+  if (LIGHT_MOTION) {
     gsap.set(els, { opacity: 1, y: 0 });
     return;
   }
@@ -520,21 +583,19 @@ function separaLettere(percorso) {
 }
 
 /* ─────────────────────────── PRELOADER ───────────────────────────
-   Solo in home e solo alla prima visita della sessione.
+   Apertura, ricarica e logo: la scelta viene fatta in intro.js.
 ------------------------------------------------------------------ */
 
 function runLoader(done) {
   const loader = document.getElementById('loader');
   if (!loader) return done();
 
-  // L'intro parte a ogni caricamento della home. Unica eccezione: chi ha
-  // chiesto al sistema operativo di ridurre le animazioni.
-  if (REDUCED) {
+  if (LIGHT_MOTION || !document.documentElement.classList.contains('has-intro')) {
     loader.remove();
     return done();
   }
 
-  document.body.classList.add('is-locked');
+  lockScroll('loader');
   const line = loader.querySelector('.loaderLogo__line');
   const fill = loader.querySelector('.loaderLogo__fill');
   const testo = loader.querySelector('.loaderLogo--text');
@@ -543,7 +604,8 @@ function runLoader(done) {
   const tl = gsap.timeline({
     onComplete: () => {
       loader.remove();
-      document.body.classList.remove('is-locked');
+      document.documentElement.classList.remove('has-intro');
+      unlockScroll('loader');
       ScrollTrigger.refresh();
     }
   });
@@ -707,11 +769,15 @@ function burgerMenu() {
     // la foto si ritira verso il basso e riparte chiusa dall'alto
     if (vista) gsap.set(vista, { clipPath: 'inset(0% 0% 100% 0%)' });
   }
-  azzera();
+  if (HAS_MOTION) azzera();
+  overlay.inert = true;
 
   function openMenu() {
     if (open) return;
     open = true;
+    overlay.inert = false;
+    inner.scrollTop = 0;
+    lockScroll('menu');
     // All'avvio il font non è ancora quello definitivo e le voci risultano
     // più strette di quanto saranno: la misura buona è questa. Un frame
     // dopo, però — a pannello aperto, quando il testo è davvero disegnato.
@@ -725,7 +791,14 @@ function burgerMenu() {
     burger.setAttribute('aria-expanded', 'true');
     burger.setAttribute('aria-label', burger.dataset.close || 'Chiudi il menu');
     nav.classList.remove('is-hidden');
-    if (lenis) lenis.stop();
+    if (LIGHT_MOTION || !HAS_MOTION) {
+      inner.style.opacity = '1';
+      panels.forEach(p => p.style.transform = 'scaleY(1)');
+      [top, ...foots].forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+      if (vista) vista.style.clipPath = 'none';
+      items.forEach(el => el.style.transform = 'none');
+      return;
+    }
 
     // L'ordine è quello della lettura: prima il fondo e la foto che scende
     // insieme alle ante, poi il marchio che raccoglie il testimone da quello
@@ -746,8 +819,15 @@ function burgerMenu() {
     document.body.classList.remove('is-menu-open');
     burger.setAttribute('aria-expanded', 'false');
     burger.setAttribute('aria-label', burger.dataset.open || 'Apri il menu');
-    if (lenis) lenis.start();
-    fermaGiro();
+    overlay.inert = true;
+    unlockScroll('menu');          // riavvia anche Lenis: non serve farlo a mano
+    fermaGiro();                   // le foto del menu smettono di ruotare
+    burger.focus({ preventScroll: true });
+    if (LIGHT_MOTION || !HAS_MOTION) {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('aria-hidden', 'true');
+      return;
+    }
 
     anim && anim.kill();
     anim = gsap.timeline({
@@ -765,7 +845,16 @@ function burgerMenu() {
   }
 
   burger.addEventListener('click', () => (open ? closeMenu() : openMenu()));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) closeMenu(); });
+  document.addEventListener('keydown', (e) => {
+    if (!open) return;
+    if (e.key === 'Escape') closeMenu();
+    if (e.key !== 'Tab') return;
+    const targets = [...nav.querySelectorAll('a[href], button'), ...overlay.querySelectorAll('a[href], button')]
+      .filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
+    const index = targets.indexOf(document.activeElement);
+    e.preventDefault();
+    targets[(index + (e.shiftKey ? -1 : 1) + targets.length) % targets.length].focus();
+  });
 }
 
 /* ─────────────────────────── NAV ───────────────────────────
@@ -793,6 +882,7 @@ function navBehaviour() {
     onUpdate: (self) => {
       if (document.body.classList.contains('is-menu-open')) return;
       const y = self.scroll();
+      if (Math.abs(y - last) < 8 && y > 240) return;
       nav.classList.toggle('is-hidden', y > 240 && y > last);
       last = y;
     }
@@ -811,10 +901,10 @@ function menuTabs() {
     const bar = tab.parentElement.getBoundingClientRect();
     const r = tab.getBoundingClientRect();
     ink.style.width = r.width + 'px';
-    ink.style.transform = 'translateX(' + (r.left - bar.left) + 'px)';
+    ink.style.transform = 'translateX(' + (r.left - bar.left + tab.parentElement.scrollLeft) + 'px)';
   }
 
-  function activate(tab) {
+  function activate(tab, center = true) {
     tabs.forEach((t) => {
       const on = t === tab;
       t.classList.toggle('is-active', on);
@@ -824,20 +914,45 @@ function menuTabs() {
       const on = p.dataset.panel === tab.dataset.tab;
       p.hidden = !on;
       p.classList.toggle('is-active', on);
-      if (on && !REDUCED) {
+      if (on && HAS_MOTION && !LIGHT_MOTION) {
         gsap.fromTo(p.querySelectorAll('.dish'),
           { opacity: 0, y: 14 },
           { opacity: 1, y: 0, duration: 0.5, stagger: 0.035, ease: EASE_OUT, overwrite: true });
       }
     });
     moveInk(tab);
-    ScrollTrigger.refresh();
+    if (center) {
+      const scroller = tab.parentElement;
+      const rect = tab.getBoundingClientRect();
+      const bar = scroller.getBoundingClientRect();
+      // Coordinate misurate dopo il cambio di peso del testo: la voce
+      // selezionata arriva al centro senza spostare la pagina in verticale.
+      scroller.scrollTo({
+        left: scroller.scrollLeft + rect.left - bar.left + (rect.width - scroller.clientWidth) / 2,
+        behavior: REDUCED ? 'instant' : 'smooth'
+      });
+    }
+    if (HAS_MOTION) ScrollTrigger.refresh();
   }
 
-  tabs.forEach((t) => t.addEventListener('click', () => activate(t)));
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => activate(t));
+    t.addEventListener('keydown', (e) => {
+      let next;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') next = 0;
+      if (e.key === 'End') next = tabs.length - 1;
+      if (next === undefined) return;
+      e.preventDefault();
+      tabs[next].focus({ preventScroll: true });
+      activate(tabs[next]);
+    });
+  });
 
   const first = tabs.find((t) => t.classList.contains('is-active')) || tabs[0];
   requestAnimationFrame(() => moveInk(first));
+  document.fonts?.ready.then(() => moveInk(tabs.find(t => t.classList.contains('is-active')) || first));
   window.addEventListener('resize', () => {
     const active = tabs.find((t) => t.classList.contains('is-active'));
     if (active) moveInk(active);
@@ -847,6 +962,7 @@ function menuTabs() {
 /* ─────────────────────────── BOOT ─────────────────────────── */
 
 function start() {
+  titoliInScena();
   saliParole();
   scriviFrase();
   vetrinaDispensa();
@@ -866,6 +982,13 @@ document.addEventListener('DOMContentLoaded', () => {
   leaveNotice();
   initLenis();
   burgerMenu();
+  if (!HAS_MOTION) {
+    document.getElementById('loader')?.remove();
+    bottega();
+    menuTabs();
+    allineaMarchioHero();
+    return;
+  }
 
   // subito, non alla fine dell'intro: il titolo deve avere la misura giusta
   // anche su chi salta l'intro (riduci animazioni) o ricarica a metà
@@ -882,11 +1005,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 let rt;
+let layoutWidth = window.innerWidth;
 window.addEventListener('resize', () => {
+  if (window.innerWidth === layoutWidth) return;
+  layoutWidth = window.innerWidth;
   allineaMarchioHero();
   adattaVociMenu();
   clearTimeout(rt);
-  rt = setTimeout(() => ScrollTrigger.refresh(), 200);
+  rt = setTimeout(() => { if (HAS_MOTION) ScrollTrigger.refresh(); }, 200);
 });
 
 
@@ -912,7 +1038,7 @@ function leaveNotice() {
     atteso = a.href;
     out.textContent = a.href;
     dlg.showModal();
-    if (lenis) lenis.stop();
+    lockScroll('dialog');
   });
 
   // window.open sta nel gestore del click, non nell'evento close:
@@ -925,6 +1051,14 @@ function leaveNotice() {
   cancel.addEventListener('click', () => dlg.close());
   dlg.addEventListener('close', () => {
     atteso = null;
-    if (lenis) lenis.start();
+    unlockScroll('dialog');
   });
 }
+
+// La cronologia può ripristinare una pagina conservata durante l'intro.
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  document.getElementById('loader')?.remove();
+  document.documentElement.classList.remove('has-intro');
+  if (scrollLocks.has('loader')) unlockScroll('loader');
+});
