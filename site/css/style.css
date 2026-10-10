@@ -1399,6 +1399,17 @@ figcaption i{color:var(--green-500)}
   font-size:clamp(.8rem,.95vw,.9rem);color:var(--skin-400);
   transition:color .3s var(--ease);
 }
+/* Col dito, Privacy e Cookie erano due bersagli alti 19px uno accanto
+   all'altro: facile mancarli, e allora il tocco non apriva niente. Su
+   schermi touch ognuno ha l'area minima di 44px, larga quanto la parola
+   più un margine; la riga a vista non cambia. */
+@media (pointer:coarse){
+  .foot__legal{gap:.4rem;margin-left:-.6rem}
+  .foot__legal a{
+    display:inline-flex;align-items:center;
+    min-height:44px;min-width:44px;padding-inline:.6rem;
+  }
+}
 .foot__legal a:hover{color:var(--sage)}
 
 /* avviso prima di uscire verso digitavolo */
@@ -1521,10 +1532,35 @@ figcaption i{color:var(--green-500)}
 .btn-top:hover,.btn-top:active{
   background:var(--skin-050);color:var(--ink);
 }
+/* I riconoscimenti stanno sul filetto che chiude il footer: la riga corre
+   da un bordo all'altro e si interrompe al centro per lasciar posto ai
+   loghi, come un fregio. Solo i loghi, nessuna scritta: ognuno porta alla
+   pagina del suo premio. */
+.foot__premi{
+  max-width:var(--maxw);margin-inline:auto;
+  list-style:none;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(1.2rem,3vw,2.6rem);
+  margin-bottom:clamp(1.3rem,3vh,2rem);
+}
+.foot__premi::before,.foot__premi::after{
+  content:'';flex:1;height:1px;min-width:1.5rem;
+  background:rgba(223,207,182,.2);
+}
+.foot__premio a{
+  display:block;
+  transition:transform .45s var(--ease-out),filter .45s var(--ease);
+  filter:drop-shadow(0 6px 16px rgba(10,8,4,.45));
+}
+/* stessa altezza per tutti: il bollo di Restaurant Guru è largo e basso,
+   lo scudo di Tripadvisor alto e stretto, ma accostati alla stessa altezza
+   pesano uguale */
+.foot__premio img{display:block;width:auto;height:clamp(64px,6.4vw,88px)}
+.foot__premio a:hover,.foot__premio a:focus-visible{transform:translateY(-3px)}
+.foot__premio a:focus-visible{outline:1px solid var(--skin-200);outline-offset:6px}
+
 .foot__bottom{
   max-width:var(--maxw);margin-inline:auto;
-  padding-top:clamp(1.3rem,3vh,2rem);
-  border-top:1px solid rgba(223,207,182,.2);
   display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;
 }
 .foot__mark{
