@@ -45,8 +45,7 @@ LEGAL_PAGES = ["privacy", "cookie"]
 # sul sito vero, non dedotti: se cambiano gli script, va aggiornata la cookie
 # policy che li elenca.
 TERZE_PARTI = ["fonts.googleapis.com", "fonts.gstatic.com",
-               "cdnjs.cloudflare.com", "cdn.jsdelivr.net",
-               "awards.infcdn.net"]
+               "cdnjs.cloudflare.com", "cdn.jsdelivr.net"]
 
 # Dati del titolare, usati dalla privacy policy e dalla cookie policy.
 TITOLARE = {
@@ -58,6 +57,34 @@ TITOLARE = {
     "email": "plaga.lounge@libero.it",
 }
 CREATOR_URL = "https://www.instagram.com/dimana.digitalcreations/"
+
+# I riconoscimenti, nel footer: solo i loghi, ognuno un collegamento alla
+# pagina del premio. Sono immagini del sito, non i widget dei due servizi:
+# all'apertura della pagina non parte nessuna richiesta verso di loro, e
+# Restaurant Guru o Tripadvisor si aprono solo al click.
+#
+#   premio-restaurantguru.svg, premio-restaurantguru-pizza.svg
+#       i bolli "Best restaurant 2026" e "Best pizza 2026" come li da'
+#       Restaurant Guru da incollare (lo sfondo awards.infcdn.net/img/bg.svg
+#       e le scritte alle coordinate del loro codice; nel "Best pizza" la
+#       scritta in alto e' a 16px invece che a 12), con le scritte gia'
+#       trasformate in tracciati del loro carattere, Akrobat: cosi' non
+#       servono ne' il foglio di stile ne' i tre font dal loro server.
+#   premio-tripadvisor.svg  lo scudo del Travellers' Choice 2026, estratto
+#       in vettoriale dal certificato PDF di Tripadvisor.
+#
+# (nome file, larghezza, altezza, link, nome per chi usa un lettore di schermo)
+PREMI = [
+    ("premio-restaurantguru", 174, 135,
+     "https://restaurantguru.it/Plaga-Galatone",
+     "Restaurant Guru — Best restaurant 2026"),
+    ("premio-restaurantguru-pizza", 174, 135,
+     "https://restaurantguru.it/Plaga-Galatone",
+     "Restaurant Guru — Best pizza 2026"),
+    ("premio-tripadvisor", 298, 377,
+     "https://www.tripadvisor.it/Restaurant_Review-g1179331-d27718999-Reviews-Plaga-Galatone_Province_of_Lecce_Puglia.html",
+     "Tripadvisor Travellers’ Choice 2026"),
+]
 
 # Il verde della trama di fondo. Non è --green-500: a trasparenza così
 # bassa un verde spento vira al grigio, quindi qui serve più croma.
@@ -264,6 +291,8 @@ T = {
         "call_aria": "Scrivi su WhatsApp al 351 572 1939",
         "legal_updated_label": "Ultimo aggiornamento:",
         "legal_nav": "Informative legali",
+        "premi_label": "Riconoscimenti",
+        "esterno": "sito esterno, si apre in una nuova scheda",
         "leave": {
             "kicker": "Collegamento esterno",
             "titolo": "Stai per lasciare il sito di PLAGA",
@@ -478,6 +507,8 @@ T = {
         "call_aria": "Message us on WhatsApp at +39 351 572 1939",
         "legal_updated_label": "Last updated:",
         "legal_nav": "Legal notices",
+        "premi_label": "Awards",
+        "esterno": "external site, opens in a new tab",
         "leave": {
             "kicker": "External link",
             "titolo": "You are leaving the PLAGA website",
@@ -747,16 +778,6 @@ DISPENSA = [
                     "the essence comes out on its own, with the oil.",
             "alt": "The bergamot oil bottle on a bed of green olives"}},
 ]
-
-# ───────────────────── IL SIGILLO DI RESTAURANT GURU ─────────────────────
-# Incollato come lo danno loro: è il marchio di un terzo, non lo ridisegno
-# né lo riospito. Si porta dietro un foglio di stile, una grafica e tre
-# caratteri da awards.infcdn.net — dichiarati nella cookie policy e nella
-# privacy, e chiesti solo all'apertura della pagina iniziale.
-# Quando i riconoscimenti diventeranno più d'uno si accodano dentro
-# .premi__fila, senza toccare altro.
-SIGILLO_CSS = "https://awards.infcdn.net/2026/circle_v2.css"
-SIGILLO_GURU = """<div id="circle-r-ribbon" onclick="if(event.target.nodeName.toLowerCase() != 'a') {window.open(this.querySelector('.r-ribbon_title').href);return 0;}" class=" rg-award-lang-en_US" style="cursor: pointer; overflow: hidden; position: relative; display: flex; flex-direction: column; padding: 0; max-width: 174px; min-width: 174px; height: 135px; font: 400 10px/normal 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif; align-items: center; text-align: center; color: #000 !important; text-shadow: none; background: url(https://awards.infcdn.net/img/bg.svg) no-repeat; box-sizing: border-box;"> <div class="r-ribbon_ahead " style="transform: rotate(-11deg); position: absolute; z-index: 4; top: -7px; left: 6px; letter-spacing: 0.2px; padding: 0;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="160px" height="160px" viewBox="0 0 160 160" style="width: 160px; height: 160px; margin-top: 0;"> <defs> <path id="heading-arc" d="M 30 80 a 50 50 0 1 1 100 0"></path> </defs> <text class="r-ribbon_ahead-heading" fill="#000" text-anchor="middle" style="font-size: 12px !important; font-family: 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif !important; line-height: 1; text-transform: uppercase !important; alignment-baseline: auto;"> <textPath startOffset="50%" xlink:href="#heading-arc">Best restaurant</textPath> </text> </svg> </div> <p class="r-ribbon_year" style="color: #000; width: 140px; font: 22px/normal 'Akrobat Black', 'Helvetica Neue', 'Arial', sans-serif !important; font-style: italic !important; transform: rotate(-12deg); position: absolute; top: 41px !important; left: 12px !important; letter-spacing: 0.6px; text-align: center !important; padding: 0 !important; margin: 0 !important;">2026</p> <a href="https://restaurantguru.com/Plaga-Galatone" class="r-ribbon_title" target="_blank" style="text-transform: uppercase; color: #fff !important; width: 140px; font-size: 16px !important; line-height: normal !important; font-family: 'Akrobat Bold', 'Helvetica Neue', 'Arial', sans-serif !important; font-style: italic !important; transform: rotate(-12deg); position: absolute; z-index: 5; top: 72px; left: 12px; letter-spacing: 0.4px !important; text-align: center !important; white-space: normal; padding: 0 !important; margin: 0 !important; text-decoration: none !important; border-bottom: none; box-shadow: none; ">Plaga</a> <div class="r-ribbon_ahead r-ribbon_ahead-bottom" style="top: auto; bottom: -14px; left: 26px; letter-spacing: 0.3px; transform: rotate(-13deg); height: 100% !important; max-width: 100%; padding: 0; position: absolute !important; z-index: 4;"> <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="120px" height="120px" viewBox="0 0 120 120" style="width: 120px; height: 120px; margin-top: 0;"> <defs> <path id="subheading-arc" d="M 12 60 a 48 48 0 0 0 96 0"></path> </defs> <text class="r-ribbon_ahead-subh" fill="#000" text-anchor="middle" style="font: 12px/1 'Akrobat Regular', 'Helvetica Neue', 'Arial', sans-serif !important; text-transform: uppercase; letter-spacing: normal;"> <textPath startOffset="50%" xlink:href="#subheading-arc"><a href="https://restaurantguru.com" target="_blank" style="font: 12px/1 'Akrobat Regular', 'Helvetica Neue', 'Arial', sans-serif !important; text-transform: uppercase; letter-spacing: 0.3px; text-decoration: none !important; border-bottom: none; box-shadow: none; padding: 0; margin: 0;">Restaurant Guru</a></textPath> </text> </svg> </div></div>"""
 
 MENU = [
     ("antipasti", "Antipasti", "Starters", [
@@ -1061,6 +1082,11 @@ def footer(lang, sign=True):
     t = T[lang]
     bg = (f'<div class="foot__bg" aria-hidden="true">'
           f'{picture(_root(lang), "insegna", "")}</div>') if sign else ""
+    premi = "".join(
+        f'<li class="foot__premio"><a href="{url}" target="_blank" rel="noopener" '
+        f'aria-label="{nome} — {t["esterno"]}"><img src="{_root(lang)}assets/img/{file}.svg" alt="" '
+        f'width="{w}" height="{h}" loading="lazy" decoding="async"></a></li>'
+        for file, w, h, url, nome in PREMI)
     return f"""<footer class="foot{' foot--sign' if sign else ''}">
   {bg}
   <div class="foot__grid">
@@ -1075,6 +1101,7 @@ def footer(lang, sign=True):
   <div class="foot__totop">
     <button class="btn-top" type="button" data-scroll-top>{t["btn_top"]}</button>
   </div>
+  <ul class="foot__premi" aria-label="{t["premi_label"]}">{premi}</ul>
   <div class="foot__bottom">
     <span class="foot__mark">{"" if sign else wordmark("footMark")}<em>{TAGLINE}</em></span>
     <div class="foot__right">
@@ -1091,9 +1118,6 @@ def page(lang, name, body, light_nav=False, loader=False):
     # la trama di fondo sta solo nella pagina iniziale: altrove il marchio
     # ripetuto sotto ai titoloni diventa rumore
     corpo_cls = ' class="is-home"' if name == "index" else ""
-    # il sigillo sta solo in home, e con lui il suo foglio di stile
-    sigillo = (f'\n<link href="{SIGILLO_CSS}" rel="stylesheet">'
-               if name == "index" else "")
     root = "" if t["dir"] == "" else "../"
     it_url = f"{name}.html" if t["dir"] == "" else f"../{name}.html"
     en_url = f"en/{name}.html" if t["dir"] == "" else f"{name}.html"
@@ -1121,7 +1145,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{root}css/style.css?v={impronta("css/style.css")}">{sigillo}
+<link rel="stylesheet" href="{root}css/style.css?v={impronta("css/style.css")}">
 </head>
 <body{corpo_cls}>
 {loader_block()}
@@ -1152,7 +1176,7 @@ def page(lang, name, body, light_nav=False, loader=False):
 # da terze parti a ogni apertura di pagina. Bagno Maria serviva tutto in
 # locale e poteva dichiararlo; qui no, e la cookie policy lo elenca.
 
-LEGAL_UPDATED = {"it": "7 ottobre 2026", "en": "7 October 2026"}
+LEGAL_UPDATED = {"it": "10 ottobre 2026", "en": "10 October 2026"}
 
 LEGAL = {
     "it": {
@@ -1176,10 +1200,11 @@ LEGAL = {
 <div class="legal__note"><strong>Base giuridica:</strong> misure precontrattuali o contratto, art. 6, par. 1, lett. b) GDPR; adempimento di obblighi legali, lett. c); legittimo interesse alla gestione e tutela del rapporto, lett. f), quando applicabile.</div>"""),
                 ("servizi-esterni", "Contatti e servizi esterni", """
 <h3>Servizi attivati dall’utente</h3>
-<p>Google Maps, Instagram e WhatsApp non sono incorporati nella pagina. Il collegamento al relativo fornitore avviene soltanto dopo il click dell’utente, che visita un servizio distinto soggetto alla propria informativa. I messaggi WhatsApp ed e-mail vengono effettivamente inviati solo mediante un’ulteriore azione nell’applicazione scelta dall’utente.</p>
-<p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Il collegamento si apre quando l’utente sceglie il menu; da quel momento il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
+<p>Google Maps, Instagram, WhatsApp e le pagine dei riconoscimenti su Restaurant Guru e Tripadvisor non sono incorporati nella pagina. Il collegamento al relativo fornitore avviene soltanto dopo il click dell’utente, che visita un servizio distinto soggetto alla propria informativa. I messaggi WhatsApp ed e-mail vengono effettivamente inviati solo mediante un’ulteriore azione nell’applicazione scelta dall’utente.</p>
+<p>Al momento del click il browser comunica al sito di destinazione l’indirizzo IP e il solo dominio di provenienza, non la pagina da cui si arriva. Da quel momento i dati sono trattati dal fornitore del servizio come titolare autonomo, secondo la propria informativa: PLAGA non riceve dati da questi servizi e non ne è responsabile. L’elenco completo dei collegamenti è nella <a href="cookie.html#servizi"><strong>cookie policy</strong></a>.</p>
+<p>Il menu digitale è ospitato da <strong>digitavolo.com</strong>, servizio esterno non gestito da PLAGA. Il collegamento si apre quando l’utente sceglie il menu. Dal momento dell’apertura il fornitore può ricevere dati tecnici di connessione e opera secondo la propria informativa.</p>
 <h3>Risorse caricate automaticamente</h3>
-<p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google), le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>, e — nella sola pagina iniziale — il sigillo del riconoscimento Restaurant Guru da <code>awards.infcdn.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
+<p>A differenza dei collegamenti sopra, alcune risorse tecniche necessarie alla resa delle pagine sono richieste a terze parti <strong>nel momento stesso in cui si apre il sito</strong>, senza alcuna azione dell’utente: i caratteri tipografici da <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google), le librerie di animazione da <code>cdnjs.cloudflare.com</code> (Cloudflare) e <code>cdn.jsdelivr.net</code>. Queste richieste comportano la comunicazione dell’indirizzo IP e dei dati tecnici di connessione ai rispettivi fornitori, che operano secondo le proprie informative. Non installano cookie e non sono usate per statistiche o profilazione.</p>
 <div class="legal__note"><strong>Base giuridica:</strong> legittimo interesse del titolare alla resa tipografica e al corretto funzionamento del sito, art. 6, par. 1, lett. f) GDPR.</div>"""),
                 ("destinatari", "Destinatari e trasferimenti", """
 <p>Possono accedere ai dati, nei limiti delle rispettive funzioni, personale autorizzato, consulenti e fornitori tecnici o di hosting che operano per conto del titolare. I dati possono inoltre essere comunicati quando richiesto dalla legge o da un’autorità competente.</p>
@@ -1199,7 +1224,7 @@ LEGAL = {
             "kicker": "Tecnologie presenti nel sito",
             "intro": "Alla data dell’ultima verifica il sito non installa cookie, non utilizza strumenti analytics, pubblicitari o di profilazione e non salva nulla nel browser. Richiede però caratteri e librerie a fornitori terzi a ogni apertura di pagina.",
             "indice": [("titolare", "Titolare"), ("scelta-banner", "Scelta del banner"), ("inventario", "Inventario"),
-                       ("servizi", "Servizi esterni"), ("aggiornamenti", "Aggiornamenti"),
+                       ("servizi", "Collegamenti esterni"), ("aggiornamenti", "Aggiornamenti"),
                        ("riferimenti", "Riferimenti")],
             "sezioni": [
                 ("titolare", "Titolare del sito", """
@@ -1227,12 +1252,19 @@ LEGAL = {
   <li><strong>Immagini e video</strong>Serviti dallo stesso dominio del sito.</li>
   <li><strong>Caratteri tipografici</strong>Archivo, richiesto a <code>fonts.googleapis.com</code> e <code>fonts.gstatic.com</code> (Google) all’apertura di ogni pagina.</li>
   <li><strong>Librerie di animazione</strong>GSAP da <code>cdnjs.cloudflare.com</code> (Cloudflare) e Lenis da <code>cdn.jsdelivr.net</code>, richieste all’apertura di ogni pagina.</li>
-  <li><strong>Sigillo del riconoscimento</strong>Il distintivo Restaurant Guru, con il proprio foglio di stile, la grafica e i caratteri, richiesto a <code>awards.infcdn.net</code> alla sola apertura della pagina iniziale.</li>
 </ul>
 <div class="legal__note">I normali log del server non sono cookie e non leggono informazioni dal dispositivo; possono comunque contenere dati di navigazione e sono descritti nella <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
-                ("servizi", "Collegamenti a servizi esterni", """
-<p>I pulsanti verso Google Maps, Instagram e WhatsApp sono normali collegamenti. Prima del click non viene effettuata alcuna richiesta ai relativi domini: non ci sono mappe, pixel, iframe o script dei fornitori. Aprendo il collegamento si visita un servizio distinto, che può utilizzare cookie secondo la propria informativa.</p>
-<p>Il menu digitale su <strong>digitavolo.com</strong> è un servizio esterno. Il sito non vi effettua alcuna richiesta finché l’utente non sceglie di aprire il menu. Da quel momento il fornitore può utilizzare tecnologie proprie secondo la sua informativa.</p>"""),
+                ("servizi", "Collegamenti esterni", """
+<p>Alcuni elementi del sito portano a servizi esterni. Il menu digitale apre DigiTavolo nella stessa scheda; gli altri collegamenti possono aprirsi in una nuova scheda. Sono normali collegamenti, non contenuti incorporati: <strong>finché non si toccano non parte alcuna richiesta verso i siti di destinazione</strong> e non viene installato alcun cookie, né del sito né loro. Per questo non serve un banner, né un consenso.</p>
+<ul class="legal__inv">
+  <li><strong>WhatsApp</strong>Il numero di telefono, nel menu, nel piede della pagina e nei Contatti: apre una chat con un messaggio già scritto, che parte solo se l’utente lo invia.</li>
+  <li><strong>Google Maps</strong>L’indirizzo: apre la posizione del locale.</li>
+  <li><strong>Instagram</strong>Il profilo @plaga.lounge e, nella firma in fondo alla pagina, quello dello studio che ha realizzato il sito.</li>
+  <li><strong>Restaurant Guru</strong>I loghi dei riconoscimenti “Best restaurant” e “Best pizza” nel piede della pagina: aprono la pagina di PLAGA sul servizio.</li>
+  <li><strong>Tripadvisor</strong>Il logo del Travellers’ Choice nel piede della pagina: apre la pagina di PLAGA sul servizio.</li>
+  <li><strong>digitavolo.com</strong>Il menu digitale. Si apre direttamente quando l’utente sceglie Il Menu; il sito non conserva una copia statica dei piatti.</li>
+</ul>
+<p>I loghi dei riconoscimenti sono immagini servite dal sito stesso, non widget dei due servizi. Al momento del click il browser comunica al sito di destinazione soltanto il dominio di provenienza, non la pagina da cui si arriva. Da lì si è su un servizio distinto, di cui PLAGA non è titolare: può utilizzare cookie e trattare dati secondo la propria informativa, consultabile sul relativo sito.</p>"""),
                 ("aggiornamenti", "Aggiornamenti della policy", """
 <p>Se in futuro il sito adotterà nuovi servizi che utilizzano cookie o altre tecnologie facoltative, questa informativa verrà aggiornata prima della loro attivazione. Quando richiesto, tali servizi saranno disponibili solo dopo una scelta esplicita dell’utente.</p>"""),
                 ("riferimenti", "Riferimenti ufficiali", """
@@ -1265,10 +1297,11 @@ LEGAL = {
 <div class="legal__note"><strong>Legal basis:</strong> pre-contractual measures or contract, art. 6(1)(b) GDPR; compliance with legal obligations, (c); legitimate interest in managing and protecting the relationship, (f), where applicable.</div>"""),
                 ("servizi-esterni", "Contacts and external services", """
 <h3>Services activated by the user</h3>
-<p>Google Maps, Instagram and WhatsApp are not embedded in the page. The connection to the relevant provider occurs only after the user clicks, thereby visiting a separate service subject to its own notice. WhatsApp and e-mail messages are actually sent only through a further action in the application chosen by the user.</p>
-<p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. The link opens when the visitor selects the menu; from that moment the provider may receive technical connection data and operates under its own notice.</p>
+<p>Google Maps, Instagram, WhatsApp and the award pages on Restaurant Guru and Tripadvisor are not embedded in the page. The connection to the relevant provider occurs only after the user clicks, thereby visiting a separate service subject to its own notice. WhatsApp and e-mail messages are actually sent only through a further action in the application chosen by the user.</p>
+<p>When the link is clicked, the browser discloses to the destination site the IP address and only the originating domain, not the page. From that moment the data are processed by the service provider as an independent controller under its own notice: PLAGA receives no data from these services and is not responsible for them. The full list of links is in the <a href="cookie.html#servizi"><strong>cookie policy</strong></a>.</p>
+<p>The digital menu is hosted by <strong>digitavolo.com</strong>, an external service not operated by PLAGA. The link opens when the visitor selects the menu. From the moment it opens, the provider may receive technical connection data and operates under its own notice.</p>
 <h3>Resources loaded automatically</h3>
-<p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google), animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>, and — on the home page only — the Restaurant Guru award seal from <code>awards.infcdn.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
+<p>Unlike the links above, some technical resources needed to render the pages are requested from third parties <strong>the moment the site is opened</strong>, without any user action: typefaces from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google), animation libraries from <code>cdnjs.cloudflare.com</code> (Cloudflare) and <code>cdn.jsdelivr.net</code>. These requests involve disclosing the IP address and technical connection data to those providers, which operate under their own notices. They set no cookies and are not used for statistics or profiling.</p>
 <div class="legal__note"><strong>Legal basis:</strong> the controller’s legitimate interest in the typographic rendering and correct operation of the site, art. 6(1)(f) GDPR.</div>"""),
                 ("destinatari", "Recipients and transfers", """
 <p>Authorised staff, consultants and technical or hosting providers acting on the controller’s behalf may access the data within the limits of their respective functions. Data may also be disclosed where required by law or by a competent authority.</p>
@@ -1288,7 +1321,7 @@ LEGAL = {
             "kicker": "Technologies present on the site",
             "intro": "As at the last check the site sets no cookies, uses no analytics, advertising or profiling tools and stores nothing in the browser. It does, however, request typefaces and libraries from third-party providers each time a page opens.",
             "indice": [("titolare", "Owner"), ("scelta-banner", "Why no banner"), ("inventario", "Inventory"),
-                       ("servizi", "External services"), ("aggiornamenti", "Updates"),
+                       ("servizi", "External links"), ("aggiornamenti", "Updates"),
                        ("riferimenti", "References")],
             "sezioni": [
                 ("titolare", "Site owner", """
@@ -1316,12 +1349,19 @@ LEGAL = {
   <li><strong>Images and video</strong>Served from the site’s own domain.</li>
   <li><strong>Typefaces</strong>Archivo, requested from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> (Google) whenever a page opens.</li>
   <li><strong>Animation libraries</strong>GSAP from <code>cdnjs.cloudflare.com</code> (Cloudflare) and Lenis from <code>cdn.jsdelivr.net</code>, requested whenever a page opens.</li>
-  <li><strong>Award seal</strong>The Restaurant Guru badge, with its own stylesheet, artwork and typefaces, requested from <code>awards.infcdn.net</code> when the home page opens only.</li>
 </ul>
 <div class="legal__note">Ordinary server logs are not cookies and read no information from the device; they may nonetheless contain browsing data and are described in the <a href="privacy.html"><strong>privacy policy</strong></a>.</div>"""),
-                ("servizi", "Links to external services", """
-<p>The buttons to Google Maps, Instagram and WhatsApp are ordinary links. No request is made to those domains before the click: there are no maps, pixels, iframes or provider scripts. Opening the link takes you to a separate service, which may use cookies under its own notice.</p>
-<p>The digital menu on <strong>digitavolo.com</strong> is an external service. The site makes no request to it until the visitor chooses to open the menu. From that point the provider may use its own technologies under its own notice.</p>"""),
+                ("servizi", "External links", """
+<p>Some elements of the site lead to external services. The digital menu opens DigiTavolo in the same tab; other links may open in a new tab. They are ordinary links, not embedded content: <strong>until they are tapped, no request is made to the destination sites</strong> and no cookie is set, neither by the site nor by them. This is why no banner and no consent are needed.</p>
+<ul class="legal__inv">
+  <li><strong>WhatsApp</strong>The phone number, in the menu, in the page footer and on the Contact page: it opens a chat with a pre-written message, which is sent only if the user sends it.</li>
+  <li><strong>Google Maps</strong>The address: it opens the restaurant’s location.</li>
+  <li><strong>Instagram</strong>The @plaga.lounge profile and, in the credit at the bottom of the page, that of the studio that built the site.</li>
+  <li><strong>Restaurant Guru</strong>The “Best restaurant” and “Best pizza” award logos in the page footer: they open PLAGA’s page on the service.</li>
+  <li><strong>Tripadvisor</strong>The Travellers’ Choice logo in the page footer: it opens PLAGA’s page on the service.</li>
+  <li><strong>digitavolo.com</strong>The digital menu. It opens directly when the visitor selects The Menu; the site does not keep a static copy of the dishes.</li>
+</ul>
+<p>The award logos are images served by the site itself, not widgets from those services. When the link is clicked, the browser tells the destination site only the domain the visitor comes from, not the page. From there the visitor is on a separate service, of which PLAGA is not the controller: it may use cookies and process data under its own notice, available on its site.</p>"""),
                 ("aggiornamenti", "Policy updates", """
 <p>If the site adopts new services in future that use cookies or other optional technologies, this notice will be updated before they are activated. Where required, such services will be available only after an explicit choice by the user.</p>"""),
                 ("riferimenti", "Official references", """
@@ -1439,11 +1479,6 @@ def build_home(lang):
 <section class="chiusa">
   <p class="chiusa__grande" data-sale>{t["chiusa_grande"]}</p>
   <p class="chiusa__piccola">{t["chiusa_piccola"]}</p>
-</section>
-
-<section class="premi">
-  <p class="premi__k">{t["premi"]}</p>
-  <div class="premi__fila">{SIGILLO_GURU}</div>
 </section>"""
 
 
@@ -1603,10 +1638,11 @@ def build_dispensa(lang):
     d = t["dispensa"]
     r = _root(lang)
 
+    lazy = ' loading="lazy"'
     immagini = "".join(
         f'<img class="disp__img{" is-on" if i == 0 else ""}" data-i="{i}" '
         f'src="{r}assets/img/{p["img"]}-lg.webp" alt="{p[lang]["alt"]}"'
-        f'{"" if i == 0 else " loading=\"lazy\""}>'
+        f'{"" if i == 0 else lazy}>'
         for i, p in enumerate(DISPENSA))
 
     schede = "".join(
