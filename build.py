@@ -321,7 +321,7 @@ T = {
             "sale": "Le sale di Plaga: volte a stella in pietra leccese, marmo e velluto verde.",
             "giardino": "Il giardino di Plaga: una corte bianca a cielo aperto con cactus, palme e luci sospese.",
             "cucina": "La cucina di Plaga: pescato locale, verdure di stagione e prodotti del territorio.",
-            "forno": "Il forno a legna di Plaga: impasti a lunga lievitazione, cereali e carbone vegetale.",
+            "forno": "Le pizze di Plaga: impasti a lunga maturazione, cereali e carbone vegetale.",
             "dispensa": "La Dispensa del Plaga: conserve e vasetti da portare a casa, disponibili tutto l'anno.",
             "bottega": "Ordina le conserve della Dispensa del Plaga: passate, sott'oli, confetture e olio di Puglia.",
             "menu": "Antipasti, primi, secondi e pizze di Plaga a Galatone.",
@@ -334,7 +334,7 @@ T = {
             "sale": "Marmo, legno e velluto verde sotto volte a stella.",
             "giardino": "Una corte bianca a cielo aperto. Cactus, palme e luci sospese.",
             "cucina": "Radici salentine, materie prime del territorio e uno sguardo contemporaneo.",
-            "forno": "Settantadue ore di maturazione, prima del forno a legna.",
+            "forno": "Settantadue ore di maturazione per una pizza leggera e fragrante.",
             "dispensa": "La tradizione salentina di custodire i sapori delle stagioni, da portare a casa.",
             "menu": "Cucina di mare e di terra, pizza a lunga lievitazione.",
             "contatti": "Chiamaci, ti troviamo posto.",
@@ -394,7 +394,7 @@ T = {
             "testo": "Il tempo nell'impasto si sente al primo morso.",
             "descrizione": "Per Gabriele la pizza è parte della sua storia in cucina: "
                            "un incontro tra tradizione e ricerca. L'impasto matura per "
-                           "72 ore prima di arrivare al forno a legna, per una pizza "
+                           "72 ore, per una pizza "
                            "leggera e fragrante. La carta lascia spazio alla creatività "
                            "e ai gusti più familiari.",
             "trio": ["Leggerezza", "Fragranza", "Digeribilità"],
@@ -459,7 +459,7 @@ T = {
             "sala-volte": "La sala di Plaga sotto le volte in pietra leccese",
             "bar-arco": "Il bancone in pietra sotto l'arco",
             "giardino-cactus": "Il giardino con cactus e luci sospese",
-            "forno": "Il forno a legna e il bancone verde salvia",
+            "forno": "La zona pizza e il bancone verde salvia",
             "sala-candele": "Tavolo apparecchiato con candele",
             "sala-volte-b": "Sala principale con tavoli apparecchiati",
             "bar-arco-v": "Il bancone bar in pietra sotto l'arco",
@@ -537,7 +537,7 @@ T = {
             "sale": "The rooms at Plaga: Lecce stone star vaults, marble and green velvet.",
             "giardino": "The garden at Plaga: a white open-air courtyard with cacti, palms and hanging lights.",
             "cucina": "The kitchen at Plaga: local catch, seasonal vegetables and produce from the region.",
-            "forno": "The wood-fired oven at Plaga: long-fermented dough, wholegrain and charcoal bases.",
+            "forno": "Plaga's pizzas: long-fermented dough, wholegrain and charcoal bases.",
             "dispensa": "The Plaga Pantry: preserves and jars to take home, available all year round.",
             "bottega": "Order the Plaga Pantry preserves: passata, oils, jams and olive oil from Puglia.",
             "menu": "Starters, pasta, mains and pizza at Plaga in Galatone, Puglia.",
@@ -550,7 +550,7 @@ T = {
             "sale": "Marble, wood and green velvet beneath star vaults.",
             "giardino": "A white open-air courtyard. Cacti, palms and hanging lights.",
             "cucina": "Roots in Salento, regional ingredients and a contemporary approach.",
-            "forno": "Seventy-two hours of fermentation before the wood-fired oven.",
+            "forno": "Seventy-two hours of fermentation for a light, crisp pizza.",
             "dispensa": "A Salento tradition: keeping the flavours of each season to take home.",
             "menu": "Sea and land cooking, long-fermented pizza.",
             "contatti": "Call us, we'll find you a table.",
@@ -610,7 +610,7 @@ T = {
             "testo": "You can taste the time we give the dough.",
             "descrizione": "For Gabriele, pizza is part of his journey in the kitchen: "
                            "a meeting of tradition and exploration. The dough "
-                           "ferments for 72 hours before entering the wood-fired oven, "
+                           "ferments for 72 hours, "
                            "giving the pizza its light, crisp character. The menu "
                            "has room for creativity and familiar favourites alike.",
             "trio": ["Lightness", "Fragrance", "Digestibility"],
@@ -675,7 +675,7 @@ T = {
             "sala-volte": "The dining room at Plaga beneath Lecce stone vaults",
             "bar-arco": "The stone bar counter under the arch",
             "giardino-cactus": "The garden with cacti and hanging lights",
-            "forno": "The wood-fired oven and the sage green counter",
+            "forno": "The pizza area and sage green counter",
             "sala-candele": "Table laid with candles",
             "sala-volte-b": "Main dining room with laid tables",
             "bar-arco-v": "The stone bar counter under the arch",
